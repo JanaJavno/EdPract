@@ -1,0 +1,20 @@
+commit 50877e564fd96c20406e1e76d15a0449f5b6b9a0
+Author: Vladislav <vlaner160@gmail.com>
+Date:   Fri Feb 10 19:22:55 2017 +0300
+
+    Revert "add.gitignore"
+
+    This reverts commit 16610b128981cf54901eb4d2a719e49c7ca46f78.
+
+commit 69ccf89fb34b0e9a0f180089652008c15c15c1ba
+Author: Vladislav <vlaner160@gmail.com>
+Date:   Fri Feb 10 19:21:31 2017 +0300
+
+    added file.txt
+
+commit 16610b128981cf54901eb4d2a719e49c7ca46f78
+Author: Vladislav <vlaner160@gmail.com>
+Date:   Fri Feb 10 19:19:22 2017 +0300
+
+    add.gitignore
+
