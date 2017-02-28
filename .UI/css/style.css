@@ -72,13 +72,22 @@ div {
 
 .banner {
     height: 100px;
+    width: 250px;
     float: right;
     margin: 0;
     padding: 0;
+    position: relative;
+}
+.header-banner{
+    height: 150px;
+    width: 250px;
 }
 
 .header-banner img {
-    height: 100%;
+    position: absolute;
+    height: 150px;
+    width: 100%;
+    top:-30px;
 }
 
 .filter_box {
@@ -86,6 +95,7 @@ div {
     width: 100%;
     height: 50px;
     margin-bottom: 20px;
+    position: relative;
 }
 
 .filters {
@@ -132,6 +142,8 @@ div {
 
 .add_news {
     float: right;
+    display: inline-block;
+
 }
 
 .add_news_btn {
