@@ -403,7 +403,7 @@ div {
     height: auto;
     width: 100%;
     position: relative;
-    margin-bottom: 40px;
+    margin-bottom: 50px;
 }
 
 .top_news_wrapper {
@@ -413,10 +413,16 @@ div {
     margin-right: 30px;
     height: 500px;
 }
-
+.top_news_wrapper:hover{
+    box-shadow: 0px 0px 30px grey;
+    transform:scale(1.1);
+}
+.top_news{
+    position: relative;
+}
 .news_picture_big {
     height: 150px;
-    width: 300px;
+    width: 100%;
 }
 
 .news_picture_big img {
