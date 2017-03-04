@@ -5,6 +5,7 @@
     <title>Главная страница</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="css/slider.css">
 </head>
 <body>
 <div class="wrapper">
@@ -49,62 +50,54 @@
                 <button type="button" class="flat_button">Добавить новость</button>
             </div>
         </div>
-        <div class="slider">
-            <section class="cr-container">
-
-                <input id="select-img-1" name="radio-set-1" type="radio" class="cr-selector-img-1" checked/>
-                <label for="select-img-1" class="cr-label-img-1">1</label>
-
-                <input id="select-img-2" name="radio-set-1" type="radio" class="cr-selector-img-2"/>
-                <label for="select-img-2" class="cr-label-img-2">2</label>
-
-                <input id="select-img-3" name="radio-set-1" type="radio" class="cr-selector-img-3"/>
-                <label for="select-img-3" class="cr-label-img-3">3</label>
-
-                <input id="select-img-4" name="radio-set-1" type="radio" class="cr-selector-img-4"/>
-                <label for="select-img-4" class="cr-label-img-4">4</label>
-
-                <input id="select-img-5" name="radio-set-1" type="radio" class="cr-selector-img-5"/>
-                <label for="select-img-5" class="cr-label-img-5">5</label>
-
-                <input id="select-img-6" name="radio-set-1" type="radio" class="cr-selector-img-6"/>
-                <label for="select-img-6" class="cr-label-img-6">6</label>
-
-                <div class="clr"></div>
-                <div class="cr-bgimg">
-                    <div>
-                        <span>Slice 1 - Image 1</span>
-                        <span>Slice 1 - Image 2</span>
-                        <span>Slice 1 - Image 3</span>
-                        <span>Slice 1 - Image 4</span>
-                    </div>
-                    <div>
-                        <span>Slice 2 - Image 1</span>
-                        <span>Slice 2 - Image 2</span>
-                        <span>Slice 2 - Image 3</span>
-                        <span>Slice 2 - Image 4</span>
-                    </div>
-                    <div>
-                        <span>Slice 3 - Image 1</span>
-                        <span>Slice 3 - Image 2</span>
-                        <span>Slice 3 - Image 3</span>
-                        <span>Slice 3 - Image 4</span>
-                    </div>
-                    <div>
-                        <span>Slice 4 - Image 1</span>
-                        <span>Slice 4 - Image 2</span>
-                        <span>Slice 4 - Image 3</span>
-                        <span>Slice 4 - Image 4</span>
-                    </div>
+        <div class="slideshow-container">
+            <div class="slides fade">
+                <img src="images/1_news.jpeg" style="width:100%">
+                <div class="text fade">
+                    <div class="tag-slider"><p>Люди</p></div>
+                    <div class="header-slider"><p>В Минске представили уникальные бриллианты отечественного
+                        производства</p></div>
+                    <div class="description-slider"><p>Презентация состоялась в торговом центре «Галерея Минск», на
+                        территории ювелирного магазина «7 карат». </p></div>
                 </div>
-                <div class="cr-titles">
-                    <h3><span>Serendipity</span><span>What you've been dreaming of</span></h3>
-                    <h3><span>Adventure</span><span>Where the fun begins</span></h3>
-                    <h3><span>Nature</span><span>Unforgettable eperiences</span></h3>
-                    <h3><span>Serenity</span><span>When silence touches nature</span></h3>
+
+            </div>
+            <div class="slides fade">
+                <img src="images/2_news.jpeg" style="width:100%">
+                <div class="text fade">
+                    <div class="tag-slider"><p>Люди</p></div>
+                    <div class="header-slider"><p>Фотофакт: в Минске прошел торжественный марш подразделений МВД,
+                        посвященный 100-летию белорусской милиции</p></div>
+                    <div class="description-slider"><p>Торжественный марш подразделений Министерства внутренних дел,
+                        посвященный 100-летию белорусской милиции, прошел сегодня в Минске на Октябрьской площади. Всего
+                        в этом мероприятии было задействовано более 1,2 тыс. сотрудников различных подразделений МВД.
+                        Также в параде участвовало 46 единиц техники — современных машин и ретроавтомобилей.</p></div>
                 </div>
-            </section>
+
+            </div>
+            <div class="slides fade">
+                <img src="images/3_news.jpeg" style="width:100%">
+                <div class="text fade">
+                    <div class="tag-slider"><p>Люди</p></div>
+                    <div class="header-slider"><p>Весенний и свежий фоторепортаж Onliner.by: в БГЭУ выбрали самую
+                        красивую студентку</p></div>
+                    <div class="description-slider"><p>Традиционно женский нархоз разыграл титул своей самой красивой
+                        студентки. Пятничным вечером девять девушек сноровисто меняли платья, аккуратно вышагивали на
+                        шпильках высотой с небоскреб, танцевали под заграничную певицу Бейонсе, сочетая это с некоторым
+                        количеством отечественного тверка. Да возрадуются все полешуки: самой обаятельной и
+                        привлекательной стала пинчанка.</p></div>
+                </div>
+            </div>
+            <a class="prev" onclick="plusSlides(-1)">&#10094</a>
+            <a class="next" onclick="plusSlides(1)">&#10095</a>
+            <div style="text-align: center">
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+            </div>
+            <script src="slider.js"></script>
         </div>
+
         <div class="top_news_bar">
             <div class="top_news_wrapper">
                 <div class="top_news">
