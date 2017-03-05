@@ -127,7 +127,7 @@ var articles = [
         id: '11',
         title: '10 интересных фактов из истории космонавтики, о которых вы не знали',
         summary: 'Космонавт — одна из самых опасных профессий, доступных современному человеку. Но в абсолютных цифрах она таковой не выглядит: за 56 лет истории пилотируемой космонавтики и после более чем 500 полетов на низкую орбиту и к Луне известно всего 5 инцидентов, которые закончились жертвами. Такие цифры — результат того, что космонавтика также является одной из самых серьезных профессий, где свято чтут технику безопасности и понимают значение огромного количества предварительных проверок.',
-        createdAt: new Date(2017, 5, 3, 8, 20),
+        createdAt: new Date(2017, 3, 5, 8, 20),
         author: 'Нестер Владислав',
         content: 'Космонавты учатся крайне долго, и совсем не факт, что вы когда-нибудь все же полетите в космос, а не останетесь на Земле в качестве инструктора или сотрудника ЦУП. Но то, что от ' +
         'работы космонавтов в некоторой степени зависит будущее человеческого вида и наша судьба в космосе, не значит, что и они не могут немного повеселиться. После небольшого исследования мы' +
@@ -265,7 +265,7 @@ var articles = [
         id: '20',
         title: 'Таможенники изъяли партию итальянской мебели стоимостью $92 тысячи',
         summary: '40 предметов дорогостоящей итальянской мебели изъяли витебские таможенники. По документам стоимость товара была многократно занижена для уклонения от уплаты таможенных платежей.',
-        createdAt: new Date(2017,3,3,14,48),
+        createdAt: new Date(2017, 3, 3, 14, 48),
         author: 'Румянцев Андрей',
         content: '«Транспортное средство, в котором ввозился товар из Латвийской Республики на территорию ЕАЭС, следовало через пункт пропуска „Григоровщина“,' +
         ' — сообщает пресс-служба ГТК. — Для оформления предметов мебели были представлены документы, в соответствии с которыми стоимость товара составляла 1,3 тыс. долларов США.' +
@@ -273,3 +273,90 @@ var articles = [
     },
 
 ]
+
+function getArticles(skip, top, filterConfig) {
+    if (skip != null && top != null) {
+        var newArticles = articles.slice(skip, top + skip);
+        newArticles.sort(function (a, b) {
+            return b.createdAt - a.createdAt;
+        })
+        if (filterConfig != null) {
+            if (filterConfig.author !== null) {
+                newArticles = newArticles.filter(function (item) {
+                    return item.author == filterConfig.author
+                })
+            }
+            if (filterConfig.createdAt !== null) {
+                newArticles = newArticles.filter(function (item) {
+                    return item.createdAt >= filterConfig.createdAt
+                })
+            }
+        }
+        return newArticles;
+    }
+
+}
+function getArticle(id) {
+    if (id != null) {
+        return articles.filter(function (item) {
+            return item.id == id;
+        })
+    }
+}
+function validateArticle(article) {
+    if (article != null) {
+        if (typeof article.id == 'string') {
+            if (typeof article.title == 'string' && article.title.length < 100)
+                if (typeof article.summary == 'string' && article.summary.length < 200)
+                    if (typeof article.createdAt == 'object')
+                        if (typeof article.author == 'string' && article.author.length > 0)
+                            if (typeof article.content == 'string' && article.content.length > 0)
+                                return true;
+
+        }
+    }
+    return false;
+
+}
+function addArticle(article) {
+    if (article != null) {
+        if (validateArticle(article)) {
+            articles.push(article);
+            return true;
+        }
+    }
+    return false;
+}
+function editArticle(id, article) {
+    if (getArticle(id).length != 0) {
+        if (article.id == null && article.author == null && article.createdAt == null) {
+            if (article.content != null && article.content.length > 0) {
+                articles[id - 1].content = article.content;
+            }
+            if (article.summary != null && article.summary.length < 200) {
+                articles[id - 1].summary = article.summary;
+            }
+            if (article.title != null && article.title.length < 100) {
+                articles[id - 1].title = article.title;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+function removeArticle(id) {
+    if (getArticle(id).length != null) {
+        index = -1;
+        for (var i = 0, len = articles.length; i < len; i++) {
+            if (articles[i].id == id) {
+                index = i;
+                break;
+            }
+        }
+        if (index != -1) {
+            delete articles[index];
+            return true;
+        }
+    }
+    return false;
+}
