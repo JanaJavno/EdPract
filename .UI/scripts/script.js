@@ -361,12 +361,14 @@ function addTag(tag) {
         tags.push(tag);
     }
 }
-function deleteTag(tag) {
+function removeTag(tag) {
     tag = tag || null;
     var index = tags.indexOf(tag);
     if (index != -1) {
-        delete tag[index];
+        var deleted = tags.splice(index, 1);
+        return true;
     }
+    return false;
 }
 function addArticle(article) {
     if (article != null) {
@@ -379,15 +381,21 @@ function addArticle(article) {
 }
 function editArticle(id, article) {
     if (getArticle(id).length != 0) {
+        for (var i = 0, len = articles.length; i < len; i++) {
+            if (articles[i].id == id) {
+                var index = i;
+                break;
+            }
+        }
         if (article.id == null && article.author == null && article.createdAt == null) {
             if (article.content != null && article.content.length > 0) {
-                articles[id - 1].content = article.content;
+                articles[index].content = article.content;
             }
             if (article.summary != null && article.summary.length < 200) {
-                articles[id - 1].summary = article.summary;
+                articles[index].summary = article.summary;
             }
             if (article.title != null && article.title.length < 100) {
-                articles[id - 1].title = article.title;
+                articles[index].title = article.title;
             }
             return true;
         }
@@ -395,7 +403,7 @@ function editArticle(id, article) {
     return false;
 }
 function removeArticle(id) {
-    if (getArticle(id).length != null) {
+    if (getArticle(id).length != 0) {
         index = -1;
         for (var i = 0, len = articles.length; i < len; i++) {
             if (articles[i].id == id) {
@@ -404,7 +412,7 @@ function removeArticle(id) {
             }
         }
         if (index != -1) {
-            delete articles[index];
+            articles.splice(index, 1);
             return true;
         }
     }
