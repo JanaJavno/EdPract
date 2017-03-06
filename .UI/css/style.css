@@ -30,14 +30,14 @@ div {
 
 .top_bar_li {
     float: left;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 .top_bar_login {
     float: right;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 .top_bar_li a, .top_bar_login a {
@@ -49,20 +49,21 @@ div {
 }
 
 .header {
-    height: 100px;
+    height: 150px;
     width: auto;
-    margin: 15px;
+    margin: 10px;
+    margin-bottom: 0;
 }
 
 .header-title {
-    height: 100px;
+    height: 150px;
     float: left;
     margin: 0;
     padding: 0;
 }
 
 .header-title img {
-    height: 100px;
+    height: 100%;
 }
 
 .banner {
@@ -164,7 +165,7 @@ div {
 }
 
 .top_news_bar {
-    margin-top: 40px;
+    margin-top: 30px;
     height: auto;
     width: 100%;
     position: relative;
@@ -180,7 +181,7 @@ div {
 }
 
 .top_news_wrapper:hover {
-    box-shadow: 0px 0px 30px grey;
+    box-shadow: 0 0 30px grey;
     transform: scale(1.1);
 }
 
