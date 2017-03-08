@@ -1,3 +1,9 @@
+a{
+    text-decoration: none;
+}
+img{
+    width: 100%;
+}
 .slideshow-container {
     max-width: 1000px;
     position: relative;
@@ -38,22 +44,22 @@
     overflow: hidden;
 }
 .tag-slider{
-    background-color: black;
-    color: white;
+    background-color: #000000;
+    color: #fff;
     padding: 5px;
     float: left;
     clear: both;
 }
 .header-slider{
-    color: white;
+    color: #fff;
     padding: 5px;
     background-color:lightskyblue;
     float: left;
     clear: both;
 }
 .description-slider{
-    color:grey;
-    background-color: white;
+    color:#808080;
+    background-color: #fff;
     padding: 5px;
     float: left;
     clear: both;
@@ -68,14 +74,6 @@
     animation-duration: 1.5s;
 }
 
-@-webkit-keyframes fade {
-    from {
-        opacity: 0.4
-    }
-    to {
-        opacity: 1
-    }
-}
 
 @keyframes fade {
     from {
