@@ -13,7 +13,8 @@ var articlesService = (function () {
             'оформить отношения. То есть оформление отношений для меня не коррелирует с внутренней зрелостью.— Тогда для чего люди в наше время женятся и выходят замуж?— Сейчас я замечаю, что люди ' +
             'стали свободнее от стереотипов и понятия «надо». Они прислушиваются к себе и делают так, как хотят сами. Мотивация может быть разной. Иногда церемония важна родителям. Часто бывает, что ' +
             'материнская и отцовская самооценка зависят от того, сделали они свадьбу ребенку или нет. Что скажут родственники?',
-            tags: ['Психология', 'Семья']
+            tags: ['Психология', 'Семья'],
+            picture: 'images/id_1.jpeg'
         },
         {
             id: '2',
@@ -24,7 +25,8 @@ var articlesService = (function () {
             content: 'Происшествие случилось сегодня около десяти утра. Как рассказал нам пресс-секретарь метрополитена Андрей Кузьмин, плохо стало минчанину 1950 года рождения. ' +
             'Прибыла бригада скорой.Реанимационные меры принимались на протяжении получаса, после чего врачи вынуждены были констатировать смерть. Предварительный диагноз — внезапная остановка сердца.' +
             ' На распорядок движения поездов инцидент не повлиял.',
-            tags: ['Метро', 'Минск', 'ТП']
+            tags: ['Метро', 'Минск', 'ТП'],
+            picture: 'images/id_2.jpeg'
         },
         {
             id: '3',
@@ -35,7 +37,8 @@ var articlesService = (function () {
             content: 'Презентация состоялась в торговом центре «Галерея Минск», на территории ювелирного магазина «7 карат». По словам организаторов, благодаря уникальным технологиям в ' +
             'Беларуси удалось создать идентичные природным условия, позволяющие выращивать высококачественные алмазы.Отечественные бриллианты по своим характеристикам и свойствам не отличаются' +
             ' от природных, определить разницу возможно лишь в специальных лабораторных условиях. В мире есть не более пяти компаний, которым удалось вырастить алмазы, сходные с белорусскими.',
-            tags: ['Минск']
+            tags: ['Минск'],
+            picture: 'images/id_3.jpeg'
         },
         {
             id: '4',
@@ -46,7 +49,8 @@ var articlesService = (function () {
             content: 'Торжественный марш подразделений Министерства внутренних дел, посвященный 100-летию белорусской милиции, прошел сегодня в Минске на Октябрьской площади. ' +
             'Всего в этом мероприятии было задействовано более 1,2 тыс. сотрудников различных подразделений МВД. Также в параде участвовало 46 единиц техники — современных машин и ретроавтомобилей. ' +
             'Там ещё мой друган участвовал. Добавил для большей длины.',
-            tags: ['Минск', 'Милиция']
+            tags: ['Минск', 'Милиция'],
+            picture: 'images/id_4.jpeg'
         },
         {
             id: '5',
@@ -58,7 +62,8 @@ var articlesService = (function () {
             ' милое очарование советского ДК.Посреди зала не может усесться прошлогодняя мисс БГЭУ Мария Сланчевская. Поверх красивой прически — символ ускользающей власти — диадема. ' +
             'На лице — красивая широченная улыбка. Все готовятся к церемонии. Старт немного задерживается, но по этикету позволено не больше десяти минут опоздания. На сцене появляется ' +
             'ведущий с микрофоном, а также улыбкой, которая давит ему скулы, и все начинается.',
-            tags: ['Конкурсы', 'Красота']
+            tags: ['Конкурсы', 'Красота'],
+            picture: 'images/id_5.jpeg'
         },
         {
             id: '6',
@@ -69,7 +74,8 @@ var articlesService = (function () {
             content: 'Вчера, 4 марта, около 16:00 на улице Ложинской в минском микрорайоне Уручье на припаркованный автомобиль упала кирпичная стена. Фото и видео с места происшествия разместил на ' +
             'нашем форуме пользователь с ником _Dell.Инцидент произошел возле торгового центра ' +
             '«Дмитриев кирмаш».— Зацепили стену при выгрузке. В машине никого не было. Новая Almera, машину купили только пять дней назад, — рассказал наш читатель.',
-            tags: ['Минск', 'Просшествия']
+            tags: ['Минск', 'Просшествия'],
+            picture: 'images/id_6.jpeg'
         },
         {
             id: '7',
@@ -82,7 +88,8 @@ var articlesService = (function () {
             ' — рассказывает heineken81. — Предполагать, как случилась эта авария, достаточно сложно. Несмотря на то, что место, где произошло ДТП, находится в центре города ' +
             '(пересечение улицы Ильича и Восьмого переулка Ильича), это очень тихий, спокойный перекресток, с маленьким трафиком».В УВД Гомельского облисполкома нам сообщили, ' +
             'что пострадавших в результате ДТП нет. Подробности случившегося будут известны позднее.',
-            tags: ['Происшествия']
+            tags: ['Происшествия'],
+            picture: 'images/id_7.jpeg'
         },
         {
             id: '8',
@@ -103,7 +110,8 @@ var articlesService = (function () {
             '— рассказали в Госавтоинспекции.С поврежденным задним левым колесом автомобиль въехал в Столбцы. На улице Свердлова угонщика задержали. Им оказался 23-летний парень, находившийся в' +
             ' состоянии алкогольного опьянения. Ранее он уже был судим за угон транспортных средств.Молодой человек был водворен в изолятор временного содержания, в отношении него возбуждено ' +
             'уголовное дело по части 2 статьи 214 УК. Кроме того, за нарушения ПДД в отношении водителя составлены административные протоколы.',
-            tags: ['Алкоголь', 'Минская область', 'Погоня']
+            tags: ['Алкоголь', 'Минская область', 'Погоня'],
+            picture: 'images/id_8.jpeg'
         },
         {
             id: '9',
@@ -120,7 +128,8 @@ var articlesService = (function () {
             ' налево. Судя по записи, он выехал прямо перед движущейся маршруткой — времени среагировать у водителя микроавтобуса могло не быть, — рассказали в Госавтоинспекции.Пока это только ' +
             'предварительная информация о ДТП. По факту происшествия проводится проверка.— По уточненной информации, пострадали четыре человека. Все они ехали в маршрутке в качестве пассажиров. ' +
             'Их жизни ничего не угрожает, всем оказана медицинская помощь, — добавили в ГАИ.',
-            tags: ['Аварии', 'Минск', 'Общественный транспорт']
+            tags: ['Аварии', 'Минск', 'Общественный транспорт'],
+            picture: 'images/id_9.jpeg'
         },
         {
             id: '10',
@@ -134,7 +143,8 @@ var articlesService = (function () {
             'Семашко. За рулем была девушка — курсантка, рядом с ней на пассажирском месте находился инструктор. На перекрестке автомобили столкнулись.— Оба водителя утверждают, что двигались на ' +
             'зеленый сигнал светофора. Проводится проверка, — рассказали в Госавтоинспекции. — В результате ДТП пострадали инструктор учебной машины (по предварительной информации, у него переломы ' +
             'ребер и вывих плечевого сустава) и девушка — пассажирка маршрутки (ушиб мягких тканей головы). Их доставили в больницу.Материалы переданы в ГАИ Минска.',
-            tags: ['Аварии', 'Минск']
+            tags: ['Аварии', 'Минск'],
+            picture: 'images/id_10.jpeg'
         },
         {
             id: '11',
@@ -164,7 +174,8 @@ var articlesService = (function () {
             'собственного имени, но при старте Гриссом сказал в эфир: «Ты в пути, Молли Браун!» — и кличка закрепилась в переговорах между диспетчерами. Американская космонавтика вернулась к ' +
             'практике придумывания имен для космических аппаратов только в программе «Аполлон», когда появилась необходимость различать между собой два пилотируемых элемента одного корабля: командный ' +
             'модуль и спускаемый лунный модуль.',
-            tags: ['Космос']
+            tags: ['Космос'],
+            picture: 'images/id_11.jpeg'
         },
         {
             id: '12',
@@ -177,7 +188,8 @@ var articlesService = (function () {
             'Часы получились немного большими. Они работают на «железе» Raspberry Pi. В качестве концепта он выбрал наручные часы из фантастических кинофильмов 80—90-х годов прошлого века.' +
             'Работой своего изделия энтузиаст остался недоволен: уж очень медленно все происходит. Но парень все равно не унывает и собирается запустить на часах Doom.' +
             ' «Летающая заставка Windows работает с частотой 0,5 кадра в секунду. Думаю, Doom запустится на 0,1 FPS», — цитирует Gizmodo изобретателя.',
-            tags: ['Умные часы']
+            tags: ['Умные часы'],
+            picture: 'images/id_12.jpeg'
         },
         {
             id: '13',
@@ -193,7 +205,8 @@ var articlesService = (function () {
             ' что экран Pixel практически нечитаем и состоит из этих самых пикселейПокупатель утверждает, что подобным образом упакованный смартфон приходит ему не в первый раз. Ранее он уже ' +
             'получал Pixel, у которого не работали динамики и микрофон.Смартфон из видео является пятым по счету в ряду Google Pixel, которыми владел американец. Первые три он отправлял обратно,' +
             ' так как они постоянно зависали независимо от запущенных приложений. «Я не знаю, какую ведьму я разозлил», — горестно резюмировал свои злоключения покупатель.',
-            tags: ['Google']
+            tags: ['Google'],
+            picture: 'images/id_13.png'
         },
         {
             id: '14',
@@ -208,7 +221,8 @@ var articlesService = (function () {
             ' гораздо шире, чем раньше.Как сообщает Droid Life, постепенно на смартфонах Motorola заменит собой бренд Lenovo и вернет фирменный логотип в виде буквы М. Телефоны под ' +
             '«новым-старым» брендом появятся во всех странах и даже заменят наименование ZUK, под которым Lenovo продавала смартфоны в Китае.Помимо американского и китайского рынков,' +
             ' компания намерена сделать ставку на Россию. Авось тенденция затронет и Беларусь.',
-            tags: ['Lenovo', 'Motorola']
+            tags: ['Lenovo', 'Motorola'],
+            picture: 'images/id_14.jpeg'
         },
         {
             id: '15',
@@ -220,7 +234,8 @@ var articlesService = (function () {
             'Последние три недели команда корабля Okeanos Explorer, принадлежащего Национальному управлению по исследованию океанов и атмосферы США, исследуют регион Тихого океана вблизи Американского' +
             ' Самоа. Всеми находками ученые делятся на своем YouTube-канале.Они уже обнаружили несколько странных и удивительных существ: подводную мухоловку, космически ослепительную медузу,' +
             ' гидроидных полипов.',
-            tags: ['Флора и фауна']
+            tags: ['Флора и фауна'],
+            picture: 'images/id_15.jpeg'
         },
         {
             id: '16',
@@ -236,7 +251,8 @@ var articlesService = (function () {
             ' такие деньги покупатель получит шестикомнатную квартиру с видом из окон на водный канал (таунхаус расположен на первой береговой линии, в 100 метрах от воды).' +
             'Дом является блочным, построен в 2005 году. Он полностью укомплектован мебелью и бытовой техникой. Высота потолков — 2,9 метра. В объявлении сообщается о наличии' +
             ' высокоскоростного интернета (100 Мбит/с), спутникового телевидения во всех комнатах (разрешение 4K), системы кондиционирования и теплых полов.',
-            tags: ['Минск']
+            tags: ['Минск'],
+            picture: 'images/id_16.png'
         },
         {
             id: '17',
@@ -248,7 +264,8 @@ var articlesService = (function () {
             'Сидорик расскажут и покажут, как правильно укладывать ламинат: наверняка это умение выручит вас не один раз в жизни. Профессиональные «ламинатные» тонкости и хитрости ' +
             '— в нашем новом ролике. Но прежде чем браться за работу, рекомендуем пересмотреть еще одно видео, в котором подробно описаны семь типичных ошибок при укладке популярного' +
             ' напольного покрытия.',
-            tags: ['Ремонт — это просто']
+            tags: ['Ремонт — это просто'],
+            picture: 'images/id_17.jpeg'
         },
         {
             id: '18',
@@ -268,7 +285,8 @@ var articlesService = (function () {
             ' взяла направление и приехала. Как молодому специалисту мне предоставили общежитие, выделив койко-место в комнате с другими девочками. В июле 1990-го начала работу в большой организации' +
             ' — тресте «Белэнергострой». У этого предприятия, в свою очередь, была дочка — «Минскэнергожилстрой» — сюда меня и оформили маляром-штукатуром 4-го разряда. Работа как работа, ничего' +
             ' непривычного.',
-            tags: ['Минск', 'Общежития']
+            tags: ['Минск', 'Общежития'],
+            picture: 'images/id_18.jpeg'
         },
         {
             id: '19',
@@ -281,7 +299,8 @@ var articlesService = (function () {
             ' оборудования, а цвет стен, светильники и декор — новые.— Данная фотография есть только у нас, — Роман указывает на предметы декора. — На ней — девочки из Афганистана,' +
             ' у которых убили родителей. Спустя некоторое время их сфотографировали, и снимок стал уникальным, он символизирует взгляд в будущее, неподдельное счастье. Картина на другой стене ' +
             '— противоположная, несет в себе образ мужества.',
-            tags: ['Кафе', 'Минск']
+            tags: ['Кафе', 'Минск'],
+            picture: 'images/id_19.jpeg'
         },
         {
             id: '20',
@@ -292,18 +311,19 @@ var articlesService = (function () {
             content: '«Транспортное средство, в котором ввозился товар из Латвийской Республики на территорию ЕАЭС, следовало через пункт пропуска „Григоровщина“,' +
             ' — сообщает пресс-служба ГТК. — Для оформления предметов мебели были представлены документы, в соответствии с которыми стоимость товара составляла 1,3 тыс. долларов США.' +
             ' Однако таможенники при проведении проверки установили, что реальная стоимость товара — около 92 тыс. долларов США».',
-            tags: ['Мебель']
+            tags: ['Мебель'],
+            picture: 'images/id_20.jpeg'
         }
     ];
 
     function getArticles(skip, top, filterConfig) {
         var newArticles;
         skip = skip || 0;
-        top = top || articles.length;
+        top = top || 10;
         newArticles = articles.slice(skip, top + skip);
         newArticles.sort(function (a, b) {
             return b.createdAt - a.createdAt;
-        })
+        });
         if (filterConfig != null) {
             if (filterConfig.author != null) {
                 newArticles = newArticles.filter(function (item) {
@@ -331,9 +351,10 @@ var articlesService = (function () {
 
     function getArticle(id) {
         if (id != null) {
-            return articles.filter(function (item) {
+            var article = articles.filter(function (item) {
                 return item.id == id;
-            })
+            });
+            return article[0];
         }
     }
 
@@ -370,7 +391,7 @@ var articlesService = (function () {
         tag = tag || null;
         var index = tags.indexOf(tag);
         if (index != -1) {
-            var deleted = tags.splice(index, 1);
+            tags.splice(index, 1);
             return true;
         }
         return false;
@@ -438,5 +459,177 @@ var articlesService = (function () {
         removeArticle: removeArticle
     };
 }());
+var articleRenderer = (function () {
+    var ARTICLE_TEMPLATE_BIG;
+    var ARTICLE_LIST_NODE_TOP;
+    var ARTICLE_TEMPLATE_SMALL;
+    var ARTICLE_LIST_NODE_BOT;
+    var USER = "";
+
+    function init() {
+        /* DOM Загрузился.
+         Можно найти в нем нужные элементы и сохранить в переменные */
+        ARTICLE_TEMPLATE_BIG = document.querySelector('#template-article-top');
+        ARTICLE_LIST_NODE_TOP = document.querySelector('.top-news-bar');
+        ARTICLE_TEMPLATE_SMALL = document.querySelector('#template-article-bot');
+        ARTICLE_LIST_NODE_BOT = document.querySelector('.bottom-news');
+    }
+
+    function showUserElements() {
+        if (USER.length == 0) {
+            var button = document.getElementById('add-button');
+            button.style.visibility = "hidden";
+            ARTICLE_TEMPLATE_BIG.content.querySelector('.edit-panel').style.visibility = "hidden";
+            ARTICLE_TEMPLATE_SMALL.content.querySelector('.edit-panel').style.visibility = "hidden";
+        }
+
+        if(USER.length!=0) {
+            var user = document.querySelector('.login');
+            user.innerHTML = "Привет, " + USER;
+        }
+    }
+
+    function insertArticlesInDOM(articles, place) {
+        if (place.toLowerCase() == 'top') {
+            var articlesNodesTop = renderArticles(articles, 'top');
+            articlesNodesTop.forEach(function (node) {
+                ARTICLE_LIST_NODE_TOP.appendChild(node);
+            });
+        }
+        /* для массива объектов статей получим соотвествующие HTML элементы */
+        if (place.toLowerCase() == 'bot') {
+            var articlesNodesBot = renderArticles(articles, 'bot');
+            /* вставим HTML элементы в '.article-list' элемент в DOM. */
+
+            articlesNodesBot.forEach(function (node) {
+                ARTICLE_LIST_NODE_BOT.appendChild(node);
+            });
+        }
+
+    }
+
+    function removeArticlesFromDom() {
+        ARTICLE_LIST_NODE_TOP.innerHTML = '';
+        ARTICLE_LIST_NODE_BOT.innerHTML = '';
+    }
+
+    function removeArticlesFromDomByID(id) {
+        for (var i = 0; i < ARTICLE_LIST_NODE_TOP.children.length; i++) {
+            if (ARTICLE_LIST_NODE_TOP.children[i].getAttribute('data-id') == id) {
+                ARTICLE_LIST_NODE_TOP.removeChild(ARTICLE_LIST_NODE_TOP.children[i]);
+            }
+        }
+        for (var i = 0; i < ARTICLE_LIST_NODE_BOT.children.length; i++) {
+            if (ARTICLE_LIST_NODE_BOT.children[i].getAttribute('data-id') == id) {
+                ARTICLE_LIST_NODE_BOT.removeChild(ARTICLE_LIST_NODE_BOT.children[i]);
+            }
+        }
+    }
+
+    function editByID(id, article) {
+        articlesService.editArticle(id, article);
+        for (var i = 0; i < ARTICLE_LIST_NODE_TOP.children.length; i++) {
+            if (ARTICLE_LIST_NODE_TOP.children[i].getAttribute('data-id') == id) {
+                var insert = renderArticle(articlesService.getArticle(id), 'top');
+                ARTICLE_LIST_NODE_TOP.replaceChild(insert, ARTICLE_LIST_NODE_TOP.children[i]);
+            }
+        }
+        for (var i = 0; i < ARTICLE_LIST_NODE_BOT.children.length; i++) {
+            if (ARTICLE_LIST_NODE_BOT.children[i].getAttribute('data-id') == id) {
+                var insert = renderArticle(articlesService.getArticle(id), 'bot');
+                ARTICLE_LIST_NODE_TOP.replaceChild(insert, ARTICLE_LIST_NODE_BOT.children[i]);
+            }
+        }
+    }
+
+    function renderArticles(articles, place) {
+        /* каждый объект article из массива преобразуем в HTML элемент */
+        return articles.map(function (article) {
+            return renderArticle(article, place);
+        });
+    }
+
+    function renderArticle(article, place) {
+        /*
+         Используем template из DOM, заполним его данными конкретной статьи - article.
+         Этот код можно сделать лучше ...
+         */
+        if (place.toLowerCase() == 'top') {
+            var template = ARTICLE_TEMPLATE_BIG;
+            template.content.querySelector('.top-news-wrapper').dataset.id = article.id;
+            template.content.querySelector('.news-header-big').innerHTML = "<h5>" + article.title + "</h5>";
+            template.content.querySelector('.news-preview-big').innerHTML = "<p>" + article.summary + "</p>";
+            template.content.querySelector('.news-big-author').textContent = article.author;
+            template.content.querySelector('.news-big-date').textContent = formatDate(article.createdAt);
+            template.content.getElementById('big-image').src = article.picture;
+            template.content.querySelector('.news-tag').textContent = article.tags[0];
+            /*
+             Склонируем полученный контент из template и вернем как результат
+             */
+            return template.content.querySelector('.top-news-wrapper').cloneNode(true);
+        }
+        if (place.toLowerCase() == 'bot') {
+            var template = ARTICLE_TEMPLATE_SMALL;
+            template.content.querySelector('.bottom-news-wrapper').dataset.id = article.id;
+            template.content.querySelector('.news-header-small').innerHTML = "<h5>" + article.title + "</h5>";
+            template.content.querySelector('.news-preview-small').innerHTML = "<p>" + article.summary + "</p>";
+            var smallInfo = template.content.querySelector('.news-info-small').getElementsByTagName('span');
+            smallInfo[0].textContent = article.tags;
+            smallInfo[1].textContent = formatDate(article.createdAt);
+            smallInfo[2].textContent = article.author;
+            template.content.getElementById('small-image').src = article.picture;
+            return template.content.querySelector('.bottom-news-wrapper').cloneNode(true);
+        }
+    }
+
+    /* Date -> 16/05/2015 09:50 */
+    function formatDate(d) {
+        return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' ' +
+            d.getHours() + ':' + d.getMinutes();
+    }
+
+    return {
+        init: init,
+        insertArticlesInDOM: insertArticlesInDOM,
+        removeArticlesFromDom: removeArticlesFromDom,
+        removeArticlesFromDomByID: removeArticlesFromDomByID,
+        editByID: editByID,
+        showUserElements: showUserElements
+    }
+}());
+
+/*
+ Функция startApp вызовется, когда браузер полностью загрузит и распарсит исходный HTML (index.html)
+ DOMContentLoaded – означает, что все DOM-элементы разметки уже созданы,
+ можно их искать, вешать обработчики, создавать интерфейс, но при этом, возможно,
+ ещё не догрузились какие-то картинки или стили.
+ */
+document.addEventListener('DOMContentLoaded', startApp);
+
+
+function startApp() {
+    /* DOM Загрузился.
+     Можно найти в нем нужные элементы и сохранить в переменные */
+    articleRenderer.init();
+    articleRenderer.showUserElements();
+    /* Нарисуем статьи из массива GLOBAL_ARTICLES в DOM */
+    var articlesTop = articlesService.getArticles(0, 3);
+    var articlesBot = articlesService.getArticles(3, 9);
+    // 3. Отобразим статьи
+    articleRenderer.insertArticlesInDOM(articlesTop, 'top');
+    articleRenderer.insertArticlesInDOM(articlesBot, 'bot');
+
+}
+
+/* Глобальная Функция для проверки. Свяжет модель и отображения */
+function renderArticles(skip, top, filterConfig, place) {
+    // 1. Удалим статьи из HTML
+    articleRenderer.removeArticlesFromDom();
+
+    // 2. Достанем статьи из модели
+    var articlesTop = articlesService.getArticles(skip, top, filterConfig);
+    // 3. Отобразим статьи
+    articleRenderer.insertArticlesInDOM(articlesTop, place);
+}
 
 
