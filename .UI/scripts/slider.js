@@ -2,6 +2,9 @@ var slideIndex = 1;
 showSlides(slideIndex);
 function plusSlides(n) {
     showSlides(slideIndex += n);
+    clearInterval(timer);
+    timer = setInterval(slideTime, 8000);
+
 }
 function currentSlide(n) {
     showSlides(slideIndex = n);
@@ -21,7 +24,7 @@ function showSlides(n) {
     slides[slideIndex - 1].style.display = "block";
 }
 function slideTime(n) {
-    n = 1
+    n = 1;
     showSlides(slideIndex += n);
 }
-setInterval(slideTime, 5000);
+var  timer = setInterval(slideTime, 8000);

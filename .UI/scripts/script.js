@@ -324,7 +324,7 @@ var articlesService = (function () {
         newArticles.sort(function (a, b) {
             return b.createdAt - a.createdAt;
         });
-        if (filterConfig != null) {
+        if (filterConfig !== undefined) {
             if (filterConfig.author != null) {
                 newArticles = newArticles.filter(function (item) {
                     return item.author == filterConfig.author
@@ -350,7 +350,7 @@ var articlesService = (function () {
     }
 
     function getArticle(id) {
-        if (id != null) {
+        if (id !== undefined) {
             var article = articles.filter(function (item) {
                 return item.id == id;
             });
@@ -360,19 +360,21 @@ var articlesService = (function () {
 
     function validateArticle(article) {
         if (article != null) {
-            if (typeof article.id == 'string') {
-                if (typeof article.title == 'string' && article.title.length < 100)
-                    if (typeof article.summary == 'string' && article.summary.length < 200)
-                        if (typeof article.createdAt == 'object')
-                            if (typeof article.author == 'string' && article.author.length > 0)
-                                if (typeof article.content == 'string' && article.content.length > 0)
-                                    if (typeof article.tags == 'object' && article.tags.length > 0) {
-                                        for (var i = 0; i < article.tags.length; i++) {
-                                            if (tags.indexOf(article.tags[i]) == -1) {
+            if (typeof article.id === 'string') {
+                if (typeof article.title === 'string' && article.title.length < 100)
+                    if (typeof article.summary === 'string' && article.summary.length < 200)
+                        if (typeof article.createdAt === 'object')
+                            if (typeof article.author === 'string' && article.author.length > 0)
+                                if (typeof article.content === 'string' && article.content.length > 0)
+                                    if (typeof article.tags === 'object' && article.tags.length > 0) {
+                                        var check = true;
+                                        article.tags.forEach(function (item) {
+                                            if (tags.indexOf(item) == -1) {
+                                                check = false;
                                                 return false;
                                             }
-                                        }
-                                        return true;
+                                        });
+                                        return check;
                                     }
             }
         }
@@ -388,17 +390,18 @@ var articlesService = (function () {
     }
 
     function removeTag(tag) {
-        tag = tag || null;
-        var index = tags.indexOf(tag);
-        if (index != -1) {
-            tags.splice(index, 1);
-            return true;
+        if (tag !== undefined) {
+            var index = tags.indexOf(tag);
+            if (index != -1) {
+                tags.splice(index, 1);
+                return true;
+            }
         }
         return false;
     }
 
     function addArticle(article) {
-        if (article != null) {
+        if (article !== undefined) {
             if (validateArticle(article)) {
                 articles.push(article);
                 return true;
@@ -409,13 +412,10 @@ var articlesService = (function () {
 
     function editArticle(id, article) {
         if (getArticle(id).length != 0) {
-            for (var i = 0, len = articles.length; i < len; i++) {
-                if (articles[i].id == id) {
-                    var index = i;
-                    break;
-                }
-            }
-            if (article.id == null && article.author == null && article.createdAt == null) {
+            var index = articles.findIndex(function (articles) {
+                return articles.id == id;
+            });
+            if (!article.id && !article.author && !article.createdAt) {
                 if (article.content != null && article.content.length > 0) {
                     articles[index].content = article.content;
                 }
@@ -432,14 +432,10 @@ var articlesService = (function () {
     }
 
     function removeArticle(id) {
-        if (getArticle(id).length != 0) {
-            index = -1;
-            for (var i = 0, len = articles.length; i < len; i++) {
-                if (articles[i].id == id) {
-                    index = i;
-                    break;
-                }
-            }
+        if (getArticle(id).length !== undefined) {
+            var index = articles.findIndex(function (articles) {
+                return articles.id == id;
+            });
             if (index != -1) {
                 articles.splice(index, 1);
                 return true;
@@ -483,7 +479,7 @@ var articleRenderer = (function () {
             ARTICLE_TEMPLATE_SMALL.content.querySelector('.edit-panel').style.visibility = "hidden";
         }
 
-        if(USER.length!=0) {
+        if (USER.length != 0) {
             var user = document.querySelector('.login');
             user.innerHTML = "Привет, " + USER;
         }
