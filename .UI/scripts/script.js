@@ -429,7 +429,7 @@ var articlesService = (function () {
     }
 
     function removeTag(tag) {
-        if (tag !== undefined) {
+        if (!tag) {
             var index = tags.indexOf(tag);
             if (index != -1) {
                 tags.splice(index, 1);
@@ -440,7 +440,7 @@ var articlesService = (function () {
     }
 
     function addArticle(article) {
-        if (article !== undefined) {
+        if (!article) {
             if (validateArticle(article)) {
                 articles.push(article);
                 return true;
@@ -452,16 +452,16 @@ var articlesService = (function () {
     function editArticle(id, article) {
         if (getArticle(id).length != 0) {
             var index = articles.findIndex(function (articles) {
-                return articles.id == id;
+                return articles.id === id;
             });
             if (!article.id && !article.author && !article.createdAt) {
-                if (article.content != null && article.content.length > 0) {
+                if (!article.content && article.content.length > 0) {
                     articles[index].content = article.content;
                 }
-                if (article.summary != null && article.summary.length < 200) {
+                if (!article.summary&& article.summary.length < 200) {
                     articles[index].summary = article.summary;
                 }
-                if (article.title != null && article.title.length < 100) {
+                if (!article.title && article.title.length < 100) {
                     articles[index].title = article.title;
                 }
                 return true;
