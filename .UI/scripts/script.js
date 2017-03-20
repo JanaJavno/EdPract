@@ -5,7 +5,7 @@ var articlesService = (function () {
         author: 'Атор',
         tags: ['Теги'],
 
-    };
+    }; //я не знаю, но без этого говорит, что в филтрконфиге отсутствуют поля
     var tags = ['Мебель', 'Кафе', 'Минск', 'Общежития', 'Ремонт — это просто', 'Флора и фауна', 'Lenovo', 'Motorola', 'Google', 'Умные часы',
         'Космос', 'Аварии', 'Общественный транспорт', 'Алкоголь', 'Минская область', 'Погоня', 'Происшествия', 'Конкурсы', 'Красота', 'Милиция', 'Метро', 'ТП', 'Психология', 'Семья'];
     var articles = [
@@ -458,7 +458,7 @@ var articlesService = (function () {
                 if (!article.content && article.content.length > 0) {
                     articles[index].content = article.content;
                 }
-                if (!article.summary&& article.summary.length < 200) {
+                if (!article.summary && article.summary.length < 200) {
                     articles[index].summary = article.summary;
                 }
                 if (!article.title && article.title.length < 100) {
@@ -630,7 +630,7 @@ var articleRenderer = (function () {
         removeArticlesFromDomByID: removeArticlesFromDomByID,
         editByID: editByID,
         showUserElements: showUserElements,
-        formatDate:formatDate
+        formatDate: formatDate
     }
 }());
 var pagination = (function () {
@@ -692,14 +692,18 @@ var pagination = (function () {
 var fullNewsService = (function () {
     var TEMPLATE_FULL;
     var TOP_NEWS_CONTAINER;
+    var BOTTOM_NEWS_CONTAINER;
+    var TEMPLATE_FULL_BACKGROUND;
 
     function init() {
         TEMPLATE_FULL = document.getElementById('template-full-news');
         TOP_NEWS_CONTAINER = document.querySelector('.top-news-bar');
-        TOP_NEWS_CONTAINER.addEventListener('click', handleShowClick);
+        BOTTOM_NEWS_CONTAINER = document.querySelector('.bottom-news-bar');
+        TOP_NEWS_CONTAINER.addEventListener('click', handleShowClickTop);
+        BOTTOM_NEWS_CONTAINER.addEventListener('click', handleShowClickBot);
     }
 
-    function handleShowClick(event) {
+    function handleShowClickTop(event) {
         var target = event.target;
         if (target.type != 'button')return;
         while (!target.hasAttribute('data-id')) {
@@ -707,23 +711,46 @@ var fullNewsService = (function () {
         }
         var id = target.getAttribute('data-id');
         document.body.appendChild(renderFullNews(id));
+        removeFullNews();
     }
+
+    function handleShowClickBot(event) {
+        var target = event.target;
+        while (!target.hasAttribute('data-id')) {
+            target = target.parentNode;
+        }
+        var id = target.getAttribute('data-id');
+        document.body.appendChild(renderFullNews(id));
+        removeFullNews();
+
+    }
+
+    function removeFullNews() {
+        TEMPLATE_FULL_BACKGROUND = document.querySelector('.full-news-background');
+        TEMPLATE_FULL_BACKGROUND.addEventListener('click', handleRemoveFull);
+    }
+
+    function handleRemoveFull(event) {
+        if (event.target != TEMPLATE_FULL_BACKGROUND)return;
+        TEMPLATE_FULL_BACKGROUND.remove();
+    }
+
     function renderFullNews(id) {
         var article = articlesService.getArticle(id);
         var template = TEMPLATE_FULL;
         template.content.querySelector('.top-image-full').style.backgroundImage = "url(" + article.picture + ")";
         template.content.querySelector('.full-left').innerHTML = article.author;
-        var description = template.getElementsByClassName('full-right');
-        //description[0].innerHTML = articleRenderer.formatDate(article.createdAt);
-        //description[1].innerHTML.innerHTML = article.tags.toString();
+        var description = template.content.querySelector('.description-full').getElementsByTagName('span');
+        description[1].innerHTML = articleRenderer.formatDate(article.createdAt);
+        description[2].innerHTML = article.tags.toString();
         template.content.querySelector('.title-full').innerHTML = "<h5>" + article.title + "</h5>";
         template.content.querySelector('.content-full').textContent = article.content;
-        return template.content.querySelector('.full-news-wrapper').cloneNode(true);
+        return template.content.querySelector('.full-news-background').cloneNode(true);
     }
 
     return {
         init: init,
-        renderFullNews:renderFullNews,
+        renderFullNews: renderFullNews,
     }
 
 }());
