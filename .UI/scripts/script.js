@@ -4,7 +4,6 @@ var articlesService = (function () {
         createdAtTo: new Date(),
         author: 'Атор',
         tags: ['Теги'],
-
     }; //я не знаю, но без этого говорит, что в филтрконфиге отсутствуют поля
     var tags = ['Мебель', 'Кафе', 'Минск', 'Общежития', 'Ремонт — это просто', 'Флора и фауна', 'Lenovo', 'Motorola', 'Google', 'Умные часы',
         'Космос', 'Аварии', 'Общественный транспорт', 'Алкоголь', 'Минская область', 'Погоня', 'Происшествия', 'Конкурсы', 'Красота', 'Милиция', 'Метро', 'ТП', 'Психология', 'Семья'];
@@ -373,7 +372,7 @@ var articlesService = (function () {
                     return item.createdAt <= filterConfig.createdAtTo
                 })
             }
-            if (filterConfig.tags != null) {
+            if (filterConfig.tags.length > 0) {
                 newArticles = newArticles.filter(function (article) {
                     var check = true;
                     filterConfig.tags.forEach(function (item) {
@@ -398,7 +397,7 @@ var articlesService = (function () {
     }
 
     function validateArticle(article) {
-        if (article != null) {
+        if (article !== undefined) {
             if (typeof article.id === 'string') {
                 if (typeof article.title === 'string' && article.title.length < 100)
                     if (typeof article.summary === 'string' && article.summary.length < 200)
@@ -455,13 +454,13 @@ var articlesService = (function () {
                 return articles.id === id;
             });
             if (!article.id && !article.author && !article.createdAt) {
-                if (!article.content && article.content.length > 0) {
+                if (article.content && article.content.length > 0) {
                     articles[index].content = article.content;
                 }
-                if (!article.summary && article.summary.length < 200) {
+                if (article.summary && article.summary.length < 200) {
                     articles[index].summary = article.summary;
                 }
-                if (!article.title && article.title.length < 100) {
+                if (article.title && article.title.length < 100) {
                     articles[index].title = article.title;
                 }
                 return true;
@@ -502,8 +501,7 @@ var articleRenderer = (function () {
     var USER = "D";
 
     function init() {
-        /* DOM Загрузился.
-         Можно найти в нем нужные элементы и сохранить в переменные */
+
         ARTICLE_TEMPLATE_BIG = document.querySelector('#template-article-top');
         ARTICLE_LIST_NODE_TOP = document.querySelector('.top-news-bar');
         ARTICLE_TEMPLATE_SMALL = document.querySelector('#template-article-bot');
@@ -531,10 +529,10 @@ var articleRenderer = (function () {
                 ARTICLE_LIST_NODE_TOP.appendChild(node);
             });
         }
-        /* для массива объектов статей получим соотвествующие HTML элементы */
+
         if (place.toLowerCase() == 'bot') {
             var articlesNodesBot = renderArticles(articles, 'bot');
-            /* вставим HTML элементы в '.article-list' элемент в DOM. */
+
 
             articlesNodesBot.forEach(function (node) {
                 ARTICLE_LIST_NODE_BOT.appendChild(node);
@@ -548,47 +546,52 @@ var articleRenderer = (function () {
         ARTICLE_LIST_NODE_BOT.innerHTML = '';
     }
 
+    function findNodeByID(Node, id) {
+        var searchIndex = -1;
+        [].forEach.call(Node.children, function (child, i) {
+            if (child.getAttribute('data-id') === id) {
+                searchIndex = i;
+            }
+        });
+        return searchIndex;
+
+    }
+
     function removeArticlesFromDomByID(id) {
-        for (var i = 0; i < ARTICLE_LIST_NODE_TOP.children.length; i++) {
-            if (ARTICLE_LIST_NODE_TOP.children[i].getAttribute('data-id') == id) {
-                ARTICLE_LIST_NODE_TOP.removeChild(ARTICLE_LIST_NODE_TOP.children[i]);
-            }
+        var idx = findNodeByID(ARTICLE_LIST_NODE_TOP, id);
+        if (idx != -1) {
+            ARTICLE_LIST_NODE_TOP.removeChild(ARTICLE_LIST_NODE_TOP.children[idx]);
         }
-        for (var i = 0; i < ARTICLE_LIST_NODE_BOT.children.length; i++) {
-            if (ARTICLE_LIST_NODE_BOT.children[i].getAttribute('data-id') == id) {
-                ARTICLE_LIST_NODE_BOT.removeChild(ARTICLE_LIST_NODE_BOT.children[i]);
-            }
+        var idx = findNodeByID(ARTICLE_LIST_NODE_BOT, id);
+        if (idx != -1) {
+            ARTICLE_LIST_NODE_BOT.removeChild(ARTICLE_LIST_NODE_BOT.children[idx]);
         }
     }
 
     function editByID(id, article) {
         articlesService.editArticle(id, article);
-        for (var i = 0; i < ARTICLE_LIST_NODE_TOP.children.length; i++) {
-            if (ARTICLE_LIST_NODE_TOP.children[i].getAttribute('data-id') == id) {
-                var insert = renderArticle(articlesService.getArticle(id), 'top');
-                ARTICLE_LIST_NODE_TOP.replaceChild(insert, ARTICLE_LIST_NODE_TOP.children[i]);
-            }
+        var idx = findNodeByID(ARTICLE_LIST_NODE_TOP, id);
+
+        if (idx != -1) {
+            var insert = renderArticle(articlesService.getArticle(id), 'top');
+            ARTICLE_LIST_NODE_TOP.replaceChild(insert, ARTICLE_LIST_NODE_TOP.children[idx]);
         }
-        for (var i = 0; i < ARTICLE_LIST_NODE_BOT.children.length; i++) {
-            if (ARTICLE_LIST_NODE_BOT.children[i].getAttribute('data-id') == id) {
-                var insert = renderArticle(articlesService.getArticle(id), 'bot');
-                ARTICLE_LIST_NODE_TOP.replaceChild(insert, ARTICLE_LIST_NODE_BOT.children[i]);
-            }
+        var idx = findNodeByID(ARTICLE_LIST_NODE_BOT, id);
+        if (idx != -1) {
+            var insert = renderArticle(articlesService.getArticle(id), 'bot');
+            ARTICLE_LIST_NODE_BOT.replaceChild(insert, ARTICLE_LIST_NODE_BOT.children[idx]);
         }
     }
 
     function renderArticles(articles, place) {
-        /* каждый объект article из массива преобразуем в HTML элемент */
+
         return articles.map(function (article) {
             return renderArticle(article, place);
         });
     }
 
     function renderArticle(article, place) {
-        /*
-         Используем template из DOM, заполним его данными конкретной статьи - article.
-         Этот код можно сделать лучше ...
-         */
+
         if (place.toLowerCase() == 'top') {
             var template = ARTICLE_TEMPLATE_BIG;
             template.content.querySelector('.top-news-wrapper').dataset.id = article.id;
@@ -598,9 +601,7 @@ var articleRenderer = (function () {
             template.content.querySelector('.news-big-date').textContent = formatDate(article.createdAt);
             template.content.getElementById('big-image').src = article.picture;
             template.content.querySelector('.news-tag').textContent = article.tags[0];
-            /*
-             Склонируем полученный контент из template и вернем как результат
-             */
+
             return template.content.querySelector('.top-news-wrapper').cloneNode(true);
         }
         if (place.toLowerCase() == 'bot') {
@@ -617,7 +618,7 @@ var articleRenderer = (function () {
         }
     }
 
-    /* Date -> 16/05/2015 09:50 */
+
     function formatDate(d) {
         return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' ' +
             d.getHours() + ':' + d.getMinutes();
@@ -647,10 +648,10 @@ var pagination = (function () {
         showMoreButton = document.querySelector('.more-news');
         showMoreButton.addEventListener('click', handleShowMoreClick);
 
-        /* Не показывать кнопку если статей нет */
+
         showOrHideMoreButton();
 
-        /* Вернуть skip, top для начальной отрисовки статей */
+
         return getParams();
     }
 
@@ -665,7 +666,7 @@ var pagination = (function () {
 
     function nextPage() {
         currentPage = currentPage + 1;
-        /* возможно, статей больше нет, спрятать кнопку */
+
         showOrHideMoreButton();
 
         return getParams();
@@ -712,12 +713,17 @@ var fullNewsService = (function () {
         if (target.className === 'delete-news') {
             deleteNews(target);
         }
+        if (target.className === 'edit-news') {
+            editNews(target);
+        }
         if (target.tagName.toLocaleLowerCase() === 'h5') {
             openFullNews(target);
             removeFullNews();
         }
     }
+    function editNews() {
 
+    }
 
     function deleteNews(node) {
         while (!node.hasAttribute('data-id')) {
@@ -770,30 +776,24 @@ document.addEventListener('DOMContentLoaded', startApp);
 
 
 function startApp() {
-    /* DOM Загрузился.
-     Можно найти в нем нужные элементы и сохранить в переменные */
+
     articleRenderer.init();
     articleRenderer.showUserElements();
-    /* Нарисуем статьи из массива GLOBAL_ARTICLES в DOM */
+
     var articlesTop = articlesService.getArticles(0, 3);
-    // 3. Отобразим статьи
+
     articleRenderer.insertArticlesInDOM(articlesTop, 'top');
     var total = 20;
     var paginationParams = pagination.init(total, function (skip, top) {
         renderArticles(skip, top, undefined, 'bot');
     });
     renderArticles(paginationParams.skip, paginationParams.top, undefined, 'bot');
-    fullNewsService.init();
+    fullNewsService.init        ();
 
 }
 
-/* Глобальная Функция для проверки. Свяжет модель и отображения */
-function renderArticles(skip, top, filterConfig, place) {
-    // 1. Удалим статьи из HTML
-    // articleRenderer.removeArticlesFromDom();
 
-    // 2. Достанем статьи из модели
+function renderArticles(skip, top, filterConfig, place) {
     var articlesTop = articlesService.getArticles(skip, top, filterConfig);
-    // 3. Отобразим статьи
     articleRenderer.insertArticlesInDOM(articlesTop, place);
 }
