@@ -5,6 +5,53 @@ var articlesService = (function () {
         author: 'Атор',
         tags: ['Теги'],
     }; //я не знаю, но без этого говорит, что в филтрконфиге отсутствуют поля
+    var articleMap = {
+        id: function (id) {
+            if (!id) return true;
+            return typeof id === 'string';
+        },
+        title: function (title) {
+            if (title) {
+                return title.length < 100;
+            }
+            return false;
+
+        },
+        summary: function (summary) {
+            if (summary) {
+                return summary.length < 200;
+            }
+            return false;
+        },
+        author: function (author) {
+            if (!author) return true;
+            return author.length > 0;
+
+        },
+        content: function (content) {
+            if (content) {
+                return content.length < 400;
+            }
+            return false;
+        },
+        tags: function (tag) {
+            if (tag) {
+                if (tag.length > 0) {
+                    var check = true;
+                    tag.forEach(function (item) {
+                        if (tags.indexOf(item) == -1) {
+                            check = false;
+                            return false;
+                        }
+                    });
+                    return check;
+                }
+            }
+            return false;
+        }
+
+
+    };
     var tags = ['Мебель', 'Кафе', 'Минск', 'Общежития', 'Ремонт — это просто', 'Флора и фауна', 'Lenovo', 'Motorola', 'Google', 'Умные часы',
         'Космос', 'Аварии', 'Общественный транспорт', 'Алкоголь', 'Минская область', 'Погоня', 'Происшествия', 'Конкурсы', 'Красота', 'Милиция', 'Метро', 'ТП', 'Психология', 'Семья'];
     var articles = [
@@ -396,25 +443,22 @@ var articlesService = (function () {
         }
     }
 
+    function getArticleIndexByID(id) {
+        if (getArticle(id).length != 0) {
+            var index = articles.findIndex(function (articles) {
+                return articles.id === id;
+            });
+            return index;
+        }
+        return -1;
+    }
+
     function validateArticle(article) {
         if (article !== undefined) {
-            if (typeof article.id === 'string') {
-                if (typeof article.title === 'string' && article.title.length < 100)
-                    if (typeof article.summary === 'string' && article.summary.length < 200)
-                        if (typeof article.createdAt === 'object')
-                            if (typeof article.author === 'string' && article.author.length > 0)
-                                if (typeof article.content === 'string' && article.content.length > 0)
-                                    if (typeof article.tags === 'object' && article.tags.length > 0) {
-                                        var check = true;
-                                        article.tags.forEach(function (item) {
-                                            if (tags.indexOf(item) == -1) {
-                                                check = false;
-                                                return false;
-                                            }
-                                        });
-                                        return check;
-                                    }
-            }
+            var check = Object.keys(articleMap).every(function (item) {
+                return articleMap[item](article[item]);
+            });
+            return check;
         }
         return false;
 
@@ -450,19 +494,12 @@ var articlesService = (function () {
 
     function editArticle(id, article) {
         if (getArticle(id).length != 0) {
-            var index = articles.findIndex(function (articles) {
-                return articles.id === id;
-            });
-            if (!article.id && !article.author && !article.createdAt) {
-                if (article.content && article.content.length > 0) {
-                    articles[index].content = article.content;
-                }
-                if (article.summary && article.summary.length < 200) {
-                    articles[index].summary = article.summary;
-                }
-                if (article.title && article.title.length < 100) {
-                    articles[index].title = article.title;
-                }
+            var index = getArticleIndexByID(id);
+            article.tags = articles[index].tags;
+            if (validateArticle(article) && !article.id && !article.createdAt && !article.author) {
+                articles[index].content = article.content;
+                articles[index].summary = article.summary;
+                articles[index].title = article.title;
                 return true;
             }
         }
@@ -471,9 +508,7 @@ var articlesService = (function () {
 
     function removeArticle(id) {
         if (getArticle(id).length !== undefined) {
-            var index = articles.findIndex(function (articles) {
-                return articles.id == id;
-            });
+            var index = getArticleIndexByID(id);
             if (index != -1) {
                 articles.splice(index, 1);
                 return true;
@@ -721,6 +756,7 @@ var fullNewsService = (function () {
             removeFullNews();
         }
     }
+
     function editNews() {
 
     }
@@ -788,7 +824,7 @@ function startApp() {
         renderArticles(skip, top, undefined, 'bot');
     });
     renderArticles(paginationParams.skip, paginationParams.top, undefined, 'bot');
-    fullNewsService.init        ();
+    fullNewsService.init();
 
 }
 
