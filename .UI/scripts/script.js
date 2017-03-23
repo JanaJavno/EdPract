@@ -925,6 +925,7 @@ var fullNewsService = (function () {
     /*Add News*/
     function handleAddNewsClick() {
         openEditAdd();
+        clearForms();
         removeAddEditForm();
         addNews();
     }
