@@ -49,7 +49,7 @@
                 </div>
             </div>
             <!--<div class="add-news">-->
-                <!--<button type="button" class="flat-button" id="add-button">Добавить новость</button>-->
+            <!--<button type="button" class="flat-button" id="add-button">Добавить новость</button>-->
             <!--</div>-->
         </div>
         <div class="slideshow-container">
@@ -114,9 +114,9 @@
             </div>
         </div>
     </div>
-    <div class="add-news-button"id="add-button" >
+    <div class="add-news-button" id="add-button">
         <a>
-            <img src="images/add_news_medium.png" >
+            <img src="images/add_news_medium.png">
         </a>
     </div>
     <div class="footer">
@@ -182,7 +182,7 @@
     </div>
 </template>
 <template id="template-full-news">
-    <div class="full-news-background">
+    <div class="news-background">
         <div class="full-news-wrapper">
             <div class="full-news">
                 <div class="top-image-full">
@@ -294,6 +294,22 @@
                     этому факту проводит и инспекция по труду.
                 </div>
             </div>
+        </div>
+    </div>
+</template>
+<template id="template-add-edit-news">
+    <div class="news-background">
+        <div class="add-edit-news-wrapper">
+            <div class="add-edit-news-invalid">Неверные данные!</div>
+            <form class="add-edit-news-form" id="add-news" name="add-news-form">
+                <input type="text" class="add-edit-news-field" placeholder="Ссылка на картинку">
+                <textarea class="add-edit-news-field add-title" placeholder="Заголовок"></textarea>
+                <textarea class="add-edit-news-field add-summary" placeholder="Краткое содержание"></textarea>
+                <textarea class="add-edit-news-field add-content" id="add-content-field"
+                          placeholder="Содержание новости"></textarea>
+            </form>
+            <button type="button" form="add-news" class="flat-button add-news-button-form" id="add-news-submit">Добавить!
+            </button>
         </div>
     </div>
 </template>

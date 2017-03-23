@@ -48,6 +48,12 @@ var articlesService = (function () {
                 }
             }
             return false;
+        },
+        picture: function (picture) {
+            if (picture) {
+                return picture.length > 0;
+            }
+            return false;
         }
 
 
@@ -462,7 +468,7 @@ var articlesService = (function () {
         }
         return false;
 
-    }
+    } //АНТОН НЕ КОПИРУЙ ЭТО.ТУТ СЛОЖНОСТИ БОЛЬШЕ ЧЕМ В ЛЮБОЙ ТВОЕ ЛАБЕ
 
     function addTag(tag) {
         tag = tag || null;
@@ -483,7 +489,7 @@ var articlesService = (function () {
     }
 
     function addArticle(article) {
-        if (!article) {
+        if (article) {
             if (validateArticle(article)) {
                 articles.push(article);
                 return true;
@@ -517,6 +523,10 @@ var articlesService = (function () {
         return false;
     }
 
+    function getArticlesSize() {
+        return articles.length;
+    }
+
     return {
         getArticles: getArticles,
         getArticle: getArticle,
@@ -525,7 +535,8 @@ var articlesService = (function () {
         removeTag: removeTag,
         addArticle: addArticle,
         editArticle: editArticle,
-        removeArticle: removeArticle
+        removeArticle: removeArticle,
+        getArticlesSize: getArticlesSize
     };
 }());
 var articleRenderer = (function () {
@@ -730,6 +741,12 @@ var fullNewsService = (function () {
     var TOP_NEWS_CONTAINER;
     var BOTTOM_NEWS_CONTAINER;
     var TEMPLATE_FULL_BACKGROUND;
+    var TEMPLATE_EDIT_ADD;
+    var ADD_NEWS_BUTTON;
+    var contentArea;
+    var submitButton;
+    var maxHeight = 450;
+    var addArticle = {};
 
     function init() {
         TEMPLATE_FULL = document.getElementById('template-full-news');
@@ -737,6 +754,9 @@ var fullNewsService = (function () {
         BOTTOM_NEWS_CONTAINER = document.querySelector('.bottom-news-bar');
         TOP_NEWS_CONTAINER.addEventListener('click', handleShowClick);
         BOTTOM_NEWS_CONTAINER.addEventListener('click', handleShowClick);
+        TEMPLATE_EDIT_ADD = document.getElementById('template-add-edit-news');
+        ADD_NEWS_BUTTON = document.getElementById('add-button');
+        ADD_NEWS_BUTTON.addEventListener('click', handleAddNewsClick);
     }
 
     function handleShowClick(event) {
@@ -757,8 +777,80 @@ var fullNewsService = (function () {
         }
     }
 
-    function editNews() {
+    function handleAddNewsClick() {
+        openEditAdd();
+        removeFullNews();
+        addNews();
+    }
 
+    function editNews(node) {
+        while (!node.hasAttribute('data-id')) {
+            node = node.parentNode;
+        }
+        var id = node.getAttribute('data-id');
+        openEditAdd(id);
+        contentArea = document.getElementById('add-content-field');
+        contentArea.addEventListener('keydown', handleContentResize);
+        submitButton = document.getElementById('add-news-submit');
+        submitButton.addEventListener('click', handleSubmitNews);
+        removeFullNews();
+
+    }
+
+    function addNews() {
+        contentArea = document.getElementById('add-content-field');
+        contentArea.addEventListener('keydown', handleContentResize);
+        submitButton = document.getElementById('add-news-submit');
+        submitButton.addEventListener('click', handleSubmitNews);
+    }
+
+    function handleSubmitNews() {
+        if (validateAddFrom()) {
+            removeAddEditForm();
+        }
+        else {
+            document.querySelector('.add-edit-news-invalid').style.visibility = 'visible';
+        }
+    }
+
+    function removeAddEditForm() {
+        TEMPLATE_FULL_BACKGROUND.remove();
+    }
+
+    function handleContentResize() {
+        function resize() {
+            contentArea.style.height = 'auto';
+            if (contentArea.scrollHeight > maxHeight) {
+                contentArea.style.height = maxHeight.toString() + 'px';
+            }
+            else {
+                contentArea.style.height = contentArea.scrollHeight + 'px';
+            }
+        }
+
+        function delayedResize() {
+            window.setTimeout(resize, 0);
+        }
+
+        contentArea.focus();
+        if (contentArea.offsetHeight < maxHeight) {
+            resize();
+        }
+    }
+
+    function validateAddFrom() {
+        var form = document.forms[0];
+        addArticle['picture'] = form.elements[0].value;
+        addArticle['title'] = form.elements[1].value;
+        addArticle['summary'] = form.elements[2].value;
+        addArticle['content'] = form.elements[3].value;
+        addArticle['tags'] = ['Минск'];
+        addArticle['id'] = articlesService.getArticlesSize().toString();
+        addArticle['createdAd'] = new Date();
+        if (articlesService.addArticle(addArticle)) {
+            return true;
+        }
+        return false;
     }
 
     function deleteNews(node) {
@@ -778,15 +870,26 @@ var fullNewsService = (function () {
         document.body.appendChild(renderFullNews(id));
     }
 
+    function openEditAdd(id) {
+        document.body.appendChild(renderAddEditNews(id));
+    }
 
     function removeFullNews() {
-        TEMPLATE_FULL_BACKGROUND = document.querySelector('.full-news-background');
+        TEMPLATE_FULL_BACKGROUND = document.querySelector('.news-background');
         TEMPLATE_FULL_BACKGROUND.addEventListener('click', handleRemoveFull);
     }
 
     function handleRemoveFull(event) {
         if (event.target != TEMPLATE_FULL_BACKGROUND)return;
-        TEMPLATE_FULL_BACKGROUND.remove();
+        var child = event.target;
+        child = child.children[0];
+        var isRemove = true;
+        if (child.className === 'add-edit-news-wrapper') {
+            isRemove = confirm('Отменить создание?')
+        }
+        if (isRemove) {
+            TEMPLATE_FULL_BACKGROUND.remove();
+        }
     }
 
     function renderFullNews(id) {
@@ -799,7 +902,24 @@ var fullNewsService = (function () {
         description[2].innerHTML = article.tags.toString();
         template.content.querySelector('.title-full').innerHTML = "<h5>" + article.title + "</h5>";
         template.content.querySelector('.content-full').textContent = article.content;
-        return template.content.querySelector('.full-news-background').cloneNode(true);
+        return template.content.querySelector('.news-background').cloneNode(true);
+    }
+
+    function renderAddEditNews(id) {
+        var template = TEMPLATE_EDIT_ADD;
+        if (!id) {
+            return template.content.querySelector('.news-background').cloneNode(true);
+        }
+        if (id) {
+            var article = articlesService.getArticle(id);
+            var form = template.content.querySelector('.add-edit-news-form');
+            form.elements[0].value = article.picture;
+            form.elements[1].value = article.title;
+            form.elements[2].value = article.summary;
+            form.elements[3].value = article.content;
+            // addArticle['tags'] = ['Минск'];
+            return template.content.querySelector('.news-background').cloneNode(true);
+        }
     }
 
     return {
