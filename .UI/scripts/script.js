@@ -491,7 +491,8 @@ var articlesService = (function () {
     function addArticle(article) {
         if (article) {
             if (validateArticle(article)) {
-                article.id = getArticlesSize().toString();
+                var size = getArticlesSize().toString() + 1
+                article.id = size.toString() ;
                 article.createdAt = new Date();
                 article.author = 'Владислав Нестер';
                 articles.push(article);
@@ -887,12 +888,10 @@ var fullNewsService = (function () {
     function renderAddEditNews(id) {
         var template = TEMPLATE_EDIT_ADD;
         if (!id) {
-            // template.content.querySelector('.add-edit-news-wrapper').dataset.id = articlesService.getArticlesSize().toString();
             return template.content.querySelector('.news-background').cloneNode(true);
         }
         if (id) {
             var article = articlesService.getArticle(id);
-            // template.content.querySelector('.add-edit-news-wrapper').dataset.id = article.id;
             var form = template.content.querySelector('.add-edit-news-form');
             form.elements[0].value = article.picture;
             form.elements[1].value = article.title;
@@ -939,11 +938,12 @@ var fullNewsService = (function () {
 
     function handleContentResize() {
         function resize() {
-            contentArea.style.height = 'auto';
+
             if (contentArea.scrollHeight > maxHeight) {
                 contentArea.style.height = maxHeight.toString() + 'px';
             }
             else {
+                contentArea.style.height = 'auto';
                 contentArea.style.height = contentArea.scrollHeight + 'px';
             }
         }
@@ -961,10 +961,10 @@ var fullNewsService = (function () {
     function handleAddNewsSubmit() {
         var article = collectData();
         article['tags'] = ['Минск'];
-        if(articlesService.validateArticle(article)){
+        if (articlesService.validateArticle(article)) {
             articlesService.addArticle(article);
-            articleRenderer.insertArticleInDOM(article,'top');
-            articleRenderer.insertArticleInDOM(article,'bot');
+            articleRenderer.insertArticleInDOM(article, 'top');
+            articleRenderer.insertArticleInDOM(article, 'bot');
             TEMPLATE_FULL_BACKGROUND.remove();
         }
         else {
