@@ -471,14 +471,15 @@ var articlesService = (function () {
     } //АНТОН НЕ КОПИРУЙ ЭТО.ТУТ СЛОЖНОСТИ БОЛЬШЕ ЧЕМ В ЛЮБОЙ ТВОЕ ЛАБЕ
 
     function addTag(tag) {
-        tag = tag || null;
-        if (tags.indexOf(tag) == -1) {
-            tags.push(tag);
+        if (tag) {
+            if (tags.indexOf(tag) == -1) {
+                tags.push(tag);
+            }
         }
     }
 
     function removeTag(tag) {
-        if (!tag) {
+        if (tag) {
             var index = tags.indexOf(tag);
             if (index != -1) {
                 tags.splice(index, 1);
@@ -492,7 +493,7 @@ var articlesService = (function () {
         if (article) {
             if (validateArticle(article)) {
                 var size = getArticlesSize().toString() + 1
-                article.id = size.toString() ;
+                article.id = size.toString();
                 article.createdAt = new Date();
                 article.author = 'Владислав Нестер';
                 articles.push(article);
