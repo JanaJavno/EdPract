@@ -14,7 +14,9 @@
             <li class="top-bar-li">
                 <div class="contact" title="Написать автору">Обратная связь</div>
             </li>
-            <li class="top-bar-login"><div class="login" title="Вход">Вход</div></li>
+            <li class="top-bar-login">
+                <div class="login" title="Вход">Вход</div>
+            </li>
         </ul>
     </div>
     <div class="header">
@@ -39,26 +41,18 @@
     </div>
     <div class="middle">
         <div class="filter-box">
-            <div class="filters">
-                <div class="filter-user">
-                    <label class="filter-label">Сортировать по:</label>
-                    <select class="common-filter">
-                        <option>Нестер Владислав</option>
-                        <option>Король Роман</option>
-                        <option>Гацко Антон</option>
+            <form name="filter">
+                    <div class="filter-item filter-author">Сортировать по автору:</div>
+                    <select name="author">
+                        <option value="Все">Все</option>
                     </select>
-                </div>
-                <div class="tags">
-                    <label class="tags-label">Теги:</label>
-                    <select class="tags-filter">
-                        <option value="sport">Минск</option>
-                        <option value="sport">Аварии</option>
-                    </select>
-                </div>
-            </div>
-            <!--<div class="add-news">-->
-            <!--<button type="button" class="flat-button" id="add-button">Добавить новость</button>-->
-            <!--</div>-->
+                        <div class="filter-item filter-tags">Теги:</div>
+                        <select class="tags-filter" name="tags">
+                            <option value="Все">Все</option>
+                        </select>
+                <div class="filter-item filter-date">Фильтр по дате: от: <input name="date_from" type="date" /> до: <input name="date_to" type="date" /></div>
+                <button type="button" class="flat-button add-filter" id="add-filter" name="filterButton">Искать</button>
+            </form>
         </div>
         <div class="slideshow-container">
             <div class="slides fade">
@@ -316,7 +310,8 @@
                 <textarea class="add-edit-news-field add-content" id="add-content-field"
                           placeholder="Содержание новости"></textarea>
             </form>
-            <button type="button" form="add-news" class="flat-button add-news-button-form" id="add-news-submit">Добавить!
+            <button type="button" form="add-news" class="flat-button add-news-button-form" id="add-news-submit">
+                Добавить!
             </button>
         </div>
     </div>

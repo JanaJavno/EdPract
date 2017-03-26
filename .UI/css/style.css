@@ -97,10 +97,10 @@ body {
     height: 50px;
     margin-bottom: 20px;
     position: relative;
+    //padding: 5px;
 }
 
-.filters {
-    height: 100%;
+.filter-item{
     display: inline-block;
 }
 
@@ -544,7 +544,6 @@ body {
     color: #ff0000;
     visibility: hidden;
 }
-
 .add-news-button-form {
     position: absolute;
     bottom: 90px;
@@ -561,6 +560,7 @@ body {
     border-radius: 2px;
     right: 0;
     top: 20px;
+    display: none;
 
 }
 
@@ -581,4 +581,14 @@ body {
     position: absolute;
     margin-right: 0;
     right: 25px;
+}
+/*Filter*/
+.add-filter{
+    width: 80px;
+    height: 40px;
+    float: right;
+    position: relative;
+    margin: 0;
+    top:-17px;
+    left: -5px;
 }

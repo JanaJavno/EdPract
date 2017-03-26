@@ -402,31 +402,34 @@ var articlesService = (function () {
     ];
 
     function getArticles(skip, top, filterConfig) {
-        var newArticles;
         skip = skip || 0;
-        top = top || 10;
-        newArticles = articles.slice(skip, top + skip);
-        newArticles.sort(function (a, b) {
+        top = top || articles.length;
+        articles.sort(function (a, b) {
             return b.createdAt - a.createdAt;
         });
-        if (filterConfig !== undefined) {
+
+        return filterArticles(articles, filterConfig).slice(skip, skip + top);
+    }
+
+    function filterArticles(articles, filterConfig) {
+        if (filterConfig) {
             if (filterConfig.author) {
-                newArticles = newArticles.filter(function (item) {
+                articles = articles.filter(function (item) {
                     return item.author === filterConfig.author
                 })
             }
             if (filterConfig.createdAtFrom) {
-                newArticles = newArticles.filter(function (item) {
+                articles = articles.filter(function (item) {
                     return item.createdAt >= filterConfig.createdAtFrom
                 })
             }
             if (filterConfig.createdAtTo) {
-                newArticles = newArticles.filter(function (item) {
+                articles = articles.filter(function (item) {
                     return item.createdAt <= filterConfig.createdAtTo
                 })
             }
-            if (filterConfig.tags.length > 0) {
-                newArticles = newArticles.filter(function (article) {
+            if (filterConfig.tags && filterConfig.tags.length > 0) {
+                articles = articles.filter(function (article) {
                     var check = true;
                     filterConfig.tags.forEach(function (item) {
                         if (article.tags.indexOf(item) == -1) {
@@ -437,7 +440,21 @@ var articlesService = (function () {
                 })
             }
         }
-        return newArticles;
+        return articles;
+    }
+
+    function getAuthors() {
+        var authors = [];
+        articles.forEach(function (item) {
+            if (authors.indexOf(item.author) == -1)
+                authors.push(item.author);
+        });
+        authors.sort();
+        return authors;
+    }
+
+    function getTags() {
+        return tags.sort();
     }
 
     function getArticle(id) {
@@ -469,6 +486,10 @@ var articlesService = (function () {
         return false;
 
     } //АНТОН НЕ КОПИРУЙ ЭТО.ТУТ СЛОЖНОСТИ БОЛЬШЕ ЧЕМ В ЛЮБОЙ ТВОЕ ЛАБЕ
+
+    function getArticlesCount(filterConfig) {
+        return getArticles(undefined, undefined, filterConfig).length;
+    }
 
     function addTag(tag) {
         if (tag) {
@@ -541,7 +562,10 @@ var articlesService = (function () {
         addArticle: addArticle,
         editArticle: editArticle,
         removeArticle: removeArticle,
-        getArticlesSize: getArticlesSize
+        getArticlesSize: getArticlesSize,
+        getArticlesCount: getArticlesCount,
+        getAuthors: getAuthors,
+        getTags: getTags
     };
 }());
 var articleRenderer = (function () {
@@ -768,6 +792,9 @@ var pagination = (function () {
         if (getTotalPages() <= currentPage) {
             showMoreButton.style.display = "none";
         }
+        else {
+            showMoreButton.style.display = "block";
+        }
     }
 
     return {
@@ -975,6 +1002,7 @@ var fullNewsService = (function () {
             articleRenderer.insertArticleInDOM(article, 'top');
             articleRenderer.insertArticleInDOM(article, 'bot');
             TEMPLATE_FULL_BACKGROUND.remove();
+            filter.fillFilter();
         }
         else {
             document.querySelector('.add-edit-news-invalid').style.visibility = 'visible';
@@ -1028,7 +1056,7 @@ var userService = (function () {
         LOGIN_FORM = document.querySelector('.login-form-wrapper');
         LOGIN_FORM.style.display = 'none';
         LOGIN_BUTTON = document.getElementById('login-button');
-        LOGIN_BUTTON = addEventListener('click', handleClickLogin);              //проверка существования пользователя
+        LOGIN_BUTTON.addEventListener('click', handleClickLogin);              //проверка существования пользователя
     }
 
     function handleClickLoginButton(event) {
@@ -1053,17 +1081,18 @@ var userService = (function () {
     function handleClickLogin(event) {
         var target = event.target;
         if (target.type !== 'button') return;
-        var data = collectData();
-        if (validateUser(data[0], data[1])) {
-            USER_STATUS = true;
-            articleRenderer.showUserElements();
-            LOGIN_FORM.style.display = 'none';
-            clearForm();
+        if (target.id === 'login-button') {
+            var data = collectData();
+            if (validateUser(data[0], data[1])) {
+                USER_STATUS = true;
+                articleRenderer.showUserElements();
+                LOGIN_FORM.style.display = 'none';
+                clearForm();
+            }
+            else {
+                alert('Неверное имя пользователя или пароль');
+            }
         }
-        else {
-            alert('Неверное имя пользователя или пароль');
-        }
-
     }
 
     function getUserStatus() {
@@ -1109,25 +1138,100 @@ var userService = (function () {
         getUsername: getUsername
     }
 }());
+var filter = (function () {
+    var form;
+    var submitButton;
+
+    function init() {
+        form = document.forms.filter;
+        submitButton = form.elements.filterButton;
+        submitButton.addEventListener('click', handleSubmitClick);
+        fillFilter();
+        return getFilter();
+    }
+
+    function getFilter() {
+        /* Тут происходит сбор всех фильтров: АВТОР + ДАТА + ТЕГИ. Потом этот объект передадим в функцию getArticles как fitlerConfig */
+        var filterConfig = {
+            author: '',
+            tags: [],
+
+        };
+        var authorSelect = form.elements.author;
+        if (authorSelect.value === 'Все') {
+            filterConfig.author = undefined;
+        } else {
+            filterConfig.author = authorSelect.value
+        }
+        var tagsSelect = form.elements.tags;
+        if(tagsSelect.value === 'Все'){
+            filterConfig.tags = undefined;
+        }
+        else {
+            filterConfig.tags.push(tagsSelect.value);                                                   //createdAtFrom: new Date(),
+                                                                                                        // createdAtTo: new Date(),
+        }
+        var dateFrom = form.elements.date_from;
+        if(dateFrom.value){
+            filterConfig['createdAtFrom'] = new Date(dateFrom.value);
+        }
+        var dateTo = form.elements.date_to;
+        if(dateTo.value){
+            filterConfig['createdAtTo'] = new Date(dateTo.value);
+        }
+        return filterConfig;
+    }
+
+    function fillFilter() {
+        var select = form.author;
+        var authors = articlesService.getAuthors();
+        authors.forEach(function (item) {
+            var newOption = new Option(item, item);
+            select.appendChild(newOption);
+        });
+        var tags = articlesService.getTags();
+        var select = form.tags;
+        tags.forEach(function (item) {
+            var newOption = new Option(item, item);
+            select.appendChild(newOption);
+        });
+
+    }
+
+    function handleSubmitClick() {
+        articleRenderer.removeArticlesFromDom();
+        var total = articlesService.getArticlesCount(getFilter());
+        var paginationParams = pagination.init(total, function (skip, top) {
+            renderArticles(skip, top, getFilter(), 'bot');
+        });
+        renderArticles(paginationParams.skip, paginationParams.top, getFilter(), 'bot');
+    }
+
+    return {
+        init: init,
+        getFilterConfig: getFilter,
+        fillFilter: fillFilter,
+    };
+
+}());
 document.addEventListener('DOMContentLoaded', startApp);
 
 
 function startApp() {
 
     articleRenderer.init();
-
-
-    var articlesTop = articlesService.getArticles(0, 3);
-
-    articleRenderer.insertArticlesInDOM(articlesTop, 'top');
-    var total = 20;
+    var total = articlesService.getArticlesSize();
     var paginationParams = pagination.init(total, function (skip, top) {
         renderArticles(skip, top, undefined, 'bot');
     });
     renderArticles(paginationParams.skip, paginationParams.top, undefined, 'bot');
+
+    var articlesTop = articlesService.getArticles(0, 3);
+    articleRenderer.insertArticlesInDOM(articlesTop, 'top');
     fullNewsService.init();
     articleRenderer.showUserElements();
     userService.init();
+    filter.init();
 }
 
 
