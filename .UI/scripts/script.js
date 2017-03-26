@@ -595,9 +595,11 @@ var articleRenderer = (function () {
             [].forEach.call(editButtons, function (item) {
                 item.style.visibility = "hidden"
             });
+            button.style.visibility = "hidden";
+            ARTICLE_TEMPLATE_BIG.content.querySelector('.edit-panel').style.visibility = "hidden";
+            ARTICLE_TEMPLATE_SMALL.content.querySelector('.edit-panel').style.visibility = "hidden";
         }
         if (userService.getUsername().length != 0) {
-
             user.innerHTML = "Привет, " + userService.getUsername();
             [].forEach.call(editButtons, function (item) {
                 item.style.visibility = "visible"
@@ -1042,9 +1044,9 @@ var userService = (function () {
         password: ''
     };
     var USER_BASE = [{
-        login: 'Papech',
+        login: 'admin',
         username: 'Цаль Виталий',
-        password: '5juseuebok5'
+        password: 'admin'
     }];
     var LOGIN_BUTTON_FORM;
     var LOGIN_FORM;
