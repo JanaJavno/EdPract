@@ -998,6 +998,30 @@ var fullNewsService = (function () {
     }
 
 }());
+var userService = (function () {
+    var USER_STATUS = false;
+    var CURRENT_USER = {};
+    var USER_BASE = [{
+        login: 'Papech',
+        username: 'Цаль Виталий',
+        password: '5juseuebok5'
+    }];
+
+    function getUserStatus() {
+        return USER_STATUS;
+    }
+
+    function validateUser(login, password) {
+        let findUser = USER_BASE.find(function (item) {
+            return item.login === login;
+        });
+        if (findUser) {
+            if (findUser.password === password) {
+                USER_STATUS = true;
+            }
+        }
+    }
+}());
 document.addEventListener('DOMContentLoaded', startApp);
 
 
