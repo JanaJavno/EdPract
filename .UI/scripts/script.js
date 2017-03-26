@@ -605,7 +605,8 @@ var articleRenderer = (function () {
                 item.style.visibility = "visible"
             });
             button.style.visibility = "visible";
-
+            ARTICLE_TEMPLATE_BIG.content.querySelector('.edit-panel').style.visibility = "visible";
+            ARTICLE_TEMPLATE_SMALL.content.querySelector('.edit-panel').style.visibility = "visible";
         }
     }
 
