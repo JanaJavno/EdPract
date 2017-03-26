@@ -33,15 +33,18 @@ body {
     float: left;
     padding: 0;
     margin: 0;
+    -webkit-user-select: none;
 }
 
 .top-bar-login {
     float: right;
     padding: 0;
     margin: 0;
+    -webkit-user-select: none;
+    cursor: pointer;
 }
 
-.top-bar-li a, .top-bar-login a {
+.contact , .login {
     color: grey;
     text-decoration: none;
     font-size: 10px;
@@ -535,19 +538,6 @@ body {
     font-size: 14px;
 }
 
-.flat-button {
-    padding: 7px 16px 8px;
-    margin: 10px;
-    font-size: 13px;
-    display: inline-block;
-    vertical-align: top;
-    line-height: 15px;
-    text-align: center;
-    background-color: #005c83;
-    color: #fff;
-    border: 0;
-}
-
 .add-edit-news-invalid {
     position: relative;
     text-align: center;
@@ -555,11 +545,40 @@ body {
     visibility: hidden;
 }
 
-.flat-button:hover {
-    opacity: 0.9;
-}
-
 .add-news-button-form {
     position: absolute;
     bottom: 90px;
+}
+
+/*Login From*/
+.login-form-wrapper {
+    width: 300px;
+    height: 150px;
+    padding: 10px;
+    position: absolute;
+    z-index: 20;
+    background-color: whitesmoke;
+    border-radius: 2px;
+    right: 0;
+    top: 20px;
+
+}
+
+.login-label {
+    width: 100%;
+    text-align: center;
+}
+.login-form{
+    width: 90%;
+    height: 100%;
+}
+.login-form-input {
+    margin: 10px 10px;
+    width: 100%;
+}
+
+.login-button {
+    position: absolute;
+    margin-right: 0;
+    right: 25px;
 }

@@ -12,9 +12,9 @@
     <div class="top-menu">
         <ul class="top-bar">
             <li class="top-bar-li">
-                <a href="https://www.google.by" class="contact" title="Написать автору">Обратная связь</a>
+                <div class="contact" title="Написать автору">Обратная связь</div>
             </li>
-            <li class="top-bar-login"><a href="https://www.google.by" class="login" title="Вход">Вход</a></li>
+            <li class="top-bar-login"><div class="login" title="Вход">Вход</div></li>
         </ul>
     </div>
     <div class="header">
@@ -27,6 +27,14 @@
             <a class="header-banner">
                 <img id="catBanner" src="images/cat_banner.png" title="Место для рекламы" alt="Реклама">
             </a>
+        </div>
+        <div class="login-form-wrapper">
+            <div class="login-label">Вход</div>
+            <form class="login-form" name="login-form" id="login-form">
+                <input type="text" class="login-form-input" placeholder="Имя пользователя">
+                <input type="password" class="login-form-input" placeholder="Пароль">
+                <button class="flat-button login-button" type="button" id="login-button">Вход</button>
+            </form>
         </div>
     </div>
     <div class="middle">
@@ -301,7 +309,7 @@
     <div class="news-background">
         <div class="add-edit-news-wrapper">
             <div class="add-edit-news-invalid">Неверные данные!</div>
-            <form class="add-edit-news-form" id="add-news" name="add-news-form">
+            <form class="add-edit-news-form" id="add-news" name="addNewsForm">
                 <input type="text" class="add-edit-news-field" placeholder="Ссылка на картинку">
                 <textarea class="add-edit-news-field add-title" placeholder="Заголовок"></textarea>
                 <textarea class="add-edit-news-field add-summary" placeholder="Краткое содержание"></textarea>
