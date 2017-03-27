@@ -1,0 +1,23 @@
+{
+  "name": "opennews",
+  "version": "1.0.0",
+  "description": "ky z9bls",
+  "main": "index.js",
+  "dependencies": {
+    "node-static": "^0.7.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vlad160/EdPract.git"
+  },
+  "author": "Vladislav Nester",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vlad160/EdPract/issues"
+  },
+  "homepage": "https://github.com/Vlad160/EdPract#readme"
+}
