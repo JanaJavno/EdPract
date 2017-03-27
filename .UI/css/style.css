@@ -402,6 +402,7 @@ body {
 .news-more__text {
     color: #000000;
     border-bottom: 1px dotted;
+    cursor: pointer;
 }
 
 .add-news-button {
