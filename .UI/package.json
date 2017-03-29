@@ -4,6 +4,7 @@
   "description": "ky z9bls",
   "main": "index.js",
   "dependencies": {
+    "express": "^4.15.2",
     "node-static": "^0.7.9"
   },
   "devDependencies": {},

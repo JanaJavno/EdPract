@@ -466,11 +466,10 @@ var articlesService = (function () {
     }
 
     function validateArticle(article) {
-        if (article !== undefined) {
-            var check = Object.keys(articleMap).every(function (item) {
+        if (article) {
+            return Object.keys(articleMap).every(function (item) {
                 return articleMap[item](article[item]);
             });
-            return check;
         }
         return false;
 
