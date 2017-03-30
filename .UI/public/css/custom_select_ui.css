@@ -2,6 +2,7 @@
     position: relative;
     width: 420px;
     display: inline-block;
+
 }
 
 .input {
@@ -43,7 +44,7 @@
 }
 
 .block {
-    width: 15%;
+    width: auto;
     white-space: nowrap;
     font-size: 13px;
     height: 12px;

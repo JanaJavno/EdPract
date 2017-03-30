@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="stylesheet" href="css/slider.css">
     <link rel="stylesheet" href="css/custom_select_ui.css">
+    <script src="scripts/custom_select.js"></script>
 </head>
 <body>
 <div class="wrapper">
@@ -43,20 +44,28 @@
     <div class="middle">
         <div class="filter-box">
             <form name="filter">
-                <div class="author-filter-container"><div class="filter-item filter-author">Сортировать по автору:</div>
-                    <select name="author">
-                    </select></div>
+                <div class="author-filter-container">
+                    <div class="filter-item filter-author">Автор:
+                    </div>
+                    <div class="custom-input" id="author-filter">
+                        <div class="input" contentEditable="false" data-text="Выберите авторов"></div>
+                        <div class="block-container">
+                        </div>
+                    </div>
+                </div>
                 <div class="filter-tags-container">
                     <div class="filter-item filter-tags">Теги:</div>
-                    <div class="custom-input">
+                    <div class="custom-input" id="tags-filter">
                         <div class="input" contentEditable="false" data-text="Выберите теги"></div>
                         <div class="block-container">
                         </div>
                     </div>
                 </div>
                 <div class="date-filter-container">
-                    <div class="filter-item filter-date">Фильтр по дате: от: <input name="date_from" type="date"/> до:
-                        <input name="date_to" type="date"/></div></div>
+                    <div class="filter-item filter-date">Фильтр по дате: от: <input name="date_from" type="date"/>
+                        до:
+                        <input name="date_to" type="date"/></div>
+                </div>
                 <button type="button" class="flat-button add-filter" id="add-filter" name="filterButton">Искать
                 </button>
             </form>
@@ -220,6 +229,11 @@
                 <textarea class="add-edit-news-field add-summary" placeholder="Краткое содержание"></textarea>
                 <textarea class="add-edit-news-field add-content" id="add-content-field"
                           placeholder="Содержание новости"></textarea>
+                <div class="custom-input add-edit-add-tags" id="add-edit-tags">
+                    <div class="input" contentEditable="false" data-text="Теги"></div>
+                    <div class="block-container">
+                    </div>
+                </div>
             </form>
             <button type="button" form="add-news" class="flat-button add-news-button-form" id="add-news-submit">
                 Добавить!
@@ -230,6 +244,4 @@
 <!--scripts-->
 <script src="scripts/slider.js" async></script>
 <script src="scripts/script.js"></script>
-<script src="scripts/custom_select.js"></script>
-
 </html>

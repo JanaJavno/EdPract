@@ -44,7 +44,7 @@ body {
     cursor: pointer;
 }
 
-.contact , .login {
+.contact, .login {
     color: grey;
     text-decoration: none;
     font-size: 10px;
@@ -99,7 +99,7 @@ body {
     position: relative;
 }
 
-.filter-item{
+.filter-item {
     display: inline-block;
 }
 
@@ -309,8 +309,8 @@ body {
 .bottom-news-wrapper {
     position: relative;
     display: inline-block;
-    width: 33%;
-    margin: 10px 0 10px 0;
+    width: 30%;
+    margin: 10px 6px 10px 6px;
     height: 250px;
     overflow: hidden;
 }
@@ -433,6 +433,11 @@ body {
     height: 100%;
     z-index: 50;
     background: rgba(0, 0, 0, .7);
+    overflow-y: scroll;
+}
+
+.news-background::-webkit-scrollbar {
+    display: none;
 }
 
 .full-news-wrapper {
@@ -544,9 +549,11 @@ body {
     color: #ff0000;
     visibility: hidden;
 }
+
 .add-news-button-form {
     position: absolute;
-    bottom: 90px;
+    bottom: 50px;
+    right: 10px;
 }
 
 /*Login From*/
@@ -568,10 +575,12 @@ body {
     width: 100%;
     text-align: center;
 }
-.login-form{
+
+.login-form {
     width: 90%;
     height: 100%;
 }
+
 .login-form-input {
     margin: 10px 10px;
     width: 100%;
@@ -582,29 +591,36 @@ body {
     margin-right: 0;
     right: 25px;
 }
+
 /*Filter*/
-.add-filter{
+.add-filter {
     width: 80px;
     height: 40px;
     float: right;
     position: relative;
     margin: 0;
-    top:-17px;
+    top: -7px;
     left: -5px;
 }
-.author-filter-container{
-    height: 30px;
-    position: relative;
-    top: -10px;
-    width: auto;
-    text-align: center;
-    display: inline-block;
-}
-.filter-tags-container{
+
+.author-filter-container {
+    margin: 5px;
     height: auto;
     width: auto;
     display: inline-block;
 }
-.date-filter-container{
+
+.filter-tags-container {
+    margin: 5px;
+    height: auto;
+    width: auto;
     display: inline-block;
+}
+
+.date-filter-container {
+    display: inline-block;
+}
+.add-edit-add-tags{
+    margin-top: 5px;
+    margin-left: 25px;
 }

@@ -305,7 +305,7 @@ var articlesService = (function () {
             'соседство с зонами отдыха. Районов, отвечающих этим требованиям, в Минске не так уж много. Одним из наиболее привлекательных мест для жизни считается коттеджный массив за' +
             ' Национальной библиотекой. Свежее объявление о продаже таунхауса близ акватории Слепянской водной системы возглавило топ самых дорогих объектов в базе данных Onliner.by.',
             createdAt: new Date(2017, 2, 5, 8, 25),
-            author: 'Андрей Румянцев',
+            author: 'Румянцев Андрей',
             content: 'За таунхаус на улице Ваньковича общей площадью 334 квадратных метра просят весьма круглую сумму — $1 000 000 в эквиваленте (почти $3000 за «квадрат»). За' +
             ' такие деньги покупатель получит шестикомнатную квартиру с видом из окон на водный канал (таунхаус расположен на первой береговой линии, в 100 метрах от воды).' +
             'Дом является блочным, построен в 2005 году. Он полностью укомплектован мебелью и бытовой техникой. Высота потолков — 2,9 метра. В объявлении сообщается о наличии' +
@@ -374,6 +374,7 @@ var articlesService = (function () {
             picture: 'images/id_20.jpeg'
         }
     ];
+
     var deletedArticles = [];
 
     function getArticles(skip, top, filterConfig) {
@@ -405,7 +406,10 @@ var articlesService = (function () {
         if (filterConfig) {
             if (filterConfig.author) {
                 articles = articles.filter(function (item) {
-                    return item.author === filterConfig.author
+                    if (filterConfig.author.indexOf(item.author) != -1) {
+                        return true;
+                    }
+                    return false;
                 })
             }
             if (filterConfig.createdAtFrom) {
@@ -502,9 +506,9 @@ var articlesService = (function () {
     function addArticle(article) {
         if (article) {
             if (validateArticle(article)) {
-                var size = getArticlesSize().toString() + 1;
-                article.id = size.toString();
                 article.createdAt = new Date();
+                let size = generateID(article.createdAt);
+                article.id = size.toString();
                 article.author = userService.getUsername();
                 articles.push(article);
                 return true;
@@ -513,14 +517,19 @@ var articlesService = (function () {
         return false;
     }
 
+    function generateID(date) {
+        return date.getDate() + '' + (date.getMonth() + 1) + '' + date.getFullYear();
+    }
+
     function editArticle(id, article) {
         if (getArticle(id).length != 0) {
             var index = getArticleIndexByID(id);
-            article.tags = articles[index].tags;
+
             if (validateArticle(article) && !article.id && !article.createdAt && !article.author) {
                 articles[index].content = article.content;
                 articles[index].summary = article.summary;
                 articles[index].title = article.title;
+                articles[index].tags = article.tags;
                 return true;
             }
         }
@@ -559,6 +568,7 @@ var articlesService = (function () {
         saveDataToLocalStorage: saveDataToLocalStorage
     };
 }());
+
 var articleRenderer = (function () {
     var ARTICLE_TEMPLATE_BIG;
     var ARTICLE_LIST_NODE_TOP;
@@ -644,14 +654,14 @@ var articleRenderer = (function () {
     }
 
     function removeArticlesFromDom(place) {
-        if(!place) {
+        if (!place) {
             ARTICLE_LIST_NODE_TOP.innerHTML = '';
             ARTICLE_LIST_NODE_BOT.innerHTML = '';
         }
-        if(place === 'top'){
+        if (place === 'top') {
             ARTICLE_LIST_NODE_TOP.innerHTML = '';
         }
-        if(place ==='bot'){
+        if (place === 'bot') {
             ARTICLE_LIST_NODE_BOT.innerHTML = '';
         }
     }
@@ -694,10 +704,13 @@ var articleRenderer = (function () {
     }
 
     function renderArticles(articles, place) {
-
         return articles.map(function (article) {
             return renderArticle(article, place);
         });
+    }
+
+    function renderErrorFilter() {
+        ARTICLE_LIST_NODE_BOT.innerHTML = "Ничего не найдено";
     }
 
     function renderArticle(article, place) {
@@ -743,8 +756,10 @@ var articleRenderer = (function () {
         formatDate: formatDate,
         insertArticleInDOM: insertArticleInDOM,
         renderArticle: renderArticle,
+        renderErrorFilter: renderErrorFilter
     }
 }());
+
 var pagination = (function () {
     var ITEMS_PER_PAGE = 6;
     var total;
@@ -804,6 +819,7 @@ var pagination = (function () {
     }
 
 }());
+
 var fullNewsService = (function () {
     var TEMPLATE_FULL;
     var TOP_NEWS_CONTAINER;
@@ -813,9 +829,10 @@ var fullNewsService = (function () {
     var ADD_NEWS_BUTTON;
     var contentArea;
     var submitButton;
-    var maxHeight = 450;
+    var maxHeight = 400;
     var EDIT_ID;
     var articleToAdd;
+    var TAGS_EDIT;
 
     function init() {
         TEMPLATE_FULL = document.getElementById('template-full-news');
@@ -826,6 +843,7 @@ var fullNewsService = (function () {
         TEMPLATE_EDIT_ADD = document.getElementById('template-add-edit-news');
         ADD_NEWS_BUTTON = document.getElementById('add-button');
         ADD_NEWS_BUTTON.addEventListener('click', handleAddNewsClick);
+
     }
 
     function handleShowClick(event) {
@@ -886,6 +904,8 @@ var fullNewsService = (function () {
         }
         EDIT_ID = node.getAttribute('data-id');
         openEditAdd(EDIT_ID);
+        TAGS_EDIT = customInput().init(articlesService.getTags(),'add-edit-tags');
+        TAGS_EDIT.setSelected(articlesService.getArticle(EDIT_ID).tags);
         removeAddEditForm();
         contentArea = document.getElementById('add-content-field');
         contentArea.addEventListener('keydown', handleContentResize);
@@ -896,6 +916,7 @@ var fullNewsService = (function () {
     function handleSubmitNews() {
         if (validateAddFrom()) {
             articleRenderer.editByID(EDIT_ID, articleToAdd);
+            articlesService.saveDataToLocalStorage();
             TEMPLATE_FULL_BACKGROUND.remove();
         }
         else {
@@ -905,7 +926,6 @@ var fullNewsService = (function () {
 
     function validateAddFrom() {
         articleToAdd = collectData();
-        articleToAdd['tags'] = articlesService.getArticle(EDIT_ID).tags;            //потом убрать
         return articlesService.validateArticle(articleToAdd);
     }
 
@@ -916,6 +936,7 @@ var fullNewsService = (function () {
         addArticle['title'] = form.elements[1].value;
         addArticle['summary'] = form.elements[2].value;
         addArticle['content'] = form.elements[3].value;
+        addArticle['tags'] = TAGS_EDIT.getSelected();
         return addArticle;
     }
 
@@ -935,7 +956,7 @@ var fullNewsService = (function () {
             form.elements[1].value = article.title;
             form.elements[2].value = article.summary;
             form.elements[3].value = article.content;
-            form.elements[3].style.height = '450px';
+            form.elements[3].style.height = maxHeight.toString() + 'px';
             return template.content.querySelector('.news-background').cloneNode(true);
         }
     }
@@ -972,6 +993,7 @@ var fullNewsService = (function () {
         contentArea.addEventListener('keydown', handleContentResize);
         submitButton = document.getElementById('add-news-submit');
         submitButton.addEventListener('click', handleAddNewsSubmit);
+        TAGS_EDIT = customInput().init(articlesService.getTags(),'add-edit-tags');
     }
 
     function handleContentResize() {
@@ -998,11 +1020,12 @@ var fullNewsService = (function () {
 
     function handleAddNewsSubmit() {
         var article = collectData();
-        article['tags'] = ['Минск'];
+        article['tags'] = TAGS_EDIT.getSelected();
         if (articlesService.validateArticle(article)) {
             articlesService.addArticle(article);
             articleRenderer.insertArticleInDOM(article, 'top');
             articleRenderer.insertArticleInDOM(article, 'bot');
+            articlesService.saveDataToLocalStorage();
             TEMPLATE_FULL_BACKGROUND.remove();
             filter.fillFilter();
         }
@@ -1017,12 +1040,12 @@ var fullNewsService = (function () {
             node = node.parentNode;
         }
         var id = node.getAttribute('data-id');
+        articleRenderer.removeArticlesFromDomByID(id);
         articlesService.removeArticle(id);
+        articleRenderer.removeArticlesFromDom();
         articlesService.saveDataToLocalStorage();
-        articlesService.loadDataFromLocalStorage();
-        articleRenderer.removeArticlesFromDom('top');
-        renderArticles(0,3,undefined,'top');
-
+        renderArticles(0, 3, undefined, 'top');
+        renderPagination(undefined,articlesService.getArticlesSize());
     }
 
     function clearForms() {
@@ -1040,6 +1063,7 @@ var fullNewsService = (function () {
     }
 
 }());
+
 var userService = (function () {
     var USER_STATUS = false;
     var CURRENT_USER = {
@@ -1144,32 +1168,31 @@ var userService = (function () {
         getUsername: getUsername
     }
 }());
+
 var filter = (function () {
     var form;
     var submitButton;
+    var tagsFilter;
+    var authorFilter;
 
     function init() {
         form = document.forms.filter;
         submitButton = form.elements.filterButton;
         submitButton.addEventListener('click', handleSubmitClick);
-        fillFilter();
+        tagsFilter = customInput().init(articlesService.getTags(), 'tags-filter');
+        authorFilter = customInput().init(articlesService.getAuthors(), 'author-filter');
         return getFilter();
     }
 
     function getFilter() {
+        var filterConfig = {};
         /* Тут происходит сбор всех фильтров: АВТОР + ДАТА + ТЕГИ. Потом этот объект передадим в функцию getArticles как fitlerConfig */
-        var filterConfig = {
-            author: '',
-            tags: [],
-
-        };
-        var authorSelect = form.elements.author;
-        if (authorSelect.value === 'Все') {
-            filterConfig.author = undefined;
-        } else {
-            filterConfig.author = authorSelect.value
+        if (authorFilter.getSelected().length != 0) {
+            filterConfig['author'] = authorFilter.getSelected();
         }
-        filterConfig.tags = customInput.getSelected();                                                   //createdAtFrom: new Date(),
+        if (tagsFilter.getSelected().length != 0) {
+            filterConfig['tags'] = tagsFilter.getSelected();
+        }
         var dateFrom = form.elements.date_from;
         if (dateFrom.value) {
             filterConfig['createdAtFrom'] = new Date(dateFrom.value);
@@ -1182,25 +1205,26 @@ var filter = (function () {
     }
 
     function fillFilter() {
-        var select = form.author;
-        select.innerHTML = "";
-        var newOption = new Option("Все", "Все");
-        select.appendChild(newOption);
-        var authors = articlesService.getAuthors();
-        authors.forEach(function (item) {
-            var newOption = new Option(item, item);
-            select.appendChild(newOption);
-        });
-
+        tagsFilter.reload(articlesService.getTags());
+        authorFilter.reload(articlesService.getAuthors());
     }
 
     function handleSubmitClick() {
-        articleRenderer.removeArticlesFromDom();
-        var total = articlesService.getArticlesCount(getFilter());
-        var paginationParams = pagination.init(total, function (skip, top) {
-            renderArticles(skip, top, getFilter(), 'bot');
-        });
-        renderArticles(paginationParams.skip, paginationParams.top, getFilter(), 'bot');
+        var filter = getFilter();
+        if (Object.keys(filter).length !== 0) {
+            articleRenderer.removeArticlesFromDom();
+            var total = articlesService.getArticlesCount(filter);
+            if (total === 0) {
+                articleRenderer.renderErrorFilter();
+            }
+            renderPagination(filter, total);
+        }
+        else {
+            articleRenderer.removeArticlesFromDom();
+            renderArticles(0, 3, undefined, 'top');
+            var total = articlesService.getArticlesSize();
+            renderPagination(undefined, total);
+        }
     }
 
     return {
@@ -1214,14 +1238,10 @@ document.addEventListener('DOMContentLoaded', startApp);
 
 
 function startApp() {
-   articlesService.loadDataFromLocalStorage();
+    articlesService.loadDataFromLocalStorage();
     articleRenderer.init();
     var total = articlesService.getArticlesSize();
-    var paginationParams = pagination.init(total, function (skip, top) {
-        renderArticles(skip, top, undefined, 'bot');
-    });
-    renderArticles(paginationParams.skip, paginationParams.top, undefined, 'bot');
-
+    renderPagination(undefined, total);
     var articlesTop = articlesService.getArticles(0, 3);
     articleRenderer.insertArticlesInDOM(articlesTop, 'top');
     fullNewsService.init();
@@ -1230,9 +1250,15 @@ function startApp() {
     filter.init();
 }
 window.addEventListener('beforeunload', function () {
-    articlesService.saveDataToLocalStorage();
-});
+ articlesService.saveDataToLocalStorage();
+ });
 function renderArticles(skip, top, filterConfig, place) {
     var articlesTop = articlesService.getArticles(skip, top, filterConfig);
     articleRenderer.insertArticlesInDOM(articlesTop, place);
+}
+function renderPagination(filter, total) {
+    var paginationParams = pagination.init(total, function (skip, top) {
+        renderArticles(skip, top, filter, 'bot');
+    });
+    renderArticles(paginationParams.skip, paginationParams.top, filter, 'bot');
 }
