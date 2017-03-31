@@ -904,7 +904,7 @@ var fullNewsService = (function () {
         }
         EDIT_ID = node.getAttribute('data-id');
         openEditAdd(EDIT_ID);
-        TAGS_EDIT = customInput().init(articlesService.getTags(),'add-edit-tags');
+        TAGS_EDIT = customInput().init(articlesService.getTags(),'add-edit-tags',true);
         TAGS_EDIT.setSelected(articlesService.getArticle(EDIT_ID).tags);
         removeAddEditForm();
         contentArea = document.getElementById('add-content-field');
@@ -994,7 +994,7 @@ var fullNewsService = (function () {
         contentArea.addEventListener('keydown', handleContentResize);
         submitButton = document.getElementById('add-news-submit');
         submitButton.addEventListener('click', handleAddNewsSubmit);
-        TAGS_EDIT = customInput().init(articlesService.getTags(),'add-edit-tags');
+        TAGS_EDIT = customInput().init(articlesService.getTags(),'add-edit-tags',true);
     }
 
     function handleContentResize() {
