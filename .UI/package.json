@@ -4,6 +4,8 @@
   "description": "ky z9bls",
   "main": "index.js",
   "dependencies": {
+    "body-parser": "^1.17.1",
+    "diskdb": "^0.1.17",
     "express": "^4.15.2",
     "node-static": "^0.7.9"
   },
