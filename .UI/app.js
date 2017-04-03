@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var db = require('diskdb');
-db.connect('private', ['tags', 'articles','deletedArticles']);
+db.connect('private', ['tags', 'articles', 'deletedArticles']);
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
@@ -37,8 +37,8 @@ app.post('/tags', function (req, res) {
 app.patch('/news', function (req, res) {
     console.log("PATH");
     let index = req.body.id;
-   let query = db.articles.findOne({id: index.toString()});
-   console.log(index);
+    let query = db.articles.findOne({id: index.toString()});
+    console.log(index);
     var options = {
         multi: false,
         upsert: false
@@ -47,11 +47,13 @@ app.patch('/news', function (req, res) {
     console.log(updated);
     res.json(req.body);
 });
+
 app.get('/news/:id', function (req, res) {
     console.log("GET");
     let article = db.articlse.findOne({id: req.params.id});
     res.json(article);
 });
+
 app.delete('/news/:id', function (req, res) {
     console.log("DELETE");
     let id = req.params.id;
@@ -62,9 +64,17 @@ app.delete('/news/:id', function (req, res) {
     db.articles.remove({id: id});
     res.json({idWasRemoved: Number(id)});
 });
+
 app.put('/news', function (req, res) {
     console.log("PUT");
     db.articles.save(req.body);
+    console.log(req.body);
+    res.json(req.body);
+});
+app.put('/tags', function (req, res) {
+
+    console.log("PUT");
+    db.tags.save(req.body);
     console.log(req.body);
     res.json(req.body);
 });

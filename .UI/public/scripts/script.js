@@ -165,6 +165,7 @@ var articlesService = (function () {
         if (tag) {
             if (tags.indexOf(tag) == -1) {
                 tags.push(tag);
+                serverWorker.sendTag(tag);
             }
         }
     }

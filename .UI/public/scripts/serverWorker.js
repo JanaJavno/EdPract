@@ -62,12 +62,19 @@ var serverWorker = (function () {
         xhr.send(JSON.stringify(article));
     }
 
+    function sendTag(tag) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", '/tags');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(tag));
+    }
     return {
         globalGet: globalGet,
         globalPost: globalPost,
         updateArticle: updateArticle,
         getFullArticle: getFullArticle,
         deleteArticle: deleteArticle,
-        sendArticle:sendArticle
+        sendArticle:sendArticle,
+        sendTag:sendTag
     }
 }());
