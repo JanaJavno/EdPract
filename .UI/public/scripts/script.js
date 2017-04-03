@@ -68,6 +68,7 @@ var articlesService = (function () {
         articles = global.articles;
         tags = global.tags;
     }
+
     function getArticles(skip, top, filterConfig) {
         skip = skip || 0;
         top = top || articles.length;
@@ -137,7 +138,7 @@ var articlesService = (function () {
     }
 
     function getArticleIndexByID(id) {
-        if (getArticle(id).length != 0) {
+        if (getArticle(id)) {
             var index = articles.findIndex(function (articles) {
                 return articles.id === id;
             });
@@ -187,6 +188,7 @@ var articlesService = (function () {
                 article.id = size.toString();
                 article.author = userService.getUsername();
                 articles.push(article);
+                serverWorker.sendArticle(article);
                 return true;
             }
         }
@@ -198,27 +200,30 @@ var articlesService = (function () {
     }
 
     function editArticle(id, article) {
-        if (getArticle(id).length != 0) {
+        var articleToEdit = getArticle(id);
+        if (articleToEdit) {
             var index = getArticleIndexByID(id);
-
-            if (validateArticle(article) && !article.id && !article.createdAt && !article.author) {
-                articles[index].content = article.content;
-                articles[index].summary = article.summary;
-                articles[index].title = article.title;
-                articles[index].tags = article.tags;
-                return true;
+            if (validateArticle(article)) {
+                article['id'] = id;
+                if(serverWorker.updateArticle(article)){
+                    articles[index].content = article.content;
+                    articles[index].summary = article.summary;
+                    articles[index].title = article.title;
+                    articles[index].tags = article.tags;
+                    return true;
+                }
+               return false;
             }
         }
         return false;
     }
 
     function removeArticle(id) {
-        if (getArticle(id).length !== 0) {
-            var index = getArticleIndexByID(id);
-            if (index != -1) {
-                deletedArticles.push(articles.splice(index, 1));
-                return true;
-            }
+        if (getArticle(id)) {
+            let index = getArticleIndexByID(id);
+            articles.splice(index,1);                                           ///переделать!!!!!!!
+            return serverWorker.deleteArticle(id);
+
         }
         return false;
     }
@@ -240,7 +245,7 @@ var articlesService = (function () {
         getArticlesCount: getArticlesCount,
         getAuthors: getAuthors,
         getTags: getTags,
-        getArticlesFromServer,getArticlesFromServer
+        getArticlesFromServer:getArticlesFromServer
     };
 }());
 
@@ -591,8 +596,6 @@ var fullNewsService = (function () {
     function handleSubmitNews() {
         if (validateAddFrom()) {
             articleRenderer.editByID(EDIT_ID, articleToAdd);
-            articlesService.saveDataToLocalStorage();
-            articlesService.loadDataFromLocalStorage();
             TEMPLATE_FULL_BACKGROUND.remove();
         }
         else {
@@ -706,8 +709,6 @@ var fullNewsService = (function () {
             articlesService.addArticle(article);
             articleRenderer.insertArticleInDOM(article, 'top');
             articleRenderer.insertArticleInDOM(article, 'bot');
-            articlesService.saveDataToLocalStorage();
-            articlesService.loadDataFromLocalStorage();
             TEMPLATE_FULL_BACKGROUND.remove();
             filter.fillFilter();
         }
@@ -725,8 +726,6 @@ var fullNewsService = (function () {
         articleRenderer.removeArticlesFromDomByID(id);
         articlesService.removeArticle(id);
         articleRenderer.removeArticlesFromDom();
-        articlesService.saveDataToLocalStorage();
-        articlesService.loadDataFromLocalStorage();
         renderArticles(0, 3, undefined, 'top');
         renderPagination(undefined, articlesService.getArticlesSize());
     }
