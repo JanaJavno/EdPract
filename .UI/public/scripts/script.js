@@ -205,14 +205,14 @@ var articlesService = (function () {
             var index = getArticleIndexByID(id);
             if (validateArticle(article)) {
                 article['id'] = id;
-                if(serverWorker.updateArticle(article)){
+                if (serverWorker.updateArticle(article)) {
                     articles[index].content = article.content;
                     articles[index].summary = article.summary;
                     articles[index].title = article.title;
                     articles[index].tags = article.tags;
                     return true;
                 }
-               return false;
+                return false;
             }
         }
         return false;
@@ -221,7 +221,7 @@ var articlesService = (function () {
     function removeArticle(id) {
         if (getArticle(id)) {
             let index = getArticleIndexByID(id);
-            articles.splice(index,1);                                           ///переделать!!!!!!!
+            articles.splice(index, 1);                                           ///переделать!!!!!!!
             return serverWorker.deleteArticle(id);
 
         }
@@ -245,7 +245,7 @@ var articlesService = (function () {
         getArticlesCount: getArticlesCount,
         getAuthors: getAuthors,
         getTags: getTags,
-        getArticlesFromServer:getArticlesFromServer
+        getArticlesFromServer: getArticlesFromServer
     };
 }());
 
@@ -707,8 +707,7 @@ var fullNewsService = (function () {
         var article = collectData();
         if (articlesService.validateArticle(article)) {
             articlesService.addArticle(article);
-            articleRenderer.insertArticleInDOM(article, 'top');
-            articleRenderer.insertArticleInDOM(article, 'bot');
+            renderPagination(filter.getFilterConfig(),articlesService.getArticlesCount(filter.getFilterConfig()));
             TEMPLATE_FULL_BACKGROUND.remove();
             filter.fillFilter();
         }
@@ -924,8 +923,6 @@ function startApp() {
     articleRenderer.init();
     var total = articlesService.getArticlesSize();
     renderPagination(undefined, total);
-    var articlesTop = articlesService.getArticles(0, 3);
-    articleRenderer.insertArticlesInDOM(articlesTop, 'top');
     fullNewsService.init();
     articleRenderer.showUserElements();
     userService.init();
@@ -936,8 +933,12 @@ function renderArticles(skip, top, filterConfig, place) {
     articleRenderer.insertArticlesInDOM(articlesTop, place);
 }
 function renderPagination(filter, total) {
+    articleRenderer.removeArticlesFromDom();
     var paginationParams = pagination.init(total, function (skip, top) {
         renderArticles(skip, top, filter, 'bot');
     });
     renderArticles(paginationParams.skip, paginationParams.top, filter, 'bot');
+    if (filter === undefined) {
+        renderArticles(0, 3, undefined, 'top');
+    }
 }
