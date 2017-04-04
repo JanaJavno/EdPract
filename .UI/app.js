@@ -1,11 +1,32 @@
 var express = require('express');
+
 var bodyParser = require('body-parser');
+
 var app = express();
+
 var db = require('diskdb');
-db.connect('private', ['tags', 'articles', 'deletedArticles']);
+
+db.connect('private', ['tags', 'articles', 'deletedArticles','authors']);
+
 app.use(express.static('public'));
+
 app.use(bodyParser.json());
 
+app.get('/model', function (req, res) {
+    console.log("GET MODEL");
+    /* let articles = req.query.articles;
+     let tags = req.query.tags;
+     let authors = req.query.authors;*/
+    let keys = Object.keys(req.query);
+    let model = {};
+    console.log(keys);
+    keys.forEach(function (key) {
+        model[key] = getFromDB[key]();
+        console.log(model[key]);
+    });
+    res.json(model);
+    console.log("MODEL SEND");
+});
 app.get('/news', function (req, res) {
     console.log("GET");
     res.json(db.articles.find());
@@ -45,7 +66,7 @@ app.patch('/news', function (req, res) {
     };
     var updated = db.articles.update(query, req.body, options);
     console.log(updated);
-    res.json(req.body);
+    res.json(index);
 });
 
 app.get('/news/:id', function (req, res) {
@@ -79,7 +100,16 @@ app.put('/tags', function (req, res) {
     res.json(req.body);
 });
 app.listen(3000, function () {
-
     console.log('Example app listening on port 3000! NEW!!');
-    console.log(db.articles.find());
 });
+const getFromDB = {
+    articles: function () {
+        return db.articles.find();
+    },
+    tags: function () {
+        return db.tags.find();
+    },
+    authors: function () {
+        return db.authors.find();
+    }
+};

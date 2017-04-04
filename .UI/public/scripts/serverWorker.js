@@ -3,22 +3,22 @@
  */
 var serverWorker = (function () {
     function globalGet() {
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
         xhr.open("GET", '/news', false);
         xhr.send();
-        var articles = JSON.parse(xhr.responseText);
+        let articles = JSON.parse(xhr.responseText);
         articles.forEach(function (article) {
             article.createdAt = new Date(article.createdAt);
         });
         xhr.open("GET", '/tags', false);
         xhr.send();
-        var tags = JSON.parse(xhr.responseText);
-        {
-            return {
-                articles: articles,
-                tags: tags
-            };
-        }
+        let tags = JSON.parse(xhr.responseText);
+       // xhr.open("GET", '/authors', false);
+       // xhr.send();
+        //let authors = JSON.parse(xhr.responseText);
+        xhr.open("GET", '/model?articles=true&tags=true&authors=true', false);
+        xhr.send();
+        return JSON.parse(xhr.responseText)
     }
 
     function globalPost(articles) {
@@ -34,10 +34,11 @@ var serverWorker = (function () {
 
     function updateArticle(article) {
         var xhr = new XMLHttpRequest();
-        xhr.open("PATCH", '/news');
+        let check;
+        xhr.open("PATCH", '/news',true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(article));
-       return true;                                                     //переделать
+        return true;                                                     //переделать
     }
 
     function getFullArticle(id) {
@@ -68,13 +69,14 @@ var serverWorker = (function () {
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(tag));
     }
+
     return {
         globalGet: globalGet,
         globalPost: globalPost,
         updateArticle: updateArticle,
         getFullArticle: getFullArticle,
         deleteArticle: deleteArticle,
-        sendArticle:sendArticle,
-        sendTag:sendTag
+        sendArticle: sendArticle,
+        sendTag: sendTag
     }
 }());
