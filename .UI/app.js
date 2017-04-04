@@ -14,19 +14,16 @@ app.use(bodyParser.json());
 
 app.get('/model', function (req, res) {
     console.log("GET MODEL");
-    /* let articles = req.query.articles;
-     let tags = req.query.tags;
-     let authors = req.query.authors;*/
     let keys = Object.keys(req.query);
     let model = {};
-    console.log(keys);
     keys.forEach(function (key) {
         model[key] = getFromDB[key]();
-        console.log(model[key]);
+        console.log(model);
     });
     res.json(model);
     console.log("MODEL SEND");
 });
+
 app.get('/news', function (req, res) {
     console.log("GET");
     res.json(db.articles.find());
@@ -60,11 +57,11 @@ app.patch('/news', function (req, res) {
     let index = req.body.id;
     let query = db.articles.findOne({id: index.toString()});
     console.log(index);
-    var options = {
+    let options = {
         multi: false,
         upsert: false
     };
-    var updated = db.articles.update(query, req.body, options);
+    let updated = db.articles.update(query, req.body, options);
     console.log(updated);
     res.json(index);
 });

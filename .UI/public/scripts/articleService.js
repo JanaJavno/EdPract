@@ -1,10 +1,4 @@
-var articlesService = (function () {
-    let filterConfig = {
-        createdAtFrom: new Date(),
-        createdAtTo: new Date(),
-        author: 'Атор',
-        tags: ['Теги'],
-    }; //я не знаю, но без этого говорит, что в филтрконфиге отсутствуют поля
+const articlesService = (function () {
     let articleMap = {
         id: function (id) {
             if (!id) return true;
@@ -37,7 +31,7 @@ var articlesService = (function () {
         tags: function (tag) {
             if (tag) {
                 if (tag.length > 0) {
-                    var check = true;
+                    let check = true;
                     tag.forEach(function (item) {
                         if (tags.indexOf(item) == -1) {
                             check = false;
@@ -61,7 +55,6 @@ var articlesService = (function () {
     let tags = [];
     let articles = [];
     let authors =[];
-    let deletedArticles = [];
 
     function getArticlesFromServer() {
         let global = serverWorker.globalGet();
@@ -123,7 +116,7 @@ var articlesService = (function () {
 
     function getArticle(id) {
         if (id !== undefined) {
-            var article = articles.filter(function (item) {
+            let article = articles.filter(function (item) {
                 return item.id == id;
             });
             return article[0];
@@ -132,10 +125,9 @@ var articlesService = (function () {
 
     function getArticleIndexByID(id) {
         if (getArticle(id)) {
-            var index = articles.findIndex(function (articles) {
+            return articles.findIndex(function (articles) {
                 return articles.id === id;
             });
-            return index;
         }
         return -1;
     }
@@ -148,7 +140,7 @@ var articlesService = (function () {
         }
         return false;
 
-    } //АНТОН НЕ КОПИРУЙ ЭТО.ТУТ СЛОЖНОСТИ БОЛЬШЕ ЧЕМ В ЛЮБОЙ ТВОЕ ЛАБЕ
+    }
 
     function getArticlesCount(filterConfig) {
         return getArticles(undefined, undefined, filterConfig).length;
@@ -165,7 +157,7 @@ var articlesService = (function () {
 
     function removeTag(tag) {
         if (tag) {
-            var index = tags.indexOf(tag);
+            let index = tags.indexOf(tag);
             if (index != -1) {
                 tags.splice(index, 1);
                 return true;
@@ -194,9 +186,9 @@ var articlesService = (function () {
     }
 
     function editArticle(id, article) {
-        var articleToEdit = getArticle(id);
+        let articleToEdit = getArticle(id);
         if (articleToEdit) {
-            var index = getArticleIndexByID(id);
+            let index = getArticleIndexByID(id);
             if (validateArticle(article)) {
                 article['id'] = id;
                 if (serverWorker.updateArticle(article)) {
