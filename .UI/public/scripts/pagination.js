@@ -1,5 +1,5 @@
 const pagination = (function () {
-    let ITEMS_PER_PAGE = 6;
+    const ITEMS_PER_PAGE = 6;
     let total;
     let currentPage;
     let showMoreButton;
@@ -20,7 +20,7 @@ const pagination = (function () {
     }
 
     function handleShowMoreClick() {
-        let paginationParams = nextPage();
+        const paginationParams = nextPage();
         showMoreCallback(paginationParams.skip, paginationParams.top);
     }
 
@@ -39,21 +39,20 @@ const pagination = (function () {
     function getParams() {
         return {
             top: ITEMS_PER_PAGE,
-            skip: (currentPage - 1) * ITEMS_PER_PAGE
+            skip: (currentPage - 1) * ITEMS_PER_PAGE,
         };
     }
 
     function showOrHideMoreButton() {
         if (getTotalPages() <= currentPage) {
-            showMoreButton.style.display = "none";
-        }
-        else {
-            showMoreButton.style.display = "block";
+            showMoreButton.style.display = 'none';
+        } else {
+            showMoreButton.style.display = 'block';
         }
     }
 
     return {
-        init: init
-    }
+        init: init,
 
+    };
 }());

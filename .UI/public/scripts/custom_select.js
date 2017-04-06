@@ -26,16 +26,16 @@ function customInput() {
     }
 
     function addItems(items) {
-        items.forEach(function (item) {
+        items.forEach(item => {
             DROPDOWN_MENU.appendChild(createOption(item));
-        })
+        });
     }
 
     function createOption(item) {
         let option = document.createElement('div');
-        option.className = "block";
+        option.className = 'block';
         option.innerHTML = item;
-        option.setAttribute("data-value", item);
+        option.setAttribute('data-value', item);
         return option;
     }
 
@@ -43,17 +43,17 @@ function customInput() {
         let target = event.target;
         if (target.hasAttribute('data-value')) {
             DROPDOWN_MENU.appendChild(target.cloneNode(true));
-            let index = SELECTED.indexOf(target.getAttribute('data-value'));
+            const index = SELECTED.indexOf(target.getAttribute('data-value'));
             SELECTED.splice(index, 1);
             if (NEW.length > 0) {
-                let index = NEW.indexOf(target.getAttribute('data-value'));
+                const index = NEW.indexOf(target.getAttribute('data-value'));
                 if (index !== -1) {
                     NEW.splice(index, 1);
                 }
             }
             target.remove();
         }
-        DROPDOWN_MENU.classList.add("show");
+        DROPDOWN_MENU.classList.add('show');
     }
 
     function handleAddClick() {
@@ -74,7 +74,6 @@ function customInput() {
 
     function getSelected() {
         return SELECTED;
-
     }
 
     function reload(items) {
@@ -101,8 +100,7 @@ function customInput() {
     }
 
     document.addEventListener('click', function (e) {
-        let container = CUSTOM_INPUT;
-        if (container.getElementsByClassName(e.target.classList).length === 0) {
+        if (CUSTOM_INPUT.getElementsByClassName(e.target.classList).length === 0) {
             if (DROPDOWN_MENU.classList.contains('show')) {
                 DROPDOWN_MENU.classList.remove('show');
             }
@@ -110,13 +108,13 @@ function customInput() {
     });
 
     return {
+
         init: init,
         getSelected: getSelected,
         reload: reload,
         setSelected: setSelected,
         addItem: addItem,
-        getNew: getNew
-    }
+        getNew: getNew,
 
-
+    };
 }

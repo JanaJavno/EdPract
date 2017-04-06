@@ -18,40 +18,41 @@ const articleRenderer = (function () {
         let editButtons = document.getElementsByClassName('edit-panel');
         let button = document.getElementById('add-button');
         let user = document.querySelector('.login');
-        if (userService.getUsername().length == 0) {
-            user.innerHTML = "Вход";
-            button.style.visibility = "hidden";
+        if (userService.getUsername().length !== 0) {
+        } else {
+            user.innerHTML = 'Вход';
+            button.style.visibility = 'hidden';
 
-            [].forEach.call(editButtons, function (item) {
-                item.style.visibility = "hidden"
+            [].forEach.call(editButtons, item => {
+                item.style.visibility = 'hidden';
             });
-            button.style.visibility = "hidden";
-            ARTICLE_TEMPLATE_BIG.content.querySelector('.edit-panel').style.visibility = "hidden";
-            ARTICLE_TEMPLATE_SMALL.content.querySelector('.edit-panel').style.visibility = "hidden";
+            button.style.visibility = 'hidden';
+            ARTICLE_TEMPLATE_BIG.content.querySelector('.edit-panel').style.visibility = 'hidden';
+            ARTICLE_TEMPLATE_SMALL.content.querySelector('.edit-panel').style.visibility = 'hidden';
         }
-        if (userService.getUsername().length != 0) {
-            user.innerHTML = "Привет, " + userService.getUsername();
-            [].forEach.call(editButtons, function (item) {
-                item.style.visibility = "visible"
+        if (userService.getUsername().length !== 0) {
+            user.innerHTML = 'Привет, ' + userService.getUsername();
+            [].forEach.call(editButtons, item => {
+                item.style.visibility = 'visible'
             });
-            button.style.visibility = "visible";
-            ARTICLE_TEMPLATE_BIG.content.querySelector('.edit-panel').style.visibility = "visible";
-            ARTICLE_TEMPLATE_SMALL.content.querySelector('.edit-panel').style.visibility = "visible";
+            button.style.visibility = 'visible';
+            ARTICLE_TEMPLATE_BIG.content.querySelector('.edit-panel').style.visibility = 'visible';
+            ARTICLE_TEMPLATE_SMALL.content.querySelector('.edit-panel').style.visibility = 'visible';
         }
     }
 
     function insertArticlesInDOM(articles, place) {
-        if (place.toLowerCase() == 'top') {
+        if (place.toLowerCase() === 'top') {
             let articlesNodesTop = renderArticles(articles, 'top');
-            articlesNodesTop.forEach(function (node) {
+            articlesNodesTop.forEach(node => {
                 ARTICLE_LIST_NODE_TOP.appendChild(node);
             });
         }
 
-        if (place.toLowerCase() == 'bot') {
+        if (place.toLowerCase() === 'bot') {
             let articlesNodesBot = renderArticles(articles, 'bot');
 
-            articlesNodesBot.forEach(function (node) {
+            articlesNodesBot.forEach(node => {
                 ARTICLE_LIST_NODE_BOT.appendChild(node);
             });
         }
@@ -59,8 +60,8 @@ const articleRenderer = (function () {
     }
 
     function insertArticleInDOM(article, place) {
-        if (place.toLowerCase() == 'top') {
-            let articlesNodeTop = renderArticle(article, 'top');
+        if (place.toLowerCase() === 'top') {
+            const articlesNodeTop = renderArticle(article, 'top');
             if (ARTICLE_LIST_NODE_TOP.children.length < MAX_ARTICLES_TOP) {
                 ARTICLE_LIST_NODE_TOP.insertBefore(articlesNodeTop, ARTICLE_LIST_NODE_TOP.firstChild);
             }
@@ -70,8 +71,8 @@ const articleRenderer = (function () {
             }
         }
 
-        if (place.toLowerCase() == 'bot') {
-            let articlesNodeBot = renderArticle(article, 'bot');
+        if (place.toLowerCase() === 'bot') {
+            const articlesNodeBot = renderArticle(article, 'bot');
             if (ARTICLE_LIST_NODE_BOT.children <= MAX_ARTICLES_BOT) {
                 ARTICLE_LIST_NODE_BOT.insertBefore(articlesNodeBot, ARTICLE_LIST_NODE_BOT.firstChild);
             }
@@ -97,7 +98,7 @@ const articleRenderer = (function () {
 
     function findNodeByID(Node, id) {
         let searchIndex = -1;
-        [].forEach.call(Node.children, function (child, i) {
+        [].forEach.call(Node.children, (child, i) => {
             if (child.getAttribute('data-id') === id) {
                 searchIndex = i;
             }
@@ -108,11 +109,11 @@ const articleRenderer = (function () {
 
     function removeArticlesFromDomByID(id) {
         let idx = findNodeByID(ARTICLE_LIST_NODE_TOP, id);
-        if (idx != -1) {
+        if (idx !== -1) {
             ARTICLE_LIST_NODE_TOP.removeChild(ARTICLE_LIST_NODE_TOP.children[idx]);
         }
         idx = findNodeByID(ARTICLE_LIST_NODE_BOT, id);
-        if (idx != -1) {
+        if (idx !== -1) {
             ARTICLE_LIST_NODE_BOT.removeChild(ARTICLE_LIST_NODE_BOT.children[idx]);
         }
     }
@@ -121,34 +122,32 @@ const articleRenderer = (function () {
         articlesService.editArticle(id, article);
         let idx = findNodeByID(ARTICLE_LIST_NODE_TOP, id);
 
-        if (idx != -1) {
+        if (idx !== -1) {
             let insert = renderArticle(articlesService.getArticle(id), 'top');
             ARTICLE_LIST_NODE_TOP.replaceChild(insert, ARTICLE_LIST_NODE_TOP.children[idx]);
         }
         idx = findNodeByID(ARTICLE_LIST_NODE_BOT, id);
-        if (idx != -1) {
+        if (idx !== -1) {
             let insert = renderArticle(articlesService.getArticle(id), 'bot');
             ARTICLE_LIST_NODE_BOT.replaceChild(insert, ARTICLE_LIST_NODE_BOT.children[idx]);
         }
     }
 
     function renderArticles(articles, place) {
-        return articles.map(function (article) {
-            return renderArticle(article, place);
-        });
+        return articles.map(article => renderArticle(article, place));
     }
 
     function renderErrorFilter() {
-        ARTICLE_LIST_NODE_BOT.innerHTML = "Ничего не найдено";
+        ARTICLE_LIST_NODE_BOT.innerHTML = 'Ничего не найдено';
     }
 
     function renderArticle(article, place) {
 
-        if (place.toLowerCase() == 'top') {
-            let template = ARTICLE_TEMPLATE_BIG;
+        if (place.toLowerCase() === 'top') {
+            const template = ARTICLE_TEMPLATE_BIG;
             template.content.querySelector('.top-news-wrapper').dataset.id = article.id;
-            template.content.querySelector('.news-header-big').innerHTML = "<h5>" + article.title + "</h5>";
-            template.content.querySelector('.news-preview-big').innerHTML = "<p>" + article.summary + "</p>";
+            template.content.querySelector('.news-header-big').innerHTML = '<h5>' + article.title + '</h5>';
+            template.content.querySelector('.news-preview-big').innerHTML = '<p>' + article.summary + '</p>';
             template.content.querySelector('.news-big-author').textContent = article.author;
             template.content.querySelector('.news-big-date').textContent = formatDate(article.createdAt);
             template.content.getElementById('big-image').src = article.picture;
@@ -156,11 +155,11 @@ const articleRenderer = (function () {
 
             return template.content.querySelector('.top-news-wrapper').cloneNode(true);
         }
-        if (place.toLowerCase() == 'bot') {
+        if (place.toLowerCase() === 'bot') {
             let template = ARTICLE_TEMPLATE_SMALL;
             template.content.querySelector('.bottom-news-wrapper').dataset.id = article.id;
-            template.content.querySelector('.news-header-small').innerHTML = "<a><h5>" + article.title + "</h5></a>";
-            template.content.querySelector('.news-preview-small').innerHTML = "<p>" + article.summary + "</p>";
+            template.content.querySelector('.news-header-small').innerHTML = '<a><h5>' + article.title + '</h5></a>';
+            template.content.querySelector('.news-preview-small').innerHTML = '<p>' + article.summary + '</p>';
             let smallInfo = template.content.querySelector('.news-info-small').getElementsByTagName('span');
             smallInfo[0].textContent = article.tags;
             smallInfo[1].textContent = formatDate(article.createdAt);

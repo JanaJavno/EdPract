@@ -5,7 +5,7 @@ const userService = (function () {
         username: '',
         password: ''
     };
-    let USER_BASE = [{
+    const USER_BASE = [{
         login: 'admin',
         username: 'Цаль Виталий',
         password: 'admin'
@@ -25,17 +25,17 @@ const userService = (function () {
 
     function handleClickLoginButton(event) {
         let target = event.currentTarget;
-        if (target != this) return;
+        if (target !== this) return;
         if (getUsername().length === 0) {
             LOGIN_FORM.style.display = (LOGIN_FORM.style.display === 'none') ? 'block' : 'none';
         }
         if (getUsername().length > 0) {
-            let isRemove = confirm('Выйти?');
+            const isRemove = confirm('Выйти?');
             if (isRemove) {
                 CURRENT_USER = {
                     login: '',
                     username: '',
-                    password: ''
+                    password: '',
                 };
                 articleRenderer.showUserElements();
             }
@@ -43,10 +43,10 @@ const userService = (function () {
     }
 
     function handleClickLogin(event) {
-        let target = event.target;
+        const target = event.target;
         if (target.type !== 'button') return;
         if (target.id === 'login-button') {
-            let data = collectData();
+            const data = collectData();
             if (validateUser(data[0], data[1])) {
                 USER_STATUS = true;
                 articleRenderer.showUserElements();
@@ -68,24 +68,21 @@ const userService = (function () {
     }
 
     function collectData() {
-        let form = document.getElementById('login-form');
+        const form = document.getElementById('login-form');
         let data = [];
         data.push(form.elements[0].value);
         data.push(form.elements[1].value);
         return data;
-
     }
 
     function clearForm() {
-        let form = document.getElementById('login-form');
-        form.elements[0].value = "";
-        form.elements[1].value = "";
+        const form = document.getElementById('login-form');
+        form.elements[0].value = '';
+        form.elements[1].value = '';
     }
 
     function validateUser(login, password) {
-        let findUser = USER_BASE.find(function (item) {
-            return item.login === login;
-        });
+        const findUser = USER_BASE.find(item => item.login === login);
         if (findUser) {
             if (findUser.password === password) {
                 USER_STATUS = true;
@@ -99,6 +96,6 @@ const userService = (function () {
     return {
         init: init,
         getUserStatus: getUserStatus,
-        getUsername: getUsername
-    }
+        getUsername: getUsername,
+    };
 }());

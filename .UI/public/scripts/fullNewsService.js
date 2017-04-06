@@ -202,7 +202,7 @@ const fullNewsService = (function () {
         if (articlesService.validateArticle(article)) {
             articlesService.addArticle(article);
             TEMPLATE_FULL_BACKGROUND.remove();
-            filter.fillFilter();
+            filter.fillFilter(articlesService.getTags(),articlesService.getAuthors());
         }
         else {
             document.querySelector('.add-edit-news-invalid').style.visibility = 'visible';
