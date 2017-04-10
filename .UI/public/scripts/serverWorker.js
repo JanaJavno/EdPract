@@ -20,7 +20,7 @@ const serverWorker = (function () {
         xhr.send(JSON.stringify(articles.tags));
     }
 
-    function updateArticle(article,callback) {
+    function updateArticle(article, callback) {
         const xhr = new XMLHttpRequest();
         xhr.open('PATCH', '/news');
         xhr.onload = function () {
@@ -59,11 +59,14 @@ const serverWorker = (function () {
         }
     }
 
-    function sendTag(tag) {
+    function sendTag(tags, callback) {
         const xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+            callback(JSON.parse(xhr.responseText));
+        };
         xhr.open('PUT', '/tags');
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(tag));
+        xhr.send(JSON.stringify(tags));
     }
 
     return {

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', startApp);
 function startApp() {
     articlesService.getArticlesFromServer();
     articleRenderer.init();
-    let total = articlesService.getArticlesSize();
+    const total = articlesService.getArticlesCount();
     renderPagination(undefined, total);
     fullNewsService.init(callbackForFullNews);
     articleRenderer.showUserElements(callbackForFullNews);
@@ -47,10 +47,17 @@ const callbackForFullNews = {
     tags: function () {
         return articlesService.getTags();
     },
-
+    addTags: function (tags) {
+        serverWorker.sendTag(tags, function () {
+            tags.forEach(tag => {
+                articlesService.addTag(tag);
+            })
+        })
+    },
     addNewsCallback: function addNewsCallback(article) {
         function addAndRender(article) {
             articlesService.addArticle(article);
+            filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
             renderPagination(undefined, articlesService.getArticlesCount());
         }
 
@@ -77,6 +84,7 @@ const callbackForFullNews = {
         function updateAndRender(article) {
             articlesService.editArticle(article.id, article);
             articleRenderer.editByID(article.id, article);
+            filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
         }
 
         if (articlesService.validateArticle(article)) {

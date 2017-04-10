@@ -37,14 +37,7 @@ const articlesService = (function () {
         tags: function (tag) {
             if (tag) {
                 if (tag.length > 0) {
-                    let check = true;
-                    tag.forEach(item => {
-                        if (tags.indexOf(item) === -1) {
-                            check = false;
-                            return false;
-                        }
-                    });
-                    return check;
+                    return true;
                 }
             }
             return false;
@@ -67,7 +60,7 @@ const articlesService = (function () {
         articles = global.articles;
         tags = global.tags;
         authors = global.authors;
-    }
+    }               //??
 
     function getArticles(skip, top, filterConfig) {
         skip = skip || 0;
@@ -165,7 +158,7 @@ const articlesService = (function () {
             }
         }
         return false;
-    }
+    }               //??
 
     function editArticle(id, article) {
         let articleToEdit = getArticle(id);

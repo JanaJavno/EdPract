@@ -93,7 +93,7 @@ const fullNewsService = (function () {
     }
 
     function handleSubmitNews() {
-        if(callbacks.editNewsCallBack(collectData())){
+        if (callbacks.editNewsCallBack(collectData())) {
             TEMPLATE_FULL_BACKGROUND.remove();
         }
         else {
@@ -113,9 +113,7 @@ const fullNewsService = (function () {
         addArticle['tags'] = TAGS_EDIT.getSelected();
         let newTags = TAGS_EDIT.getNew();
         if (newTags.length > 0) {
-            newTags.forEach(function (item) {
-                articlesService.addTag(item);
-            })
+            callbacks.addTags(newTags);
         }
         return addArticle;
     }
@@ -130,7 +128,7 @@ const fullNewsService = (function () {
             return template.content.querySelector('.news-background').cloneNode(true);
         }
         if (id) {
-            let article = articlesService.getArticle(id);
+            let article = callbacks.openEditAdd(id);
             let form = template.content.querySelector('.add-edit-news-form');
             form.elements[0].value = article.picture;
             form.elements[1].value = article.title;
@@ -198,7 +196,6 @@ const fullNewsService = (function () {
         let article = collectData();
         if (callbacks.addNewsCallback(article)) {
             TEMPLATE_FULL_BACKGROUND.remove();
-            filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
         }
         else {
             document.querySelector('.add-edit-news-invalid').style.visibility = 'visible';

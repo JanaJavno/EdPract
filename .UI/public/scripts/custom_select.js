@@ -8,7 +8,6 @@ function customInput() {
 
     function init(items, id, isAddButton) {
         CUSTOM_INPUT = document.getElementById(id);
-
         isAddButton = isAddButton || false;
         if (isAddButton) {
             CUSTOM_INPUT.innerHTML += "<button class=\"custom-input-add-button\" id=\"add-button\">Добавить</button>";
