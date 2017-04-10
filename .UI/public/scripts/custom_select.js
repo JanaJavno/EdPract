@@ -58,7 +58,7 @@ function customInput() {
 
     function handleAddClick() {
         let tag = prompt('Введите тег', '');
-        if (tag.length > 0) {
+        if (tag && tag.length > 0) {
             addItem(tag);
         }
     }

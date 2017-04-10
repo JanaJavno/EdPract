@@ -5,8 +5,8 @@ function startApp() {
     articleRenderer.init();
     let total = articlesService.getArticlesSize();
     renderPagination(undefined, total);
-    fullNewsService.init();
-    articleRenderer.showUserElements();
+    fullNewsService.init(callbackForFullNews);
+    articleRenderer.showUserElements(callbackForFullNews);
     userService.init();
     filter.init(renderFilter);
 }
@@ -17,6 +17,7 @@ function renderArticles(skip, top, filterConfig, place) {
 }
 
 function renderPagination(filter, total) {
+    articleRenderer.removeArticlesFromDom();
     let paginationParams = pagination.init(total, function (skip, top) {
         renderArticles(skip, top, filter, 'bot');
     });
@@ -26,7 +27,7 @@ function renderPagination(filter, total) {
     }
 }
 function renderFilter(value) {
-    if(value){
+    if (value) {
         articleRenderer.removeArticlesFromDom();
         let total = articlesService.getArticlesCount(value);
         if (total === 0) {
@@ -34,9 +35,53 @@ function renderFilter(value) {
         }
         renderPagination(value, total);
     }
-    if(!value){
+    if (!value) {
         articleRenderer.removeArticlesFromDom();
         let total = articlesService.getArticlesSize();
         renderPagination(undefined, total);
     }
 }
+
+
+const callbackForFullNews = {
+    tags: function () {
+        return articlesService.getTags();
+    },
+
+    addNewsCallback: function addNewsCallback(article) {
+        function addAndRender(article) {
+            articlesService.addArticle(article);
+            renderPagination(undefined, articlesService.getArticlesCount());
+        }
+
+        if (articlesService.validateArticle(article)) {
+            serverWorker.sendArticle(article, addAndRender);
+            return true;
+        }
+    },
+
+    deleteNewsCallback: function deleteNewsCallback(id) {
+        function deleteAndRender(id) {
+            articlesService.removeArticle(id);
+            renderPagination(undefined, articlesService.getArticlesCount());
+        }
+
+        serverWorker.deleteArticle(id, deleteAndRender);
+    },
+
+    openNewsCallback: function (id) {
+        return articlesService.getArticle(id);
+    },
+
+    editNewsCallBack: function (article) {
+        function updateAndRender(article) {
+            articlesService.editArticle(article.id, article);
+            articleRenderer.editByID(article.id, article);
+        }
+
+        if (articlesService.validateArticle(article)) {
+            serverWorker.updateArticle(article, updateAndRender);
+            return true;
+        }
+    }
+};

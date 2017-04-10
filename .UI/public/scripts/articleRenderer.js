@@ -118,10 +118,8 @@ const articleRenderer = (function () {
         }
     }
 
-    function editByID(id, article) {
-        articlesService.editArticle(id, article);
+    function editByID(id) {
         let idx = findNodeByID(ARTICLE_LIST_NODE_TOP, id);
-
         if (idx !== -1) {
             let insert = renderArticle(articlesService.getArticle(id), 'top');
             ARTICLE_LIST_NODE_TOP.replaceChild(insert, ARTICLE_LIST_NODE_TOP.children[idx]);

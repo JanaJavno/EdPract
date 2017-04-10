@@ -63,7 +63,7 @@ app.patch('/news', function (req, res) {
     };
     let updated = db.articles.update(query, req.body, options);
     console.log(updated);
-    res.json(index);
+    res.json(req.body);
 });
 
 app.get('/news/:id', function (req, res) {
@@ -80,14 +80,17 @@ app.delete('/news/:id', function (req, res) {
     console.log(article);
     db.deletedArticles.save(article);
     db.articles.remove({id: id});
-    res.json({idWasRemoved: Number(id)});
+    res.json(Number(id));
 });
 
 app.put('/news', function (req, res) {
     console.log("PUT");
+    let article = req.body;
+    article.createdAt = new Date();
+    article.id = generateID(article.createdAt).toString();
     db.articles.save(req.body);
     console.log(req.body);
-    res.json(req.body);
+    res.json(article);
 });
 app.put('/tags', function (req, res) {
 
@@ -110,3 +113,6 @@ const getFromDB = {
         return db.authors.find();
     }
 };
+function generateID(date) {
+    return date.getDate() + '' + (date.getMonth() + 1) + '' + date.getFullYear() + '' + date.getMinutes() + '' + date.getMilliseconds();
+}

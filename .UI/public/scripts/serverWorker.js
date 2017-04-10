@@ -20,9 +20,12 @@ const serverWorker = (function () {
         xhr.send(JSON.stringify(articles.tags));
     }
 
-    function updateArticle(article) {
+    function updateArticle(article,callback) {
         const xhr = new XMLHttpRequest();
-        xhr.open('PATCH', '/news', true);
+        xhr.open('PATCH', '/news');
+        xhr.onload = function () {
+            callback(JSON.parse(xhr.responseText));
+        };
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(article));
         return true;                                                     //переделать
@@ -35,18 +38,25 @@ const serverWorker = (function () {
         return JSON.parse(xhr.responseText);
     }
 
-    function deleteArticle(id) {
+    function deleteArticle(id, callback) {
         const xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+            callback(xhr.responseText);
+        };
         xhr.open('DELETE', '/news/' + id);
         xhr.send();
-        return true;                        //переделать
     }
 
-    function sendArticle(article) {
+    function sendArticle(article, callback) {
         const xhr = new XMLHttpRequest();
         xhr.open('PUT', '/news');
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(article));
+        xhr.onload = function () {
+            let article = JSON.parse(xhr.responseText);
+            article.createdAt = new Date(article.createdAt);
+            callback(article);
+        }
     }
 
     function sendTag(tag) {

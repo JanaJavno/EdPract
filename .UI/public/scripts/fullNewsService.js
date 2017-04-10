@@ -11,8 +11,9 @@ const fullNewsService = (function () {
     let EDIT_ID;
     let TAGS_EDIT;
     let articleToAdd;
+    let callbacks;
 
-    function init() {
+    function init(_callbacks) {
         TEMPLATE_FULL = document.getElementById('template-full-news');
         TOP_NEWS_CONTAINER = document.querySelector('.top-news-bar');
         BOTTOM_NEWS_CONTAINER = document.querySelector('.bottom-news-bar');
@@ -21,7 +22,7 @@ const fullNewsService = (function () {
         TEMPLATE_EDIT_ADD = document.getElementById('template-add-edit-news');
         ADD_NEWS_BUTTON = document.getElementById('add-button');
         ADD_NEWS_BUTTON.addEventListener('click', handleAddNewsClick);
-
+        callbacks = _callbacks;
     }
 
     function handleShowClick(event) {
@@ -63,7 +64,7 @@ const fullNewsService = (function () {
     }
 
     function renderFullNews(id) {
-        let article = articlesService.getArticle(id);
+        let article = callbacks.openNewsCallback(id);
         let template = TEMPLATE_FULL;
         template.content.querySelector('.top-image-full').style.backgroundImage = "url(" + article.picture + ")";
         template.content.querySelector('.full-left').innerHTML = article.author;
@@ -82,8 +83,8 @@ const fullNewsService = (function () {
         }
         EDIT_ID = node.getAttribute('data-id');
         openEditAdd(EDIT_ID);
-        TAGS_EDIT = customInput().init(articlesService.getTags(), 'add-edit-tags', true);
-        TAGS_EDIT.setSelected(articlesService.getArticle(EDIT_ID).tags);
+        TAGS_EDIT = customInput().init(callbacks.tags(), 'add-edit-tags', true);
+        TAGS_EDIT.setSelected(callbacks.openNewsCallback(EDIT_ID).tags);
         removeAddEditForm();
         contentArea = document.getElementById('add-content-field');
         contentArea.addEventListener('keydown', handleContentResize);
@@ -92,8 +93,7 @@ const fullNewsService = (function () {
     }
 
     function handleSubmitNews() {
-        if (validateAddFrom()) {
-            articleRenderer.editByID(EDIT_ID, articleToAdd);
+        if(callbacks.editNewsCallBack(collectData())){
             TEMPLATE_FULL_BACKGROUND.remove();
         }
         else {
@@ -101,14 +101,11 @@ const fullNewsService = (function () {
         }
     }
 
-    function validateAddFrom() {
-        articleToAdd = collectData();
-        return articlesService.validateArticle(articleToAdd);
-    }
 
     function collectData() {
         let addArticle = {};
         let form = document.forms.addNewsForm;
+        addArticle.id = EDIT_ID;
         addArticle['picture'] = form.elements[0].value;
         addArticle['title'] = form.elements[1].value;
         addArticle['summary'] = form.elements[2].value;
@@ -176,7 +173,7 @@ const fullNewsService = (function () {
         contentArea.addEventListener('keydown', handleContentResize);
         submitButton = document.getElementById('add-news-submit');
         submitButton.addEventListener('click', handleAddNewsSubmit);
-        TAGS_EDIT = customInput().init(articlesService.getTags(), 'add-edit-tags', true);
+        TAGS_EDIT = customInput().init(callbacks.tags(), 'add-edit-tags', true);
     }
 
     function handleContentResize() {
@@ -199,10 +196,9 @@ const fullNewsService = (function () {
 
     function handleAddNewsSubmit() {
         let article = collectData();
-        if (articlesService.validateArticle(article)) {
-            articlesService.addArticle(article);
+        if (callbacks.addNewsCallback(article)) {
             TEMPLATE_FULL_BACKGROUND.remove();
-            filter.fillFilter(articlesService.getTags(),articlesService.getAuthors());
+            filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
         }
         else {
             document.querySelector('.add-edit-news-invalid').style.visibility = 'visible';
@@ -215,11 +211,7 @@ const fullNewsService = (function () {
             node = node.parentNode;
         }
         let id = node.getAttribute('data-id');
-        articleRenderer.removeArticlesFromDomByID(id);
-        articlesService.removeArticle(id);
-        articleRenderer.removeArticlesFromDom();
-        renderArticles(0, 3, undefined, 'top');
-        renderPagination(undefined, articlesService.getArticlesSize());
+        callbacks.deleteNewsCallback(id);
     }
 
     function clearForms() {

@@ -159,20 +159,12 @@ const articlesService = (function () {
     function addArticle(article) {
         if (article) {
             if (validateArticle(article)) {
-                article.createdAt = new Date();
-                const size = generateID(article.createdAt);
-                article.id = size.toString();
                 article.author = userService.getUsername();
                 articles.push(article);
-                serverWorker.sendArticle(article);
                 return true;
             }
         }
         return false;
-    }
-
-    function generateID(date) {
-        return date.getDate() + '' + (date.getMonth() + 1) + '' + date.getFullYear() + '' + date.getMinutes() + '' + date.getMilliseconds();
     }
 
     function editArticle(id, article) {
@@ -181,14 +173,11 @@ const articlesService = (function () {
             const index = getArticleIndexByID(id);
             if (validateArticle(article)) {
                 article.id = id;
-                if (serverWorker.updateArticle(article)) {
-                    articles[index].content = article.content;
-                    articles[index].summary = article.summary;
-                    articles[index].title = article.title;
-                    articles[index].tags = article.tags;
-                    return true;
-                }
-                return false;
+                articles[index].content = article.content;
+                articles[index].summary = article.summary;
+                articles[index].title = article.title;
+                articles[index].tags = article.tags;
+                return true;
             }
         }
         return false;
@@ -197,8 +186,8 @@ const articlesService = (function () {
     function removeArticle(id) {
         if (getArticle(id)) {
             let index = getArticleIndexByID(id);
-            articles.splice(index, 1);                                           ///переделать!!!!!!!
-            return serverWorker.deleteArticle(id);
+            articles.splice(index, 1);
+            return true;
         }
         return false;
     }
