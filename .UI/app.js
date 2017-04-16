@@ -12,7 +12,8 @@ app.use(express.static('public'));
 
 app.use(bodyParser.json());
 
-app.get('/model', function (req, res) {
+
+app.get('/model', (req, res) => {
     console.log("GET MODEL");
     let keys = Object.keys(req.query);
     let model = {};
@@ -22,6 +23,11 @@ app.get('/model', function (req, res) {
     });
     res.json(model);
     console.log("MODEL SEND");
+});
+app.get('/articles', function (req, res) {
+    const skip = req.query.skip;
+    const top = req.query.top;
+    let articles = db.articles.find();
 });
 
 app.post('/news', function (req, res) {

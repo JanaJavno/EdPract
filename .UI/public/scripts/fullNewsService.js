@@ -10,10 +10,8 @@ const fullNewsService = (function () {
     const maxHeight = 400;
     let EDIT_ID;
     let TAGS_EDIT;
-    let articleToAdd;
-    let callbacks;
 
-    function init(_callbacks) {
+    function init() {
         TEMPLATE_FULL = document.getElementById('template-full-news');
         TOP_NEWS_CONTAINER = document.querySelector('.top-news-bar');
         BOTTOM_NEWS_CONTAINER = document.querySelector('.bottom-news-bar');
@@ -22,7 +20,6 @@ const fullNewsService = (function () {
         TEMPLATE_EDIT_ADD = document.getElementById('template-add-edit-news');
         ADD_NEWS_BUTTON = document.getElementById('add-button');
         ADD_NEWS_BUTTON.addEventListener('click', handleAddNewsClick);
-        callbacks = _callbacks;
     }
 
     function handleShowClick(event) {
@@ -64,7 +61,7 @@ const fullNewsService = (function () {
     }
 
     function renderFullNews(id) {
-        let article = callbacks.openNewsCallback(id);
+        let article = articlesService.getArticle(id);
         let template = TEMPLATE_FULL;
         template.content.querySelector('.top-image-full').style.backgroundImage = "url(" + article.picture + ")";
         template.content.querySelector('.full-left').innerHTML = article.author;
@@ -83,8 +80,8 @@ const fullNewsService = (function () {
         }
         EDIT_ID = node.getAttribute('data-id');
         openEditAdd(EDIT_ID);
-        TAGS_EDIT = customInput().init(callbacks.tags(), 'add-edit-tags', true);
-        TAGS_EDIT.setSelected(callbacks.openNewsCallback(EDIT_ID).tags);
+        TAGS_EDIT = customInput().init(articlesService.getTags(), 'add-edit-tags', true);
+        TAGS_EDIT.setSelected(articlesService.getArticle(EDIT_ID).tags);
         removeAddEditForm();
         contentArea = document.getElementById('add-content-field');
         contentArea.addEventListener('keydown', handleContentResize);
@@ -93,7 +90,9 @@ const fullNewsService = (function () {
     }
 
     function handleSubmitNews() {
-        if (callbacks.editNewsCallBack(collectData())) {
+        const article = collectData();
+        if (articlesService.validateArticle(article)) {
+            updateAndRender(article);
             TEMPLATE_FULL_BACKGROUND.remove();
         }
         else {
@@ -113,7 +112,7 @@ const fullNewsService = (function () {
         addArticle['tags'] = TAGS_EDIT.getSelected();
         let newTags = TAGS_EDIT.getNew();
         if (newTags.length > 0) {
-            callbacks.addTags(newTags);
+           updateTags(newTags);
         }
         return addArticle;
     }
@@ -128,13 +127,15 @@ const fullNewsService = (function () {
             return template.content.querySelector('.news-background').cloneNode(true);
         }
         if (id) {
-            let article = callbacks.openEditAdd(id);
+
+            let article = articlesService.getArticle(id);
             let form = template.content.querySelector('.add-edit-news-form');
             form.elements[0].value = article.picture;
             form.elements[1].value = article.title;
             form.elements[2].value = article.summary;
             form.elements[3].value = article.content;
             form.elements[3].style.height = maxHeight.toString() + 'px';
+
             return template.content.querySelector('.news-background').cloneNode(true);
         }
     }
@@ -171,7 +172,7 @@ const fullNewsService = (function () {
         contentArea.addEventListener('keydown', handleContentResize);
         submitButton = document.getElementById('add-news-submit');
         submitButton.addEventListener('click', handleAddNewsSubmit);
-        TAGS_EDIT = customInput().init(callbacks.tags(), 'add-edit-tags', true);
+        TAGS_EDIT = customInput().init(articlesService.getTags(), 'add-edit-tags', true);
     }
 
     function handleContentResize() {
@@ -194,7 +195,8 @@ const fullNewsService = (function () {
 
     function handleAddNewsSubmit() {
         let article = collectData();
-        if (callbacks.addNewsCallback(article)) {
+        if (articlesService.validateArticle(article)) {
+            addNewsAndRender(article);
             TEMPLATE_FULL_BACKGROUND.remove();
         }
         else {
@@ -208,7 +210,7 @@ const fullNewsService = (function () {
             node = node.parentNode;
         }
         let id = node.getAttribute('data-id');
-        callbacks.deleteNewsCallback(id);
+        deleteNewsAndRender(id);
     }
 
     function clearForms() {

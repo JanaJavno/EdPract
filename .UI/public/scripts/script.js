@@ -5,8 +5,8 @@ function startApp() {
     articleRenderer.init();
     const total = articlesService.getArticlesCount();
     renderPagination(undefined, total);
-    fullNewsService.init(callbackForFullNews);
-    articleRenderer.showUserElements(callbackForFullNews);
+    fullNewsService.init();
+    articleRenderer.showUserElements();
     userService.init();
     filter.init(renderFilter);
 }
@@ -26,9 +26,9 @@ function renderPagination(filter, total) {
         renderArticles(0, 3, undefined, 'top');
     }
 }
+
 function renderFilter(value) {
     if (value) {
-        articleRenderer.removeArticlesFromDom();
         let total = articlesService.getArticlesCount(value);
         if (total === 0) {
             articleRenderer.renderErrorFilter();
@@ -36,60 +36,43 @@ function renderFilter(value) {
         renderPagination(value, total);
     }
     if (!value) {
-        articleRenderer.removeArticlesFromDom();
         let total = articlesService.getArticlesSize();
         renderPagination(undefined, total);
     }
 }
 
+function addNewsAndRender(article) {
+    serverWorker.sendArticle(article)
+        .then(response => {
+            articlesService.addArticle(response);
+            filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
+            renderPagination(undefined, articlesService.getArticlesCount());
+        })
+}
 
-const callbackForFullNews = {
-    tags: function () {
-        return articlesService.getTags();
-    },
-    addTags: function (tags) {
-        serverWorker.sendTag(tags, function () {
-            tags.forEach(tag => {
+function deleteNewsAndRender(id) {
+    serverWorker.deleteArticle(id)
+        .then(response => {
+            articlesService.removeArticle(response);
+            renderPagination(undefined, articlesService.getArticlesCount());
+        })
+}
+
+function updateAndRender(article) {
+    serverWorker.updateArticle(article)
+        .then(response => {
+            articlesService.editArticle(response.id, response);
+            articleRenderer.editByID(response.id);
+            filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
+        })
+}
+
+function updateTags(tags) {
+    serverWorker.sendTag(tags)
+        .then(resolve => {
+            resolve.forEach(tag => {
                 articlesService.addTag(tag);
             })
         })
-    },
-    addNewsCallback: function addNewsCallback(article) {
-        function addAndRender(article) {
-            articlesService.addArticle(article);
-            filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
-            renderPagination(undefined, articlesService.getArticlesCount());
-        }
 
-        if (articlesService.validateArticle(article)) {
-            serverWorker.sendArticle(article, addAndRender);
-            return true;
-        }
-    },
-
-    deleteNewsCallback: function deleteNewsCallback(id) {
-        function deleteAndRender(id) {
-            articlesService.removeArticle(id);
-            renderPagination(undefined, articlesService.getArticlesCount());
-        }
-
-        serverWorker.deleteArticle(id, deleteAndRender);
-    },
-
-    openNewsCallback: function (id) {
-        return articlesService.getArticle(id);
-    },
-
-    editNewsCallBack: function (article) {
-        function updateAndRender(article) {
-            articlesService.editArticle(article.id, article);
-            articleRenderer.editByID(article.id, article);
-            filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
-        }
-
-        if (articlesService.validateArticle(article)) {
-            serverWorker.updateArticle(article, updateAndRender);
-            return true;
-        }
-    }
-};
+}

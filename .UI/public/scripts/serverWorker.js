@@ -10,6 +10,24 @@ const serverWorker = (function () {
         return model;
     }
 
+    function getArticles(skip, top) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'articles?from=' + skip.toString() + '&top=' + top.toString());
+            xhr.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(JSON.parse(xhr.responseText));
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
+                }
+            };
+            xhr.send();
+        })
+    }
+
     function globalPost(articles) {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/news');
@@ -20,15 +38,24 @@ const serverWorker = (function () {
         xhr.send(JSON.stringify(articles.tags));
     }
 
-    function updateArticle(article, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('PATCH', '/news');
-        xhr.onload = function () {
-            callback(JSON.parse(xhr.responseText));
-        };
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(article));
-        return true;                                                     //переделать
+    function updateArticle(article) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('PATCH', '/news');
+            xhr.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(JSON.parse(xhr.responseText));
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
+                }
+            };
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(article));
+        })
+
     }
 
     function getFullArticle(id) {
@@ -38,46 +65,78 @@ const serverWorker = (function () {
         return JSON.parse(xhr.responseText);
     }
 
-    function deleteArticle(id, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.onload = function () {
-            callback(xhr.responseText);
-        };
-        xhr.open('DELETE', '/news/' + id);
-        xhr.send();
+    function deleteArticle(id) {
+        return new Promise(function (resolve, reject) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('DELETE', '/news/' + id);
+            xhr.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(xhr.responseText);
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
+                }
+            };
+            xhr.send();
+        })
     }
 
-    function sendArticle(article, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('PUT', '/news');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(article));
-        xhr.onload = function () {
-            let article = JSON.parse(xhr.responseText);
-            article.createdAt = new Date(article.createdAt);
-            callback(article);
-        }
+    function sendArticle(article) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('PUT', '/news');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    let article = JSON.parse(xhr.responseText);
+                    article.createdAt = new Date(article.createdAt);
+                    resolve(article);
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
+                }
+            };
+            xhr.onerror = function () {
+                reject({
+                    status: this.status,
+                    statusText: xhr.statusText
+                });
+            };
+            xhr.send(JSON.stringify(article));
+        })
     }
 
-    function sendTag(tags, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.onload = function () {
-            callback(JSON.parse(xhr.responseText));
-        };
-        xhr.open('PUT', '/tags');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(tags));
+    function sendTag(tags) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('PUT', '/tags');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(JSON.parse(xhr.responseText));
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
+                }
+            };
+            xhr.send(JSON.stringify(tags));
+        });
     }
 
     return {
-
         globalGet: globalGet,
         globalPost: globalPost,
-        updateArticle: updateArticle,
         getFullArticle: getFullArticle,
-        deleteArticle: deleteArticle,
-        sendArticle: sendArticle,
         sendTag: sendTag,
-
+        sendArticle: sendArticle,
+        deleteArticle: deleteArticle,
+        updateArticle, updateArticle,
+        getArticles,getArticles,
     };
 }());
