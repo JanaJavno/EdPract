@@ -6,7 +6,7 @@ const app = express();
 
 const db = require('diskdb');
 
-db.connect('private', ['tags', 'articles', 'deletedArticles', 'authors']);
+db.connect('private', ['tags', 'articles', 'deletedArticles', 'authors', 'userbase']);
 
 app.use(express.static('public'));
 
@@ -24,13 +24,28 @@ app.get('/model', (req, res) => {
     res.json(model);
     console.log('MODEL SEND');
 });
-app.get('/articles', (req, res) =>{
+
+app.get('/user', (req, res) => {
+    const query = req.query;
+    console.log(query);
+    let user = db.userbase.findOne(query);
+    console.log(user);
+    if (user) {
+        res.json(user.username);
+    }
+    else {
+        res.status(404)        // HTTP status 404: NotFound
+            .send('Not found');
+    }
+});
+
+app.get('/articles', (req, res) => {
     const skip = req.query.skip;
     const top = req.query.top;
     let articles = db.articles.find();//доделать
 });
 
-app.post('/news', (req, res) =>{
+app.post('/news', (req, res) => {
     console.log('POST');
     db.articles.remove();
     db.loadCollections(['articles']);
@@ -38,7 +53,7 @@ app.post('/news', (req, res) =>{
     res.json(req.body);
 });
 
-app.post('/tags', (req, res) =>{
+app.post('/tags', (req, res) => {
     console.log("POST");
     db.tags.remove();
     db.loadCollections(['tags']);
@@ -46,7 +61,7 @@ app.post('/tags', (req, res) =>{
     res.json(req.body);
 });
 
-app.patch('/news', (req, res) =>{
+app.patch('/news', (req, res) => {
     console.log('PATH');
     let index = req.body.id;
     let query = db.articles.findOne({id: index.toString()});
@@ -60,13 +75,13 @@ app.patch('/news', (req, res) =>{
     res.json(req.body);
 });
 
-app.get('/news/:id', (req, res) =>{
+app.get('/news/:id', (req, res) => {
     console.log('GET');
     let article = db.articlse.findOne({id: req.params.id});
     res.json(article);
 });
 
-app.delete('/news/:id', (req, res) =>{
+app.delete('/news/:id', (req, res) => {
     console.log('DELETE');
     let id = req.params.id;
     console.log(id);
@@ -77,7 +92,7 @@ app.delete('/news/:id', (req, res) =>{
     res.json(Number(id));
 });
 
-app.put('/news', (req, res) =>{
+app.put('/news', (req, res) => {
     console.log('PUT');
     let article = req.body;
     article.createdAt = new Date();
@@ -87,7 +102,7 @@ app.put('/news', (req, res) =>{
     res.json(article);
 });
 
-app.put('/tags', (req, res) =>{
+app.put('/tags', (req, res) => {
     console.log('PUT');
     const tags = req.body;
     tags.forEach(tag => {
@@ -97,7 +112,7 @@ app.put('/tags', (req, res) =>{
     res.json(req.body);
 });
 
-app.listen(3000, () =>{
+app.listen(3000, () => {
     console.log('Example app listening on port 3000! NEW!!');
 });
 

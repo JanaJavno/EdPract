@@ -42,6 +42,7 @@ function renderFilter(value) {
 }
 
 function addNewsAndRender(article) {
+    article.author = userService.getUsername();
     serverWorker.sendArticle(article)
         .then(response => {
             articlesService.addArticle(response);

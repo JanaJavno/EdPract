@@ -5,11 +5,6 @@ const userService = (function () {
         username: '',
         password: ''
     };
-    const USER_BASE = [{
-        login: 'admin',
-        username: 'Цаль Виталий',
-        password: 'admin'
-    }];
     let LOGIN_BUTTON_FORM;
     let LOGIN_FORM;
     let LOGIN_BUTTON;
@@ -20,7 +15,7 @@ const userService = (function () {
         LOGIN_FORM = document.querySelector('.login-form-wrapper');
         LOGIN_FORM.style.display = 'none';
         LOGIN_BUTTON = document.getElementById('login-button');
-        LOGIN_BUTTON.addEventListener('click', handleClickLogin);              //проверка существования пользователя
+        LOGIN_BUTTON.addEventListener('click', handleClickLogin);
     }
 
     function handleClickLoginButton(event) {
@@ -47,15 +42,17 @@ const userService = (function () {
         if (target.type !== 'button') return;
         if (target.id === 'login-button') {
             const data = collectData();
-            if (validateUser(data[0], data[1])) {
-                USER_STATUS = true;
-                articleRenderer.showUserElements(CURRENT_USER.username);
-                LOGIN_FORM.style.display = 'none';
-                clearForm();
-            }
-            else {
-                alert('Неверное имя пользователя или пароль');
-            }
+            serverWorker.findUser(data)
+                .then(response => {
+                    CURRENT_USER.username = JSON.parse(response);
+                    USER_STATUS = true;
+                    articleRenderer.showUserElements(CURRENT_USER.username);
+                    LOGIN_FORM.style.display = 'none';
+                    clearForm();
+                })
+                .catch(() => {
+                    alert('Неверное имя пользователя или пароль');
+                });
         }
     }
 
@@ -69,9 +66,9 @@ const userService = (function () {
 
     function collectData() {
         const form = document.getElementById('login-form');
-        let data = [];
-        data.push(form.elements[0].value);
-        data.push(form.elements[1].value);
+        let data = {};
+        data.login = form.elements[0].value;
+        data.password = form.elements[1].value;
         return data;
     }
 
@@ -81,17 +78,6 @@ const userService = (function () {
         form.elements[1].value = '';
     }
 
-    function validateUser(login, password) {
-        const findUser = USER_BASE.find(item => item.login === login);
-        if (findUser) {
-            if (findUser.password === password) {
-                USER_STATUS = true;
-                CURRENT_USER = findUser;
-                return true;
-            }
-        }
-        return false;
-    }
 
     return {
         init: init,

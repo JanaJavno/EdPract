@@ -152,13 +152,12 @@ const articlesService = (function () {
     function addArticle(article) {
         if (article) {
             if (validateArticle(article)) {
-                article.author = userService.getUsername();
                 articles.push(article);
                 return true;
             }
         }
         return false;
-    }               //??
+    }
 
     function editArticle(id, article) {
         let articleToEdit = getArticle(id);

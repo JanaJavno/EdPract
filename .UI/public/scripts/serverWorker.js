@@ -129,6 +129,24 @@ const serverWorker = (function () {
         });
     }
 
+    function findUser(user) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/user?login=' + user.login.toString() + '&password=' + user.password.toString());
+            xhr.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(xhr.responseText);
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
+                }
+            };
+            xhr.send();
+        })
+    }
+
     return {
         globalGet: globalGet,
         globalPost: globalPost,
@@ -137,6 +155,7 @@ const serverWorker = (function () {
         sendArticle: sendArticle,
         deleteArticle: deleteArticle,
         updateArticle, updateArticle,
-        getArticles,getArticles,
+        getArticles, getArticles,
+        findUser: findUser,
     };
 }());
