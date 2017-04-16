@@ -62,7 +62,7 @@ function updateAndRender(article) {
     serverWorker.updateArticle(article)
         .then(response => {
             articlesService.editArticle(response.id, response);
-            articleRenderer.editByID(response.id);
+            articleRenderer.editByID(response);
             filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
         })
 }

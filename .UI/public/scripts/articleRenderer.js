@@ -14,12 +14,11 @@ const articleRenderer = (function () {
         ARTICLE_LIST_NODE_BOT = document.querySelector('.bottom-news');
     }
 
-    function showUserElements() {
+    function showUserElements(username) {
         let editButtons = document.getElementsByClassName('edit-panel');
         let button = document.getElementById('add-button');
         let user = document.querySelector('.login');
-        if (userService.getUsername().length !== 0) {
-        } else {
+        if (!username || username.length === 0) {
             user.innerHTML = 'Вход';
             button.style.visibility = 'hidden';
 
@@ -30,7 +29,7 @@ const articleRenderer = (function () {
             ARTICLE_TEMPLATE_BIG.content.querySelector('.edit-panel').style.visibility = 'hidden';
             ARTICLE_TEMPLATE_SMALL.content.querySelector('.edit-panel').style.visibility = 'hidden';
         }
-        if (userService.getUsername().length !== 0) {
+        if (username) {
             user.innerHTML = 'Привет, ' + userService.getUsername();
             [].forEach.call(editButtons, item => {
                 item.style.visibility = 'visible'
@@ -118,15 +117,15 @@ const articleRenderer = (function () {
         }
     }
 
-    function editByID(id) {
-        let idx = findNodeByID(ARTICLE_LIST_NODE_TOP, id);
+    function editByID(article) {
+        let idx = findNodeByID(ARTICLE_LIST_NODE_TOP, article.id);
         if (idx !== -1) {
-            let insert = renderArticle(articlesService.getArticle(id), 'top');
+            let insert = renderArticle(article, 'top');
             ARTICLE_LIST_NODE_TOP.replaceChild(insert, ARTICLE_LIST_NODE_TOP.children[idx]);
         }
-        idx = findNodeByID(ARTICLE_LIST_NODE_BOT, id);
+        idx = findNodeByID(ARTICLE_LIST_NODE_BOT, article.id);
         if (idx !== -1) {
-            let insert = renderArticle(articlesService.getArticle(id), 'bot');
+            let insert = renderArticle(article, 'bot');
             ARTICLE_LIST_NODE_BOT.replaceChild(insert, ARTICLE_LIST_NODE_BOT.children[idx]);
         }
     }

@@ -49,7 +49,7 @@ const userService = (function () {
             const data = collectData();
             if (validateUser(data[0], data[1])) {
                 USER_STATUS = true;
-                articleRenderer.showUserElements();
+                articleRenderer.showUserElements(CURRENT_USER.username);
                 LOGIN_FORM.style.display = 'none';
                 clearForm();
             }

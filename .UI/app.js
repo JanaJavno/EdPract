@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 
 app.get('/model', (req, res) => {
-    console.log("GET MODEL");
+    console.log('GET MODEL');
     let keys = Object.keys(req.query);
     let model = {};
     keys.forEach(function (key) {
@@ -22,23 +22,23 @@ app.get('/model', (req, res) => {
         console.log(model);
     });
     res.json(model);
-    console.log("MODEL SEND");
+    console.log('MODEL SEND');
 });
-app.get('/articles', function (req, res) {
+app.get('/articles', (req, res) =>{
     const skip = req.query.skip;
     const top = req.query.top;
-    let articles = db.articles.find();
+    let articles = db.articles.find();//доделать
 });
 
-app.post('/news', function (req, res) {
-    console.log("POST");
+app.post('/news', (req, res) =>{
+    console.log('POST');
     db.articles.remove();
     db.loadCollections(['articles']);
     db.articles.save(req.body);
     res.json(req.body);
 });
 
-app.post('/tags', function (req, res) {
+app.post('/tags', (req, res) =>{
     console.log("POST");
     db.tags.remove();
     db.loadCollections(['tags']);
@@ -46,8 +46,8 @@ app.post('/tags', function (req, res) {
     res.json(req.body);
 });
 
-app.patch('/news', function (req, res) {
-    console.log("PATH");
+app.patch('/news', (req, res) =>{
+    console.log('PATH');
     let index = req.body.id;
     let query = db.articles.findOne({id: index.toString()});
     console.log(index);
@@ -60,14 +60,14 @@ app.patch('/news', function (req, res) {
     res.json(req.body);
 });
 
-app.get('/news/:id', function (req, res) {
-    console.log("GET");
+app.get('/news/:id', (req, res) =>{
+    console.log('GET');
     let article = db.articlse.findOne({id: req.params.id});
     res.json(article);
 });
 
-app.delete('/news/:id', function (req, res) {
-    console.log("DELETE");
+app.delete('/news/:id', (req, res) =>{
+    console.log('DELETE');
     let id = req.params.id;
     console.log(id);
     let article = db.articles.findOne({id: req.params.id});
@@ -77,8 +77,8 @@ app.delete('/news/:id', function (req, res) {
     res.json(Number(id));
 });
 
-app.put('/news', function (req, res) {
-    console.log("PUT");
+app.put('/news', (req, res) =>{
+    console.log('PUT');
     let article = req.body;
     article.createdAt = new Date();
     article.id = generateID(article.createdAt).toString();
@@ -87,8 +87,8 @@ app.put('/news', function (req, res) {
     res.json(article);
 });
 
-app.put('/tags', function (req, res) {
-    console.log("PUT");
+app.put('/tags', (req, res) =>{
+    console.log('PUT');
     const tags = req.body;
     tags.forEach(tag => {
         db.tags.save(tag);
@@ -97,7 +97,7 @@ app.put('/tags', function (req, res) {
     res.json(req.body);
 });
 
-app.listen(3000, function () {
+app.listen(3000, () =>{
     console.log('Example app listening on port 3000! NEW!!');
 });
 
