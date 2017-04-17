@@ -60,7 +60,7 @@ const articlesService = (function () {
         articles = global.articles;
         tags = global.tags;
         authors = global.authors;
-    }               //??
+    }
 
     function getArticles(skip, top, filterConfig) {
         skip = skip || 0;

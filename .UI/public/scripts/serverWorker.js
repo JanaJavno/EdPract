@@ -10,13 +10,41 @@ const serverWorker = (function () {
         return model;
     }
 
-    function getArticles(skip, top) {
+    function getArticles(skip, top, filterConfig) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'articles?from=' + skip.toString() + '&top=' + top.toString());
-            xhr.onload = function () {
-                if (this.status >= 200 && this.status < 300) {
-                    resolve(JSON.parse(xhr.responseText));
+            xhr.open('GET', `articles?skip=${skip}&top=${top}&filterConfig=${JSON.stringify(filterConfig)}`);
+            xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    const articles = JSON.parse(xhr.responseText);
+                    if (typeof articles === 'number') {
+                        resolve(articles);
+                        return;
+                    }
+                    articles.forEach(article => {
+                        article.createdAt = new Date(article.createdAt);
+                    });
+                    resolve(articles);
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
+                }
+            };
+            xhr.send();
+        })
+    }
+
+    function getArticle(id) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'article/' + id);
+            xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    const article = JSON.parse(xhr.responseText);
+                    article.createdAt = new Date(article.createdAt);
+                    resolve(article);
                 } else {
                     reject({
                         status: this.status,
@@ -44,7 +72,9 @@ const serverWorker = (function () {
             xhr.open('PATCH', '/news');
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    resolve(JSON.parse(xhr.responseText));
+                    const response = JSON.parse(xhr.responseText);
+                    response.article.createdAt = new Date(response.article.createdAt);
+                    resolve(response);
                 } else {
                     reject({
                         status: this.status,
@@ -71,7 +101,7 @@ const serverWorker = (function () {
             xhr.open('DELETE', '/news/' + id);
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    resolve(xhr.responseText);
+                    resolve(JSON.parse(xhr.responseText));
                 } else {
                     reject({
                         status: this.status,
@@ -90,9 +120,11 @@ const serverWorker = (function () {
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    let article = JSON.parse(xhr.responseText);
+                    const response = JSON.parse(xhr.responseText);
+                    let article = response.article;
+                    const size = response.size;
                     article.createdAt = new Date(article.createdAt);
-                    resolve(article);
+                    resolve({article,size});
                 } else {
                     reject({
                         status: this.status,
@@ -157,5 +189,6 @@ const serverWorker = (function () {
         updateArticle, updateArticle,
         getArticles, getArticles,
         findUser: findUser,
+        getArticle, getArticle
     };
 }());

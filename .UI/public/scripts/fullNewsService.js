@@ -26,7 +26,6 @@ const fullNewsService = (function () {
         let target = event.target;
         if (target.type === 'button') {
             openFullNews(target);
-            waitForClose();
         }
         if (target.className === 'delete-news') {
             deleteNews(target);
@@ -36,7 +35,6 @@ const fullNewsService = (function () {
         }
         if (target.tagName.toLocaleLowerCase() === 'h5') {
             openFullNews(target);
-            waitForClose();
         }
     }
 
@@ -47,7 +45,11 @@ const fullNewsService = (function () {
             node = node.parentNode;
         }
         let id = node.getAttribute('data-id');
-        document.body.appendChild(renderFullNews(id));
+        serverWorker.getArticle(id)
+            .then(article => {
+                document.body.appendChild(renderFullNews(article));
+                waitForClose();
+            })
     }
 
     function waitForClose() {
@@ -60,8 +62,7 @@ const fullNewsService = (function () {
         TEMPLATE_FULL_BACKGROUND.remove();
     }
 
-    function renderFullNews(id) {
-        let article = articlesService.getArticle(id);
+    function renderFullNews(article) {
         let template = TEMPLATE_FULL;
         template.content.querySelector('.top-image-full').style.backgroundImage = "url(" + article.picture + ")";
         template.content.querySelector('.full-left').innerHTML = article.author;
@@ -79,14 +80,16 @@ const fullNewsService = (function () {
             node = node.parentNode;
         }
         EDIT_ID = node.getAttribute('data-id');
-        openEditAdd(EDIT_ID);
-        TAGS_EDIT = customInput().init(articlesService.getTags(), 'add-edit-tags', true);
-        TAGS_EDIT.setSelected(articlesService.getArticle(EDIT_ID).tags);
-        removeAddEditForm();
-        contentArea = document.getElementById('add-content-field');
-        contentArea.addEventListener('keydown', handleContentResize);
-        submitButton = document.getElementById('add-news-submit');
-        submitButton.addEventListener('click', handleSubmitNews);
+        openEditAdd(EDIT_ID)
+            .then(resolve => {
+                TAGS_EDIT = customInput().init(articlesService.getTags(), 'add-edit-tags', true);
+                TAGS_EDIT.setSelected(resolve.tags);
+                removeAddEditForm();
+                contentArea = document.getElementById('add-content-field');
+                contentArea.addEventListener('keydown', handleContentResize);
+                submitButton = document.getElementById('add-news-submit');
+                submitButton.addEventListener('click', handleSubmitNews);
+            });
     }
 
     function handleSubmitNews() {
@@ -112,30 +115,38 @@ const fullNewsService = (function () {
         addArticle['tags'] = TAGS_EDIT.getSelected();
         let newTags = TAGS_EDIT.getNew();
         if (newTags.length > 0) {
-           updateTags(newTags);
+            updateTags(newTags);
         }
         return addArticle;
     }
 
     function openEditAdd(id) {
-        document.body.appendChild(renderAddEditNews(id));
+        return new Promise((resolve,reject)=>{
+            if (!id) {
+                document.body.appendChild(renderAddEditNews());
+                resolve("OK");
+            }
+            serverWorker.getArticle(id)
+                .then(article => {
+                    document.body.appendChild(renderAddEditNews(article));
+                    resolve(article);
+                });
+        })
+
     }
 
-    function renderAddEditNews(id) {
+    function renderAddEditNews(article) {
         let template = TEMPLATE_EDIT_ADD;
-        if (!id) {
+        if (!article) {
             return template.content.querySelector('.news-background').cloneNode(true);
         }
-        if (id) {
-
-            let article = articlesService.getArticle(id);
+        if (article) {
             let form = template.content.querySelector('.add-edit-news-form');
             form.elements[0].value = article.picture;
             form.elements[1].value = article.title;
             form.elements[2].value = article.summary;
             form.elements[3].value = article.content;
             form.elements[3].style.height = maxHeight.toString() + 'px';
-
             return template.content.querySelector('.news-background').cloneNode(true);
         }
     }

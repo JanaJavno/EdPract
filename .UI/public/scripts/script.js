@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', startApp);
 
 function startApp() {
-    articlesService.getArticlesFromServer();
     articleRenderer.init();
-    const total = articlesService.getArticlesCount();
-    renderPagination(undefined, total);
+    serverWorker.getArticles(undefined, undefined, undefined)
+        .then(total => {
+            renderPagination(undefined, total);
+        });
     fullNewsService.init();
     articleRenderer.showUserElements();
     userService.init();
@@ -12,8 +13,10 @@ function startApp() {
 }
 
 function renderArticles(skip, top, filterConfig, place) {
-    let articlesTop = articlesService.getArticles(skip, top, filterConfig);
-    articleRenderer.insertArticlesInDOM(articlesTop, place);
+    serverWorker.getArticles(skip, top, filterConfig)
+        .then(articles => {
+            articleRenderer.insertArticlesInDOM(articles, place);
+        });
 }
 
 function renderPagination(filter, total) {
@@ -29,15 +32,21 @@ function renderPagination(filter, total) {
 
 function renderFilter(value) {
     if (value) {
-        let total = articlesService.getArticlesCount(value);
-        if (total === 0) {
-            articleRenderer.renderErrorFilter();
-        }
-        renderPagination(value, total);
+        serverWorker.getArticles(undefined, undefined, value)
+            .then(articles => {
+                let total = articles.length;
+                if (total === 0) {
+                    articleRenderer.renderErrorFilter();
+                }
+                renderPagination(value, total);
+            })
+
     }
     if (!value) {
-        let total = articlesService.getArticlesSize();
-        renderPagination(undefined, total);
+        serverWorker.getArticles(undefined, undefined, undefined)
+            .then(total => {
+                renderPagination(undefined, total);
+            });
     }
 }
 
@@ -45,26 +54,24 @@ function addNewsAndRender(article) {
     article.author = userService.getUsername();
     serverWorker.sendArticle(article)
         .then(response => {
-            articlesService.addArticle(response);
+            articlesService.addArticle(response.article);
             filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
-            renderPagination(undefined, articlesService.getArticlesCount());
+            renderPagination(undefined, response.size);
         })
 }
 
 function deleteNewsAndRender(id) {
     serverWorker.deleteArticle(id)
         .then(response => {
-            articlesService.removeArticle(response);
-            renderPagination(undefined, articlesService.getArticlesCount());
+            articleRenderer.removeArticlesFromDomByID(response.id);
         })
 }
 
 function updateAndRender(article) {
     serverWorker.updateArticle(article)
         .then(response => {
-            articlesService.editArticle(response.id, response);
-            articleRenderer.editByID(response);
-            filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
+            articleRenderer.editByID(response.article);
+            filter.fillFilter(articlesService.getTags(), response.size);
         })
 }
 
