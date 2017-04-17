@@ -1,13 +1,21 @@
 const serverWorker = (function () {
-    function globalGet() {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', '/model?articles=true&tags=true&authors=true', false);
-        xhr.send();
-        const model = JSON.parse(xhr.responseText);
-        model.articles.forEach(article => {
-            article.createdAt = new Date(article.createdAt);
+    function getModel() {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/model?&tags=true&authors=true');
+            xhr.send();
+            xhr.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    const model = JSON.parse(xhr.responseText);
+                    resolve(model);
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
+                }
+            };
         });
-        return model;
     }
 
     function getArticles(skip, top, filterConfig) {
@@ -124,7 +132,7 @@ const serverWorker = (function () {
                     let article = response.article;
                     const size = response.size;
                     article.createdAt = new Date(article.createdAt);
-                    resolve({article,size});
+                    resolve({article, size});
                 } else {
                     reject({
                         status: this.status,
@@ -180,7 +188,7 @@ const serverWorker = (function () {
     }
 
     return {
-        globalGet: globalGet,
+        getModel: getModel,
         globalPost: globalPost,
         getFullArticle: getFullArticle,
         sendTag: sendTag,

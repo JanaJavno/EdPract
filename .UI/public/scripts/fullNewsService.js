@@ -121,7 +121,7 @@ const fullNewsService = (function () {
     }
 
     function openEditAdd(id) {
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve) => {
             if (!id) {
                 document.body.appendChild(renderAddEditNews());
                 resolve("OK");

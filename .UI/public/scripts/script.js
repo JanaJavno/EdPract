@@ -9,7 +9,11 @@ function startApp() {
     fullNewsService.init();
     articleRenderer.showUserElements();
     userService.init();
-    filter.init(renderFilter);
+
+    serverWorker.getModel()
+        .then(model => {
+            filter.init(renderFilter, model.authors, model.tags);
+        });
 }
 
 function renderArticles(skip, top, filterConfig, place) {
@@ -33,14 +37,12 @@ function renderPagination(filter, total) {
 function renderFilter(value) {
     if (value) {
         serverWorker.getArticles(undefined, undefined, value)
-            .then(articles => {
-                let total = articles.length;
+            .then(total => {
                 if (total === 0) {
                     articleRenderer.renderErrorFilter();
                 }
                 renderPagination(value, total);
-            })
-
+            });
     }
     if (!value) {
         serverWorker.getArticles(undefined, undefined, undefined)
@@ -55,9 +57,12 @@ function addNewsAndRender(article) {
     serverWorker.sendArticle(article)
         .then(response => {
             articlesService.addArticle(response.article);
-            filter.fillFilter(articlesService.getTags(), articlesService.getAuthors());
             renderPagination(undefined, response.size);
-        })
+        });
+    serverWorker.getModel()
+        .then(model => {
+            filter.fillFilter(model.tags, model.authors);
+        });
 }
 
 function deleteNewsAndRender(id) {
@@ -71,7 +76,10 @@ function updateAndRender(article) {
     serverWorker.updateArticle(article)
         .then(response => {
             articleRenderer.editByID(response.article);
-            filter.fillFilter(articlesService.getTags(), response.size);
+            serverWorker.getModel()
+                .then(model => {
+                    filter.fillFilter(model.tags, model.authors);
+                });
         })
 }
 

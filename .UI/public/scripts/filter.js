@@ -5,12 +5,12 @@ const filter = (function () {
     let authorFilter;
     let showFilterCallback;
 
-    function init(_CALLBACK) {
+    function init(_CALLBACK, _authors, _tags) {
         form = document.forms.filter;
         submitButton = form.elements.filterButton;
         submitButton.addEventListener('click', handleSubmitClick);
-        tagsFilter = customInput().init(articlesService.getTags(), 'tags-filter');
-        authorFilter = customInput().init(articlesService.getAuthors(), 'author-filter');
+        tagsFilter = customInput().init(_tags, 'tags-filter');
+        authorFilter = customInput().init(_authors, 'author-filter');
         showFilterCallback = _CALLBACK;
         return getFilter();
     }

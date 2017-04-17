@@ -55,47 +55,6 @@ const articlesService = (function () {
     let articles = [];
     let authors = [];
 
-    function getArticlesFromServer() {
-        let global = serverWorker.globalGet();
-        articles = global.articles;
-        tags = global.tags;
-        authors = global.authors;
-    }
-
-    function getArticles(skip, top, filterConfig) {
-        skip = skip || 0;
-        top = top || articles.length;
-        articles.sort((a, b) => b.createdAt - a.createdAt);
-
-        return filterArticles(articles, filterConfig).slice(skip, skip + top);
-    }
-
-    function filterArticles(articles, filterConfig) {
-        if (filterConfig) {
-            if (filterConfig.author) {
-                articles = articles.filter(item => filterConfig.author.indexOf(item.author) !== -1);
-            }
-            if (filterConfig.createdAtFrom) {
-                articles = articles.filter(item => item.createdAt >= filterConfig.createdAtFrom);
-            }
-            if (filterConfig.createdAtTo) {
-                articles = articles.filter(item => item.createdAt <= filterConfig.createdAtTo);
-            }
-            if (filterConfig.tags && filterConfig.tags.length > 0) {
-                articles = articles.filter(article => {
-                    let check = true;
-                    filterConfig.tags.forEach(function (item) {
-                        if (article.tags.indexOf(item) === -1) {
-                            check = false;
-                        }
-                    });
-                    return check;
-                })
-            }
-        }
-        return articles;
-    }
-
     function getAuthors() {
         return authors;
     }
@@ -125,11 +84,7 @@ const articlesService = (function () {
         return false;
 
     }
-
-    function getArticlesCount(filterConfig) {
-        return getArticles(undefined, undefined, filterConfig).length;
-    }
-
+    
     function addTag(tag) {
         if (tag) {
             if (tags.indexOf(tag) === -1) {
@@ -184,9 +139,6 @@ const articlesService = (function () {
         return false;
     }
 
-    function getArticlesSize() {
-        return articles.length;
-    }
 
     return {
         getArticles: getArticles,
@@ -197,10 +149,8 @@ const articlesService = (function () {
         addArticle: addArticle,
         editArticle: editArticle,
         removeArticle: removeArticle,
-        getArticlesSize: getArticlesSize,
         getArticlesCount: getArticlesCount,
         getAuthors: getAuthors,
         getTags: getTags,
-        getArticlesFromServer: getArticlesFromServer,
     };
 }());
