@@ -89,8 +89,8 @@ app.patch('/news', (req, res) => {
     const size = articles.size;
     let updated = db.articles.update(query, req.body, options);
     console.log(updated);
-    const article =  db.articles.findOne({id: index.toString()});
-    res.json({article,size});
+    const article = db.articles.findOne({id: index.toString()});
+    res.json({article, size});
 });
 
 app.get('/news/:id', (req, res) => {
@@ -108,7 +108,7 @@ app.delete('/news/:id', (req, res) => {
     db.deletedArticles.save(article);
     db.articles.remove({id: id});
     const size = articles.length;
-    res.json({id,size});
+    res.json({id, size});
 });
 
 app.put('/news', (req, res) => {
@@ -183,7 +183,7 @@ function filterArticles(articles, filterConfig) {
                     }
                 });
                 return check;
-            })
+            });
         }
     }
     return articles;

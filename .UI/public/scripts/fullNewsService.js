@@ -172,10 +172,17 @@ const fullNewsService = (function () {
 
     /*Add News*/
     function handleAddNewsClick() {
-        openEditAdd();
-        clearForms();
-        removeAddEditForm();
-        addNews();
+        openEditAdd()
+            .then(serverWorker.getModel)
+            .then(model => {
+                TAGS_EDIT = customInput().init(model.tags, 'add-edit-tags', true);
+            })
+            .then(() => {
+                clearForms();
+                removeAddEditForm();
+                addNews();
+            });
+
     }
 
     function addNews() {
@@ -183,7 +190,7 @@ const fullNewsService = (function () {
         contentArea.addEventListener('keydown', handleContentResize);
         submitButton = document.getElementById('add-news-submit');
         submitButton.addEventListener('click', handleAddNewsSubmit);
-        TAGS_EDIT = customInput().init(articlesService.getTags(), 'add-edit-tags', true);
+
     }
 
     function handleContentResize() {
