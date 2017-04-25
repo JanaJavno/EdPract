@@ -51,9 +51,9 @@ const filter = (function () {
 
     return {
 
-        init: init,
-        getFilterConfig: getFilter,
-        fillFilter: fillFilter,
+        init,
+        getFilter,
+        fillFilter,
 
     };
 }());

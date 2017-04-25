@@ -177,11 +177,11 @@
         </div>
         <div class="news-preview-big"><p>Краткое содержание.</p></div>
         <div class="read_big">
-            <button type="button" class="flat_button_read">Читать</button>
+            <button type="button" class="flat_button_read" data-id="id" data-action="openFullNews">Читать</button>
         </div>
         <div class="edit-panel">
-            <img src="images/editing-pencil_24.png" class="edit-news">
-            <img src="images/garbage_24.png" class="delete-news">
+            <img src="images/editing-pencil_24.png" class="edit-news" data-action="editNews" data-id="id">
+            <img src="images/garbage_24.png" class="delete-news" data-action="deleteNews" data-id="id">
         </div>
 
     </div>
@@ -195,7 +195,7 @@
         <div class="small-news">
             <div class="news-header-small">
                 <a href="https://google.com" id="small-link">
-                    <h5>Заголовок</h5></a>
+                    <h5 data-action="openFullNews" data-id="id">Заголовок</h5></a>
             </div>
             <div class="news-preview-small"><p>Краткое содержание.</p></div>
             <div class="news-info-small">
@@ -204,8 +204,8 @@
                 <span class="small-info">Автор</span>
             </div>
             <div class="edit-panel">
-                <img src="images/editing-pencil_24.png" class="edit-news">
-                <img src="images/garbage_24.png" class="delete-news">
+                <img src="images/editing-pencil_24.png" class="edit-news" data-action="editNews" data-id="id">
+                <img src="images/garbage_24.png" class="delete-news" data-action="deleteNews" data-id="id">
             </div>
         </div>
     </div>
@@ -233,7 +233,7 @@
 <template id="template-add-edit-news">
     <div class="news-background">
         <div class="add-edit-news-wrapper">
-            <div class="add-edit-news-invalid">Неверные данные!</div>
+            <div class="add-edit-news-invalid"></div>
             <form class="add-edit-news-form" id="add-news" name="addNewsForm">
                 <input type="text" class="add-edit-news-field" placeholder="Ссылка на картинку">
                 <textarea class="add-edit-news-field add-title" placeholder="Заголовок"></textarea>

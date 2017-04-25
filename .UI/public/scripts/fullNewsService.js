@@ -11,40 +11,39 @@ const fullNewsService = (function () {
     let EDIT_ID;
     let TAGS_EDIT;
 
+    const actions = {
+
+        'editNews': editNews,
+
+        'deleteNews': deleteNews,
+
+        'openFullNews': openFullNews,
+
+    };
+
     function init() {
         TEMPLATE_FULL = document.getElementById('template-full-news');
         TOP_NEWS_CONTAINER = document.querySelector('.top-news-bar');
         BOTTOM_NEWS_CONTAINER = document.querySelector('.bottom-news-bar');
-        TOP_NEWS_CONTAINER.addEventListener('click', handleShowClick);
-        BOTTOM_NEWS_CONTAINER.addEventListener('click', handleShowClick);
+        TOP_NEWS_CONTAINER.addEventListener('click', handleContainer);
+        BOTTOM_NEWS_CONTAINER.addEventListener('click', handleContainer);
         TEMPLATE_EDIT_ADD = document.getElementById('template-add-edit-news');
         ADD_NEWS_BUTTON = document.getElementById('add-button');
         ADD_NEWS_BUTTON.addEventListener('click', handleAddNewsClick);
     }
 
-    function handleShowClick(event) {
+
+    function handleContainer(event) {
         let target = event.target;
-        if (target.type === 'button') {
-            openFullNews(target);
-        }
-        if (target.className === 'delete-news') {
-            deleteNews(target);
-        }
-        if (target.className === 'edit-news') {
-            editNews(target);
-        }
-        if (target.tagName.toLocaleLowerCase() === 'h5') {
-            openFullNews(target);
-        }
+        const actionID = target.getAttribute('data-action');
+        if (!actionID) return;
+        const action = actions[actionID];
+        action(target.getAttribute('data-id'));
     }
 
     /*Full News*/
 
-    function openFullNews(node) {
-        while (!node.hasAttribute('data-id')) {
-            node = node.parentNode;
-        }
-        let id = node.getAttribute('data-id');
+    function openFullNews(id) {
         serverWorker.getArticle(id)
             .then(article => {
                 document.body.appendChild(renderFullNews(article));
@@ -75,34 +74,42 @@ const fullNewsService = (function () {
     }
 
     /*Edit News*/
-    function editNews(node) {
-        while (!node.hasAttribute('data-id')) {
-            node = node.parentNode;
-        }
-        EDIT_ID = node.getAttribute('data-id');
+    function editNews(id) {
+        EDIT_ID = id;
         openEditAdd(EDIT_ID)
-            .then(resolve => {
-                TAGS_EDIT = customInput().init(articlesService.getTags(), 'add-edit-tags', true);
-                TAGS_EDIT.setSelected(resolve.tags);
+            .then(article => {
+                document.body.appendChild(renderAddEditNews(article))
+                TAGS_EDIT = customInput().init([], 'add-edit-tags', true);
+                TAGS_EDIT.setSelected(article.tags)
+            })
+            .then(serverWorker.getModel)
+            .then(model => {
+                TAGS_EDIT.reload(model.tags);
                 removeAddEditForm();
                 contentArea = document.getElementById('add-content-field');
                 contentArea.addEventListener('keydown', handleContentResize);
                 submitButton = document.getElementById('add-news-submit');
                 submitButton.addEventListener('click', handleSubmitNews);
-            });
+            })
     }
 
     function handleSubmitNews() {
         const article = collectData();
-        if (articlesService.validateArticle(article)) {
+        let validation = articlesService.validateArticle(article);
+        if (validation === true) {
             updateAndRender(article);
             TEMPLATE_FULL_BACKGROUND.remove();
         }
         else {
-            document.querySelector('.add-edit-news-invalid').style.visibility = 'visible';
+            renderErrorValidation(validation);
         }
     }
 
+    function renderErrorValidation(validation) {
+        let error = document.querySelector('.add-edit-news-invalid');
+        error.innerHTML = validation;
+        error.style.visibility = 'visible';
+    }
 
     function collectData() {
         let addArticle = {};
@@ -121,19 +128,15 @@ const fullNewsService = (function () {
     }
 
     function openEditAdd(id) {
-        return new Promise((resolve) => {
-            if (!id) {
-                document.body.appendChild(renderAddEditNews());
-                resolve("OK");
-            }
-            serverWorker.getArticle(id)
-                .then(article => {
-                    document.body.appendChild(renderAddEditNews(article));
-                    resolve(article);
-                });
-        })
-
+        if (!id) {
+            document.body.appendChild(renderAddEditNews());
+            return Promise.resolve();
+        }
+        if (id) {
+            return serverWorker.getArticle(id);
+        }
     }
+
 
     function renderAddEditNews(article) {
         let template = TEMPLATE_EDIT_ADD;
@@ -213,21 +216,20 @@ const fullNewsService = (function () {
 
     function handleAddNewsSubmit() {
         let article = collectData();
-        if (articlesService.validateArticle(article)) {
+        let validation = articlesService.validateArticle(article);
+        if (validation === true) {
             addNewsAndRender(article);
             TEMPLATE_FULL_BACKGROUND.remove();
         }
         else {
-            document.querySelector('.add-edit-news-invalid').style.visibility = 'visible';
+            let error = document.querySelector('.add-edit-news-invalid');
+            error.innerHTML = validation;
+            error.style.visibility = 'visible';
         }
     }
 
     /*Delete News*/
-    function deleteNews(node) {
-        while (!node.hasAttribute('data-id')) {
-            node = node.parentNode;
-        }
-        let id = node.getAttribute('data-id');
+    function deleteNews(id) {
         deleteNewsAndRender(id);
     }
 
@@ -241,8 +243,8 @@ const fullNewsService = (function () {
 
 
     return {
-        init: init,
-        renderFullNews: renderFullNews,
+        init,
+        renderFullNews,
     }
 
 }());

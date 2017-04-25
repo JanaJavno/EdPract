@@ -56,7 +56,6 @@ function addNewsAndRender(article) {
     article.author = userService.getUsername();
     serverWorker.sendArticle(article)
         .then(response => {
-            articlesService.addArticle(response.article);
             renderPagination(undefined, response.size);
         });
     serverWorker.getModel()
@@ -74,13 +73,11 @@ function deleteNewsAndRender(id) {
 
 function updateAndRender(article) {
     serverWorker.updateArticle(article)
-        .then(response => {
-            articleRenderer.editByID(response.article);
-            serverWorker.getModel()
-                .then(model => {
-                    filter.fillFilter(model.tags, model.authors);
-                });
-        })
+        .then(response => articleRenderer.editByID(response.article))
+        .then(serverWorker.getModel)
+        .then(model => {
+            filter.fillFilter(model.tags, model.authors);
+        });
 }
 
 function updateTags(tags) {
@@ -92,3 +89,4 @@ function updateTags(tags) {
         })
 
 }
+

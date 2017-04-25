@@ -88,8 +88,10 @@ app.patch('/news', (req, res) => {
     };
     const size = articles.size;
     let updated = db.articles.update(query, req.body, options);
+    editArticle(req.body);
     console.log(updated);
     const article = db.articles.findOne({id: index.toString()});
+    console.log(article);
     res.json({article, size});
 });
 
@@ -107,6 +109,7 @@ app.delete('/news/:id', (req, res) => {
     console.log(article);
     db.deletedArticles.save(article);
     db.articles.remove({id: id});
+    removeArticle(id);
     const size = articles.length;
     res.json({id, size});
 });
@@ -202,4 +205,32 @@ function addArticle(article) {
         return true;
     }
     return false;
+}
+
+function removeArticle(id) {
+    if (getArticle(id)) {
+        let index = getArticleIndexByID(id);
+        articles.splice(index, 1);
+        return true;
+    }
+    return false;
+}
+
+function editArticle(article) {
+    const index = getArticleIndexByID(article.id);
+    if (article && index) {
+        articles[index].content = article.content || articles[index].content;
+        articles[index].summary = article.summary || articles[index].summary;
+        articles[index].title = article.title || articles[index].title;
+        articles[index].tags = article.tags || articles[index].tags;
+        return true;
+    }
+    return false;
+}
+
+function getArticleIndexByID(id) {
+    if (getArticle(id)) {
+        return articles.findIndex(articles => articles.id === id);
+    }
+    return -1;
 }

@@ -351,6 +351,11 @@ body {
     font-size: 13px;
 }
 
+.news-header-small h5:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .news-preview-small {
     display: inline-block;
     width: 100%;
@@ -620,7 +625,8 @@ body {
 .date-filter-container {
     display: inline-block;
 }
-.add-edit-add-tags{
+
+.add-edit-add-tags {
     margin-top: 5px;
     margin-left: 25px;
 }

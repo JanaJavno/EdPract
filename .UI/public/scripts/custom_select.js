@@ -108,12 +108,12 @@ function customInput() {
 
     return {
 
-        init: init,
-        getSelected: getSelected,
-        reload: reload,
-        setSelected: setSelected,
-        addItem: addItem,
-        getNew: getNew,
+        init,
+        getSelected,
+        reload,
+        setSelected,
+        addItem,
+        getNew,
 
     };
 }

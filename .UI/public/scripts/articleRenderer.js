@@ -149,19 +149,23 @@ const articleRenderer = (function () {
             template.content.querySelector('.news-big-date').textContent = formatDate(article.createdAt);
             template.content.getElementById('big-image').src = article.picture;
             template.content.querySelector('.news-tag').textContent = article.tags[0];
-
+            template.content.querySelector('.flat_button_read').dataset.id = article.id;
+            template.content.querySelector('.edit-news').dataset.id = article.id;
+            template.content.querySelector('.delete-news').dataset.id = article.id;
             return template.content.querySelector('.top-news-wrapper').cloneNode(true);
         }
         if (place.toLowerCase() === 'bot') {
             let template = ARTICLE_TEMPLATE_SMALL;
             template.content.querySelector('.bottom-news-wrapper').dataset.id = article.id;
-            template.content.querySelector('.news-header-small').innerHTML = '<a><h5>' + article.title + '</h5></a>';
+            template.content.querySelector('.news-header-small').innerHTML = `<a><h5 data-action="openFullNews" data-id=${article.id}>` + article.title + `</h5></a>`;
             template.content.querySelector('.news-preview-small').innerHTML = '<p>' + article.summary + '</p>';
             let smallInfo = template.content.querySelector('.news-info-small').getElementsByTagName('span');
             smallInfo[0].textContent = article.tags.toString();
             smallInfo[1].textContent = formatDate(article.createdAt);
             smallInfo[2].textContent = article.author;
             template.content.getElementById('small-image').src = article.picture;
+            template.content.querySelector('.edit-news').dataset.id = article.id;
+            template.content.querySelector('.delete-news').dataset.id = article.id;
             return template.content.querySelector('.bottom-news-wrapper').cloneNode(true);
         }
     }
@@ -172,15 +176,16 @@ const articleRenderer = (function () {
     }
 
     return {
-        init: init,
-        insertArticlesInDOM: insertArticlesInDOM,
-        removeArticlesFromDom: removeArticlesFromDom,
-        removeArticlesFromDomByID: removeArticlesFromDomByID,
-        editByID: editByID,
-        showUserElements: showUserElements,
-        formatDate: formatDate,
-        insertArticleInDOM: insertArticleInDOM,
-        renderArticle: renderArticle,
-        renderErrorFilter: renderErrorFilter
+        init,
+        insertArticlesInDOM,
+        removeArticlesFromDom,
+        removeArticlesFromDomByID,
+        editByID,
+        showUserElements,
+        formatDate,
+        insertArticleInDOM,
+        renderArticle,
+        renderErrorFilter,
     }
 }());
+

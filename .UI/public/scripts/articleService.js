@@ -1,8 +1,17 @@
 const articlesService = (function () {
+    let error;
     const articleMap = {
         id: function (id) {
             if (!id) return true;
             return typeof id === 'string';
+        },
+
+        picture: function (picture) {
+            if (picture) {
+                return picture.length > 0;
+            }
+            error = "Нет картинки";
+            return false;
         },
 
         title: function (title) {
@@ -10,6 +19,7 @@ const articlesService = (function () {
             if (title) {
                 return title.length < 100;
             }
+            error = "Неверный заголовок";
             return false;
 
         },
@@ -18,6 +28,7 @@ const articlesService = (function () {
             if (summary) {
                 return summary.length < 200;
             }
+            error = "Неверное краткое описание";
             return false;
         },
 
@@ -31,6 +42,7 @@ const articlesService = (function () {
             if (content) {
                 return content.length < 800;
             }
+            error = "Неверное содержаине";
             return false;
         },
 
@@ -40,57 +52,23 @@ const articlesService = (function () {
                     return true;
                 }
             }
-            return false;
-        },
-
-        picture: function (picture) {
-            if (picture) {
-                return picture.length > 0;
-            }
+            error = "Не хватает тегов";
             return false;
         },
 
     };
     let tags = [];
-    let articles = [];
-    let authors = [];
-
-    function getAuthors() {
-        return authors;
-    }
-
-    function getTags() {
-        return tags.sort();
-    }
-
-    function getArticle(id) {
-        if (id !== undefined) {
-            let article = articles.filter(item => item.id === id);
-            return article[0];
-        }
-    }
-
-    function getArticleIndexByID(id) {
-        if (getArticle(id)) {
-            return articles.findIndex(articles => articles.id === id);
-        }
-        return -1;
-    }
 
     function validateArticle(article) {
+        let check = false;
         if (article) {
-            return Object.keys(articleMap).every(item => articleMap[item](article[item]));
-        }
-        return false;
-
-    }
-    
-    function addTag(tag) {
-        if (tag) {
-            if (tags.indexOf(tag) === -1) {
-                tags.push(tag);
+            check = Object.keys(articleMap).every(item => articleMap[item](article[item]));
+            if (!check) {
+                return getLastError();
             }
         }
+        return check;
+
     }
 
     function removeTag(tag) {
@@ -104,53 +82,12 @@ const articlesService = (function () {
         return false;
     }
 
-    function addArticle(article) {
-        if (article) {
-            if (validateArticle(article)) {
-                articles.push(article);
-                return true;
-            }
-        }
-        return false;
+    function getLastError() {
+        return error;
     }
-
-    function editArticle(id, article) {
-        let articleToEdit = getArticle(id);
-        if (articleToEdit) {
-            const index = getArticleIndexByID(id);
-            if (validateArticle(article)) {
-                article.id = id;
-                articles[index].content = article.content;
-                articles[index].summary = article.summary;
-                articles[index].title = article.title;
-                articles[index].tags = article.tags;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    function removeArticle(id) {
-        if (getArticle(id)) {
-            let index = getArticleIndexByID(id);
-            articles.splice(index, 1);
-            return true;
-        }
-        return false;
-    }
-
 
     return {
-        getArticles: getArticles,
-        getArticle: getArticle,
-        validateArticle: validateArticle,
-        addTag: addTag,
-        removeTag: removeTag,
-        addArticle: addArticle,
-        editArticle: editArticle,
-        removeArticle: removeArticle,
-        getArticlesCount: getArticlesCount,
-        getAuthors: getAuthors,
-        getTags: getTags,
+        validateArticle,
+        removeTag,
     };
 }());

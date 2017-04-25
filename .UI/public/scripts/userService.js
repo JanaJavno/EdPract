@@ -80,8 +80,8 @@ const userService = (function () {
 
 
     return {
-        init: init,
-        getUserStatus: getUserStatus,
-        getUsername: getUsername,
+        init,
+        getUserStatus,
+        getUsername,
     };
 }());

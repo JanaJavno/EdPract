@@ -188,15 +188,15 @@ const serverWorker = (function () {
     }
 
     return {
-        getModel: getModel,
-        globalPost: globalPost,
-        getFullArticle: getFullArticle,
-        sendTag: sendTag,
-        sendArticle: sendArticle,
-        deleteArticle: deleteArticle,
-        updateArticle, updateArticle,
-        getArticles, getArticles,
-        findUser: findUser,
-        getArticle, getArticle
+        getModel,
+        globalPost,
+        getFullArticle,
+        sendTag,
+        sendArticle,
+        deleteArticle,
+        updateArticle,
+        getArticles,
+        findUser,
+        getArticle,
     };
 }());
