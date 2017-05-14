@@ -16,7 +16,7 @@ const filter = (function () {
     }
 
     function getFilter() {
-        let filterConfig = {};
+        const filterConfig = {};
         if (authorFilter.getSelected().length !== 0) {
             filterConfig.author = authorFilter.getSelected();
         }
@@ -43,8 +43,7 @@ const filter = (function () {
         const filter = getFilter();
         if (Object.keys(filter).length !== 0) {
             showFilterCallback(filter);
-        }
-        else {
+        } else {
             showFilterCallback();
         }
     }

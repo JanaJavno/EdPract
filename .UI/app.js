@@ -1,236 +1,335 @@
+/* eslint-disable object-curly-spacing */
 const express = require('express');
 
 const bodyParser = require('body-parser');
 
+const passport = require('passport');
+
+const session = require('express-session');
+
+const LocalStrategy = require('passport-local').Strategy;
+
+const mongoose = require('mongoose');
+
+mongoose.Promise = global.Promise;
+
 const app = express();
 
-const db = require('diskdb');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
-db.connect('private', ['tags', 'articles', 'deletedArticles', 'authors', 'userbase']);
-
+const store = new MongoDBStore(
+    {
+        uri: 'mongodb://localhost:27017/admin',
+        collection: 'sessions',
+    });
+store.on('error', (error) => {
+    console.log(error);
+});
 app.use(express.static('public'));
 
 app.use(bodyParser.json());
 
-let articles = db.articles.find();
+app.use(session({
+    secret: 'secret cat',
+    saveUninitialized: false,
+    resave: false,
+    rolling: true,
+    cookie: {maxAge: 1000 * 60 * 60 * 24 * 7},
+    store,
+}));
+
+const url = 'mongodb://localhost:27017/admin';
+
+mongoose.connect(url);
+
+const mongodb = mongoose.connection;
+
+mongodb.on('error', console.error.bind(console, 'Connection error:'));
+
+mongodb.once('open', () => {
+    console.log('Connected to db');
+});
+
+const articleSchema = mongoose.Schema({
+    title: {
+        type: String,
+        minlength: 1,
+        maxlength: 100,
+        required: true,
+    },
+    summary: {
+        type: String,
+        minlength: 1,
+        maxlength: 200,
+        required: true,
+    },
+    author: {
+        type: String,
+        required: true,
+        index: true,
+    },
+    content: {
+        type: String,
+        minlength: 1,
+        required: true,
+    },
+    createdAt: {
+        type: Date,
+        required: true,
+        index: true,
+    },
+    tags: {
+        type: Array,
+        required: true,
+    },
+    picture: String,
+});
+
+const Articles = mongoose.model('articles', articleSchema);
+
+const userSchema = mongoose.Schema({
+    username: {
+        type: String,
+        unique: true,
+        required: true,
+        index: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    author: {
+        type: String,
+        required: true,
+    },
+});
+
+const Userbase = mongoose.model('userbase', userSchema);
+
+/* const sessionSchema = mongoose.Schema({
+ sid: {
+ type: String,
+ unique: true,
+ required: true,
+ },
+ session: {},
+ });
+ const sessions = mongoose.model('sessions', sessionSchema);*/
+
+passport.use(new LocalStrategy(
+    (username, password, done) => {
+        Userbase.findOne({username}).then((user) => {
+            if (!user) {
+                return done(null, false, {message: 'Incorrect username.'});
+            }
+            if (user.password !== password) {
+                return done(null, false, {message: 'Incorrect password.'});
+            }
+            return done(null, user);
+        });
+    }
+));
+
+passport.serializeUser((username, done) => {
+    done(null, username.id);
+});
+
+passport.deserializeUser((id, done) => {
+    Userbase.findById(id, (err, user) => {
+        done(err, user);
+    });
+});
+
+app.use(passport.initialize());
+
+app.use(passport.session());
 
 app.get('/model', (req, res) => {
     console.log('GET MODEL');
-    let keys = Object.keys(req.query);
-    let model = {};
-    keys.forEach(function (key) {
-        model[key] = getFromDB[key]();
-        console.log(model);
+    const keys = Object.keys(req.query);
+    const model = {};
+    const re = [];
+    keys.forEach((key) => {
+        const value = Articles.distinct(key)
+            .then((resp) => {
+                model[key] = resp.sort();
+            });
+        re.push(value);
     });
-    res.json(model);
+    Promise.all(re)
+        .then(() => res.json(model));
     console.log('MODEL SEND');
 });
 
-app.get('/user', (req, res) => {
-    const query = req.query;
-    console.log(query);
-    let user = db.userbase.findOne(query);
-    console.log(user);
-    if (user) {
-        res.json(user.username);
-    }
-    else {
-        res.status(404)
-            .send('Not found');
+app.get('/articles', (req, res) => {
+    const skip = (req.query.skip === 'undefined') ? undefined : parseInt(req.query.skip, 10);
+    const top = (req.query.top === 'undefined') ? undefined : parseInt(req.query.top, 10);
+    const filterConfig = (req.query.filterConfig === 'undefined') ? undefined : JSON.parse(req.query.filterConfig);
+    if (!skip && !top) {
+        Articles.find(filterArticles(filterConfig)).count()
+            .then(count => res.json(count))
+            .catch(err => console.log(err));
+    } else {
+        getArticles(skip, top, filterConfig)
+            .then(articles => res.json(articles))
+            .catch(err => console.log(err));
     }
 });
 
-app.get('/articles', (req, res) => {
-    const skip = (req.query.skip === 'undefined') ? undefined : JSON.parse(req.query.skip);
-    const top = (req.query.top === 'undefined') ? undefined : JSON.parse(req.query.top);
-    const filterConfig = (req.query.filterConfig === 'undefined') ? undefined : JSON.parse(req.query.filterConfig);
-    console.log(req.query);
-    if (!skip && !top) {
-        const articlesForResponse = getArticles(skip, top, filterConfig);
-        res.json(articlesForResponse.length);
-    }
-    else {
-        const articlesForResponse = getArticles(skip, top, filterConfig);
-        console.log(articlesForResponse);
-        res.json(articlesForResponse);
+app.get('/authenticate', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.json(req.user.author);
+        console.log(req.user.author);
+        console.log('authenticate');
+    } else {
+        res.json('');
     }
 });
 
 app.get('/article/:id', (req, res) => {
     console.log(req.params.id);
-    res.json(getArticle(req.params.id));
-});
-
-app.post('/news', (req, res) => {
-    console.log('POST');
-    db.articles.remove();
-    db.loadCollections(['articles']);
-    db.articles.save(req.body);
-    res.json(req.body);
-});
-
-app.post('/tags', (req, res) => {
-    console.log("POST");
-    db.tags.remove();
-    db.loadCollections(['tags']);
-    db.tags.save(req.body);
-    res.json(req.body);
+    Articles.findOne({_id: req.params.id})
+        .then(article => res.json(article))
+        .catch((err) => {
+            console.log(err);
+            res.status(404)
+                .send('Not found');
+        });
 });
 
 app.patch('/news', (req, res) => {
     console.log('PATH');
-    const index = req.body.id;
-    const query = db.articles.findOne({id: index.toString()});
-    console.log(index);
-    let options = {
-        multi: false,
-        upsert: false
-    };
-    const size = articles.size;
-    let updated = db.articles.update(query, req.body, options);
-    editArticle(req.body);
-    console.log(updated);
-    const article = db.articles.findOne({id: index.toString()});
-    console.log(article);
-    res.json({article, size});
-});
-
-app.get('/news/:id', (req, res) => {
-    console.log('GET');
-    let article = db.articlse.findOne({id: req.params.id});
-    res.json(article);
+    if (req.isAuthenticated()) {
+        const articleToUpdate = req.body;
+        let article;
+        console.log(articleToUpdate);
+        Articles.findByIdAndUpdate(articleToUpdate.id, {$set: articleToUpdate}, {new: true})
+            .then((updatedArticle) => {
+                article = updatedArticle;
+                console.log(article);
+            })
+            .then(Articles.count())
+            .then((size) => {
+                res.json({
+                    article, size,
+                });
+            })
+            .catch(err => res.status(404)
+                .send('Not found'));
+    } else {
+        res.status(404)
+            .send('Not authorized');
+    }
 });
 
 app.delete('/news/:id', (req, res) => {
     console.log('DELETE');
-    let id = req.params.id;
-    console.log(id);
-    let article = db.articles.findOne({id: req.params.id});
-    console.log(article);
-    db.deletedArticles.save(article);
-    db.articles.remove({id: id});
-    removeArticle(id);
-    const size = articles.length;
-    res.json({id, size});
+    if (req.isAuthenticated()) {
+        const id = req.params.id;
+        Articles.findOneAndRemove({_id: id})
+            .then(removed => console.log(removed))
+            .then(Articles.count())
+            .then(size => res.json({id, size}))
+            .catch(err => res.status(404)
+                .send('Not found'));
+    } else {
+        res.status(404)
+            .send('Not authorized');
+    }
 });
 
 app.put('/news', (req, res) => {
     console.log('PUT');
-    let article = req.body;
-    article.createdAt = new Date();
-    article.id = generateID(article.createdAt).toString();
-    db.articles.save(req.body);
-    addArticle(article);
-    console.log(req.body);
-    res.json({
-        article: article,
-        size: articles.length,
-    });
+    if (req.isAuthenticated()) {
+        const article = req.body;
+        article.createdAt = new Date();
+        console.log(article.author);
+        console.log(req.user.author);
+        if (article.author === req.user.author) {
+            const insert = new Articles(article);
+            insert.save()
+                .then(Articles.count())
+                .then((count) => {
+                    res.json({
+                        article: insert,
+                        size: count,
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    } else {
+        res.status(404)
+            .send('Not authorized');
+    }
 });
 
 app.put('/tags', (req, res) => {
     console.log('PUT');
     const tags = req.body;
-    tags.forEach(tag => {
+    tags.forEach((tag) => {
         db.tags.save(tag);
     });
     console.log(req.body);
     res.json(req.body);
 });
 
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.status(404)
+                .send('Not found');
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                return next(err);
+            }
+            return res.json(user.author);
+        });
+    })(req, res, next);
+});
+
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        res.redirect('/');
+    });
+});
+
 app.listen(3000, () => {
     console.log('Example app listening on port 3000! NEW!!');
 });
 
-const getFromDB = {
-    articles: function () {
-        return db.articles.find();
-    },
-    tags: function () {
-        return db.tags.find();
-    },
-    authors: function () {
-        return db.authors.find();
-    }
-};
-
-function generateID(date) {
-    return date.getDate() + '' + (date.getMonth() + 1) + '' + date.getFullYear() + '' + date.getMinutes() + '' + date.getMilliseconds();
-}
 
 function getArticles(skip, top, filterConfig) {
-    skip = skip || 0;
-    top = top || articles.length;
-    articles.sort((a, b) => b.createdAt - a.createdAt);
-
-    return filterArticles(articles, filterConfig).slice(skip, skip + top);
+    return Articles.find(filterArticles(filterConfig)).sort({createdAt: -1}).skip(skip).limit(top);
 }
 
-function filterArticles(articles, filterConfig) {
+function filterArticles(filterConfig) {
+    const query = {};
     if (filterConfig) {
         if (filterConfig.author) {
-            articles = articles.filter(item => filterConfig.author.indexOf(item.author) !== -1);
+            query.author = {$in: filterConfig.author};
         }
         if (filterConfig.createdAtFrom) {
-            articles = articles.filter(item => item.createdAt >= filterConfig.createdAtFrom);
+            if (!query.hasOwnProperty('createdAt')) {
+                query.createdAt = {};
+            }
+            query.createdAt.$gte = new Date(filterConfig.createdAtFrom);
         }
         if (filterConfig.createdAtTo) {
-            articles = articles.filter(item => item.createdAt <= filterConfig.createdAtTo);
+            if (!query.hasOwnProperty('createdAt')) {
+                query.createdAt = {};
+            }
+            query.createdAt.$lte = new Date(filterConfig.createdAtTo);
         }
         if (filterConfig.tags && filterConfig.tags.length > 0) {
-            articles = articles.filter(article => {
-                let check = true;
-                filterConfig.tags.forEach(function (item) {
-                    if (article.tags.indexOf(item) === -1) {
-                        check = false;
-                    }
-                });
-                return check;
-            });
+            query.tags = {$all: filterConfig.tags};
         }
     }
-    return articles;
+    return query;
 }
 
-function getArticle(id) {
-    if (id !== undefined) {
-        let article = articles.filter(item => item.id === id);
-        return article[0];
-    }
-}
-
-function addArticle(article) {
-    if (article) {
-        articles.push(article);
-        return true;
-    }
-    return false;
-}
-
-function removeArticle(id) {
-    if (getArticle(id)) {
-        let index = getArticleIndexByID(id);
-        articles.splice(index, 1);
-        return true;
-    }
-    return false;
-}
-
-function editArticle(article) {
-    const index = getArticleIndexByID(article.id);
-    if (article && index) {
-        articles[index].content = article.content || articles[index].content;
-        articles[index].summary = article.summary || articles[index].summary;
-        articles[index].title = article.title || articles[index].title;
-        articles[index].tags = article.tags || articles[index].tags;
-        return true;
-    }
-    return false;
-}
-
-function getArticleIndexByID(id) {
-    if (getArticle(id)) {
-        return articles.findIndex(articles => articles.id === id);
-    }
-    return -1;
-}

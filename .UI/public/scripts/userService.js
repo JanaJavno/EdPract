@@ -1,52 +1,48 @@
 const userService = (function () {
     let USER_STATUS = false;
-    let CURRENT_USER = {
-        login: '',
-        username: '',
-        password: ''
-    };
+    let CURRENT_USER;
     let LOGIN_BUTTON_FORM;
     let LOGIN_FORM;
     let LOGIN_BUTTON;
 
-    function init() {
+    function init(user) {
         LOGIN_BUTTON_FORM = document.querySelector('.top-bar-login');
         LOGIN_BUTTON_FORM.addEventListener('click', handleClickLoginButton);
         LOGIN_FORM = document.querySelector('.login-form-wrapper');
         LOGIN_FORM.style.display = 'none';
         LOGIN_BUTTON = document.getElementById('login-button');
         LOGIN_BUTTON.addEventListener('click', handleClickLogin);
+        LOGIN_FORM.addEventListener('keypress', handleClickLogin);
+        CURRENT_USER = user || '';
     }
 
     function handleClickLoginButton(event) {
         let target = event.currentTarget;
         if (target !== this) return;
-        if (getUsername().length === 0) {
+        if (CURRENT_USER.length === 0) {
             LOGIN_FORM.style.display = (LOGIN_FORM.style.display === 'none') ? 'block' : 'none';
         }
-        if (getUsername().length > 0) {
+        if (CURRENT_USER.length > 0) {
             const isRemove = confirm('Выйти?');
             if (isRemove) {
-                CURRENT_USER = {
-                    login: '',
-                    username: '',
-                    password: '',
-                };
-                articleRenderer.showUserElements();
+                serverWorker.logout()
+                    .then(() => {
+                        CURRENT_USER = '';
+                        articleRenderer.showUserElements(CURRENT_USER);
+                    });
             }
         }
     }
 
     function handleClickLogin(event) {
         const target = event.target;
-        if (target.type !== 'button') return;
-        if (target.id === 'login-button') {
+        if (target.type === 'button' || event.keyCode === 13) {
             const data = collectData();
-            serverWorker.findUser(data)
+            serverWorker.login(data)
                 .then(response => {
-                    CURRENT_USER.username = JSON.parse(response);
+                    CURRENT_USER = JSON.parse(response);
                     USER_STATUS = true;
-                    articleRenderer.showUserElements(CURRENT_USER.username);
+                    articleRenderer.showUserElements(CURRENT_USER);
                     LOGIN_FORM.style.display = 'none';
                     clearForm();
                 })
@@ -61,13 +57,13 @@ const userService = (function () {
     }
 
     function getUsername() {
-        return CURRENT_USER.username;
+        return CURRENT_USER;
     }
 
     function collectData() {
         const form = document.getElementById('login-form');
-        let data = {};
-        data.login = form.elements[0].value;
+        const data = {};
+        data.username = form.elements[0].value;
         data.password = form.elements[1].value;
         return data;
     }

@@ -29,7 +29,7 @@ const pagination = (function () {
     }
 
     function nextPage() {
-        currentPage = currentPage + 1;
+        currentPage += 1;
 
         showOrHideMoreButton();
 
@@ -52,7 +52,7 @@ const pagination = (function () {
     }
 
     return {
-        init: init,
+        init,
 
     };
 }());

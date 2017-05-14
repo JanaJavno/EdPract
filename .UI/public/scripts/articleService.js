@@ -1,63 +1,61 @@
 const articlesService = (function () {
     let error;
     const articleMap = {
-        id: function (id) {
+        id(id) {
             if (!id) return true;
             return typeof id === 'string';
         },
 
-        picture: function (picture) {
+        picture(picture) {
             if (picture) {
                 return picture.length > 0;
             }
-            error = "Нет картинки";
+            error = 'Нет картинки';
             return false;
         },
 
-        title: function (title) {
-
+        title(title) {
             if (title) {
                 return title.length < 100;
             }
-            error = "Неверный заголовок";
+            error = 'Неверный заголовок';
             return false;
-
         },
 
-        summary: function (summary) {
+        summary(summary) {
             if (summary) {
                 return summary.length < 200;
             }
-            error = "Неверное краткое описание";
+            error = 'Неверное краткое описание';
             return false;
         },
 
-        author: function (author) {
+        author(author) {
             if (!author) return true;
             return author.length > 0;
-
         },
 
-        content: function (content) {
+        content(content) {
             if (content) {
-                return content.length < 800;
+                return content.length > 0;
             }
-            error = "Неверное содержаине";
+            error = 'Неверное содержание';
             return false;
         },
 
-        tags: function (tag) {
+        tags(tag) {
             if (tag) {
                 if (tag.length > 0) {
                     return true;
                 }
             }
-            error = "Не хватает тегов";
+            error = 'Не хватает тегов';
             return false;
         },
 
     };
-    let tags = [];
+
+    const tags = [];
 
     function validateArticle(article) {
         let check = false;
@@ -68,7 +66,6 @@ const articlesService = (function () {
             }
         }
         return check;
-
     }
 
     function removeTag(tag) {
@@ -91,3 +88,4 @@ const articlesService = (function () {
         removeTag,
     };
 }());
+

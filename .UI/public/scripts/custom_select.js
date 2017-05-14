@@ -3,14 +3,14 @@ function customInput() {
     let DROPDOWN_MENU;
     let CUSTOM_INPUT;
     let ADD_BUTTON;
-    let SELECTED = [];
-    let NEW = [];
+    const SELECTED = [];
+    const NEW = [];
 
     function init(items, id, isAddButton) {
         CUSTOM_INPUT = document.getElementById(id);
         isAddButton = isAddButton || false;
         if (isAddButton) {
-            CUSTOM_INPUT.innerHTML += "<button class=\"custom-input-add-button\" id=\"add-button\">Добавить</button>";
+            CUSTOM_INPUT.innerHTML += '<button class="custom-input-add-button" id="add-button">Добавить</button>';
             ADD_BUTTON = CUSTOM_INPUT.querySelector('.custom-input-add-button');
             ADD_BUTTON.addEventListener('click', handleAddClick);
             CUSTOM_INPUT.style.width = '550px';
@@ -25,13 +25,13 @@ function customInput() {
     }
 
     function addItems(items) {
-        items.forEach(item => {
+        items.forEach((item) => {
             DROPDOWN_MENU.appendChild(createOption(item));
         });
     }
 
     function createOption(item) {
-        let option = document.createElement('div');
+        const option = document.createElement('div');
         option.className = 'block';
         option.innerHTML = item;
         option.setAttribute('data-value', item);
@@ -39,7 +39,7 @@ function customInput() {
     }
 
     function handleClick(event) {
-        let target = event.target;
+        const target = event.target;
         if (target.hasAttribute('data-value')) {
             DROPDOWN_MENU.appendChild(target.cloneNode(true));
             const index = SELECTED.indexOf(target.getAttribute('data-value'));
@@ -56,14 +56,14 @@ function customInput() {
     }
 
     function handleAddClick() {
-        let tag = prompt('Введите тег', '');
+        const tag = prompt('Введите тег', '');
         if (tag && tag.length > 0) {
             addItem(tag);
         }
     }
 
     function handleClickOnBlock(event) {
-        let target = event.target;
+        const target = event.target;
         if (target.hasAttribute('data-value')) {
             INPUT_MENU.appendChild(target.cloneNode(true));
             SELECTED.push(target.getAttribute('data-value'));
@@ -82,7 +82,7 @@ function customInput() {
 
     function setSelected(items) {
         for (let i = 0; i < items.length; i++) {
-            let item = createOption(items[i]);
+            const item = createOption(items[i]);
             INPUT_MENU.appendChild(item.cloneNode(true));
             SELECTED.push(items[i]);
         }
@@ -98,7 +98,7 @@ function customInput() {
         return NEW;
     }
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', (e) => {
         if (CUSTOM_INPUT.getElementsByClassName(e.target.classList).length === 0) {
             if (DROPDOWN_MENU.classList.contains('show')) {
                 DROPDOWN_MENU.classList.remove('show');

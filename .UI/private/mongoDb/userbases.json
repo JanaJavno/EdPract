@@ -1,0 +1,6 @@
+{ 
+    "_id" : ObjectId("5910ad6da7ce5103c03036aa"), 
+    "username" : "admin", 
+    "password" : "admin", 
+    "author" : "Цаль Виталий"
+}

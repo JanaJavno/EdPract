@@ -2,7 +2,7 @@ const serverWorker = (function () {
     function getModel() {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', '/model?&tags=true&authors=true');
+            xhr.open('GET', '/model?&tags=true&author=true');
             xhr.send();
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
@@ -11,7 +11,7 @@ const serverWorker = (function () {
                 } else {
                     reject({
                         status: this.status,
-                        statusText: xhr.statusText
+                        statusText: xhr.statusText,
                     });
                 }
             };
@@ -29,25 +29,25 @@ const serverWorker = (function () {
                         resolve(articles);
                         return;
                     }
-                    articles.forEach(article => {
+                    articles.forEach((article) => {
                         article.createdAt = new Date(article.createdAt);
                     });
                     resolve(articles);
                 } else {
                     reject({
                         status: this.status,
-                        statusText: xhr.statusText
+                        statusText: xhr.statusText,
                     });
                 }
             };
             xhr.send();
-        })
+        });
     }
 
     function getArticle(id) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'article/' + id);
+            xhr.open('GET', `article/${id}`);
             xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     const article = JSON.parse(xhr.responseText);
@@ -56,12 +56,12 @@ const serverWorker = (function () {
                 } else {
                     reject({
                         status: this.status,
-                        statusText: xhr.statusText
+                        statusText: xhr.statusText,
                     });
                 }
             };
             xhr.send();
-        })
+        });
     }
 
     function globalPost(articles) {
@@ -86,39 +86,38 @@ const serverWorker = (function () {
                 } else {
                     reject({
                         status: this.status,
-                        statusText: xhr.statusText
+                        statusText: xhr.statusText,
                     });
                 }
             };
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify(article));
-        })
-
+        });
     }
 
     function getFullArticle(id) {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', '/news/' + id);
+        xhr.open('GET', `/news/${id}`);
         xhr.send();
         return JSON.parse(xhr.responseText);
     }
 
     function deleteArticle(id) {
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('DELETE', '/news/' + id);
+            xhr.open('DELETE', `/news/${id}`);
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     resolve(JSON.parse(xhr.responseText));
                 } else {
                     reject({
                         status: this.status,
-                        statusText: xhr.statusText
+                        statusText: xhr.statusText,
                     });
                 }
             };
             xhr.send();
-        })
+        });
     }
 
     function sendArticle(article) {
@@ -129,25 +128,25 @@ const serverWorker = (function () {
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     const response = JSON.parse(xhr.responseText);
-                    let article = response.article;
+                    const article = response.article;
                     const size = response.size;
                     article.createdAt = new Date(article.createdAt);
-                    resolve({article, size});
+                    resolve({ article, size });
                 } else {
                     reject({
                         status: this.status,
-                        statusText: xhr.statusText
+                        statusText: xhr.statusText,
                     });
                 }
             };
             xhr.onerror = function () {
                 reject({
                     status: this.status,
-                    statusText: xhr.statusText
+                    statusText: xhr.statusText,
                 });
             };
             xhr.send(JSON.stringify(article));
-        })
+        });
     }
 
     function sendTag(tags) {
@@ -161,7 +160,7 @@ const serverWorker = (function () {
                 } else {
                     reject({
                         status: this.status,
-                        statusText: xhr.statusText
+                        statusText: xhr.statusText,
                     });
                 }
             };
@@ -169,24 +168,60 @@ const serverWorker = (function () {
         });
     }
 
-    function findUser(user) {
+    function login(user) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', '/user?login=' + user.login.toString() + '&password=' + user.password.toString());
+            xhr.open('POST', '/login');
+            xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     resolve(xhr.responseText);
                 } else {
                     reject({
                         status: this.status,
-                        statusText: xhr.statusText
+                        statusText: xhr.statusText,
+                    });
+                }
+            };
+            xhr.send(JSON.stringify(user));
+        });
+    }
+
+    function checkAuthentication() {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/authenticate');
+            xhr.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(JSON.parse(xhr.responseText));
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText,
                     });
                 }
             };
             xhr.send();
-        })
+        });
     }
 
+    function logout() {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/logout');
+            xhr.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(xhr.responseText);
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText,
+                    });
+                }
+            };
+            xhr.send();
+        });
+    }
     return {
         getModel,
         globalPost,
@@ -196,7 +231,9 @@ const serverWorker = (function () {
         deleteArticle,
         updateArticle,
         getArticles,
-        findUser,
+        login,
         getArticle,
+        checkAuthentication,
+        logout,
     };
 }());
