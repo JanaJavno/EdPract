@@ -39,7 +39,7 @@ const userService = (function () {
         if (target.type === 'button' || event.keyCode === 13) {
             const data = collectData();
             serverWorker.login(data)
-                .then(response => {
+                .then((response) => {
                     CURRENT_USER = JSON.parse(response);
                     USER_STATUS = true;
                     articleRenderer.showUserElements(CURRENT_USER);

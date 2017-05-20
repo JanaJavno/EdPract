@@ -17,24 +17,26 @@ function startApp() {
         .then((model) => {
             filter.init(renderFilter, model.author, model.tags);
         });
+    serverWorker.getArticles(0, 3)
+        .then(articles => sliderInit(articles));
 }
 
-function renderArticles(skip, top, filterConfig, place) {
+function renderArticles(skip, top, filterConfig) {
     serverWorker.getArticles(skip, top, filterConfig)
         .then((articles) => {
-            articleRenderer.insertArticlesInDOM(articles, place);
+            articleRenderer.insertArticlesInDOM(articles, 'bot');
+            if (!filterConfig) {
+                articleRenderer.insertArticlesInDOM(articles.slice(0, 3), 'top');
+            }
         });
 }
 
-function renderPagination(total,filter) {
+function renderPagination(total, filter) {
     articleRenderer.removeArticlesFromDom();
     const paginationParams = pagination.init(total, (skip, top) => {
-        renderArticles(skip, top, filter, 'bot');
+        renderArticles(skip, top, filter);
     });
-    renderArticles(paginationParams.skip, paginationParams.top, filter, 'bot');
-    if (filter === undefined) {
-        renderArticles(0, 3, undefined, 'top');
-    }
+    renderArticles(paginationParams.skip, paginationParams.top, filter);
     if (total === 0) {
         articleRenderer.renderErrorFilter();
     }
@@ -44,7 +46,7 @@ function renderFilter(value) {
     if (value) {
         serverWorker.getArticles(undefined, undefined, value)
             .then((total) => {
-                renderPagination(total,value);
+                renderPagination(total, value);
             });
     }
     if (!value) {
@@ -82,15 +84,3 @@ function updateAndRender(article) {
             filter.fillFilter(model.tags, model.author);
         });
 }
-
-/*
-function updateTags(tags) {
-    serverWorker.sendTag(tags)
-        .then((resolve) => {
-            resolve.forEach((tag) => {
-                articlesService.addTag(tag);
-            });
-        });
-}
-*/
-

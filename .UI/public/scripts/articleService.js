@@ -1,91 +1,57 @@
 const articlesService = (function () {
-    let error;
     const articleMap = {
-        id(id) {
-            if (!id) return true;
-            return typeof id === 'string';
-        },
-
         picture(picture) {
-            if (picture) {
-                return picture.length > 0;
+            if (picture.length === 0) {
+                return 'Нет картинки';
             }
-            error = 'Нет картинки';
             return false;
         },
 
         title(title) {
-            if (title) {
-                return title.length < 100;
+            if (title.length === 0 || title.length > 100) {
+                return 'Неверный размер заголовока';
             }
-            error = 'Неверный заголовок';
             return false;
         },
 
         summary(summary) {
-            if (summary) {
-                return summary.length < 200;
+            if (summary.length === 0 || summary.length > 200) {
+                return 'Неверное краткое описание';
             }
-            error = 'Неверное краткое описание';
             return false;
         },
 
-        author(author) {
-            if (!author) return true;
-            return author.length > 0;
-        },
-
         content(content) {
-            if (content) {
-                return content.length > 0;
+            if (content.length === 0) {
+                return 'Неверное содержание';
             }
-            error = 'Неверное содержание';
             return false;
         },
 
         tags(tag) {
-            if (tag) {
-                if (tag.length > 0) {
-                    return true;
-                }
+            if (tag.length === 0) {
+                return 'Не хватает тегов';
             }
-            error = 'Не хватает тегов';
             return false;
         },
 
     };
 
-    const tags = [];
-
     function validateArticle(article) {
-        let check = false;
+        let check;
         if (article) {
-            check = Object.keys(articleMap).every(item => articleMap[item](article[item]));
+            Object.keys(articleMap).some((item) => {
+                check = articleMap[item](article[item]);
+                return check;
+            });
             if (!check) {
-                return getLastError();
+                return true;
             }
         }
         return check;
     }
-
-    function removeTag(tag) {
-        if (tag) {
-            const index = tags.indexOf(tag);
-            if (index !== -1) {
-                tags.splice(index, 1);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    function getLastError() {
-        return error;
-    }
-
     return {
         validateArticle,
-        removeTag,
     };
 }());
 

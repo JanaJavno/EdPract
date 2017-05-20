@@ -51,7 +51,6 @@ const articleRenderer = (function () {
 
         if (place.toLowerCase() === 'bot') {
             const articlesNodesBot = renderArticles(articles, 'bot');
-
             articlesNodesBot.forEach((node) => {
                 ARTICLES_BOT.appendChild(node);
             });
@@ -138,30 +137,30 @@ const articleRenderer = (function () {
     function renderArticle(article, place) {
         if (place.toLowerCase() === 'top') {
             const template = ARTICLE_TEMPLATE_BIG;
-            template.content.querySelector('.top-news-wrapper').dataset.id = article['_id'];
+            template.content.querySelector('.top-news-wrapper').dataset.id = article._id;
             template.content.querySelector('.news-header-big').innerHTML = `<h5>${article.title}</h5>`;
             template.content.querySelector('.news-preview-big').innerHTML = `<p>${article.summary}</p>`;
             template.content.querySelector('.news-big-author').textContent = article.author;
             template.content.querySelector('.news-big-date').textContent = formatDate(article.createdAt);
             template.content.getElementById('big-image').src = article.picture;
             template.content.querySelector('.news-tag').textContent = article.tags[0];
-            template.content.querySelector('.flat_button_read').dataset.id = article['_id'];
-            template.content.querySelector('.edit-news').dataset.id = article['_id'];
-            template.content.querySelector('.delete-news').dataset.id = article['_id'];
+            template.content.querySelector('.flat_button_read').dataset.id = article._id;
+            template.content.querySelector('.edit-news').dataset.id = article._id;
+            template.content.querySelector('.delete-news').dataset.id = article._id;
             return template.content.querySelector('.top-news-wrapper').cloneNode(true);
         }
         if (place.toLowerCase() === 'bot') {
             const template = ARTICLE_TEMPLATE_SMALL;
-            template.content.querySelector('.bottom-news-wrapper').dataset.id = article['_id'];
-            template.content.querySelector('.news-header-small').innerHTML = `<a><h5 data-action="openFullNews" data-id=${article['_id']}>${article.title}</h5></a>`;
+            template.content.querySelector('.bottom-news-wrapper').dataset.id = article._id;
+            template.content.querySelector('.news-header-small').innerHTML = `<a><h5 data-action="openFullNews" data-id=${article._id}>${article.title}</h5></a>`;
             template.content.querySelector('.news-preview-small').innerHTML = `<p>${article.summary}</p>`;
             const smallInfo = template.content.querySelector('.news-info-small').getElementsByTagName('span');
             smallInfo[0].textContent = article.tags.toString();
             smallInfo[1].textContent = formatDate(article.createdAt);
             smallInfo[2].textContent = article.author;
             template.content.getElementById('small-image').src = article.picture;
-            template.content.querySelector('.edit-news').dataset.id = article['_id'];
-            template.content.querySelector('.delete-news').dataset.id = article['_id'];
+            template.content.querySelector('.edit-news').dataset.id = article._id;
+            template.content.querySelector('.delete-news').dataset.id = article._id;
             return template.content.querySelector('.bottom-news-wrapper').cloneNode(true);
         }
     }

@@ -4,3 +4,15 @@
     "password" : "admin", 
     "author" : "Цаль Виталий"
 }
+{ 
+    "_id" : ObjectId("5910ad6da7ce5103c030362a"), 
+    "username" : "roma", 
+    "password" : "1488", 
+    "author" : "Король Роман"
+}
+{ 
+    "_id" : ObjectId("59209d35b02c192b5093b6bd"), 
+    "username" : "Vladusha", 
+    "password" : "3228", 
+    "author" : "Влад Влад"
+}

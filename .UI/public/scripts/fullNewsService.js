@@ -119,10 +119,6 @@ const fullNewsService = (function () {
         addArticle.summary = form.elements[2].value;
         addArticle.content = form.elements[3].value;
         addArticle.tags = TAGS_EDIT.getSelected();
-       /* const newTags = TAGS_EDIT.getNew();
-        if (newTags.length > 0) {
-            updateTags(newTags);
-        }*/
         return addArticle;
     }
 

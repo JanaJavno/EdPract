@@ -95,13 +95,6 @@ const serverWorker = (function () {
         });
     }
 
-    function getFullArticle(id) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', `/news/${id}`);
-        xhr.send();
-        return JSON.parse(xhr.responseText);
-    }
-
     function deleteArticle(id) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -225,7 +218,6 @@ const serverWorker = (function () {
     return {
         getModel,
         globalPost,
-        getFullArticle,
         sendTag,
         sendArticle,
         deleteArticle,

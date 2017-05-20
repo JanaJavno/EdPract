@@ -1,4 +1,3 @@
-/* eslint-disable object-curly-spacing */
 const express = require('express');
 
 const bodyParser = require('body-parser');
@@ -86,7 +85,7 @@ const articleSchema = mongoose.Schema({
 });
 
 const Articles = mongoose.model('articles', articleSchema);
-
+const DeletedArticles = mongoose.model('deletedArticles', articleSchema);
 const userSchema = mongoose.Schema({
     username: {
         type: String,
@@ -105,16 +104,6 @@ const userSchema = mongoose.Schema({
 });
 
 const Userbase = mongoose.model('userbase', userSchema);
-
-/* const sessionSchema = mongoose.Schema({
- sid: {
- type: String,
- unique: true,
- required: true,
- },
- session: {},
- });
- const sessions = mongoose.model('sessions', sessionSchema);*/
 
 passport.use(new LocalStrategy(
     (username, password, done) => {
@@ -227,9 +216,15 @@ app.delete('/news/:id', (req, res) => {
     if (req.isAuthenticated()) {
         const id = req.params.id;
         Articles.findOneAndRemove({_id: id})
-            .then(removed => console.log(removed))
+            .then((removed) => {
+                console.log(removed);
+                let article = removed.toObject();
+                delete article._id;
+                const insert = new DeletedArticles(article);
+                insert.save();
+            })
             .then(Articles.count())
-            .then(size => res.json({id, size}))
+            .then(size => res.json({ id, size }))
             .catch(err => res.status(404)
                 .send('Not found'));
     } else {
@@ -265,18 +260,8 @@ app.put('/news', (req, res) => {
     }
 });
 
-app.put('/tags', (req, res) => {
-    console.log('PUT');
-    const tags = req.body;
-    tags.forEach((tag) => {
-        db.tags.save(tag);
-    });
-    console.log(req.body);
-    res.json(req.body);
-});
-
 app.post('/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('local', (err, user) => {
         if (err) {
             return next(err);
         }
@@ -295,6 +280,7 @@ app.post('/login', (req, res, next) => {
 
 app.get('/logout', (req, res) => {
     req.session.destroy((err) => {
+        console.log(err);
         res.redirect('/');
     });
 });
