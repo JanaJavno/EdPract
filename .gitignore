@@ -3,5 +3,5 @@
 .idea/
 out/
 node_modules/
-task1/
-.mockups/
+/task1/
+/.mockups/
