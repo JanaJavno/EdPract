@@ -1,0 +1,18 @@
+{ 
+    "_id" : "oe9eTOhTQqhBlNKY_f2_UlzbjzxuCgfb", 
+    "session" : {
+        "cookie" : {
+            "originalMaxAge" : NumberInt(604800000), 
+            "expires" : ISODate("2017-05-31T17:39:34.024+0000"), 
+            "secure" : null, 
+            "httpOnly" : true, 
+            "domain" : null, 
+            "path" : "/", 
+            "sameSite" : null
+        }, 
+        "passport" : {
+            "user" : "5910ad6da7ce5103c03036aa"
+        }
+    }, 
+    "expires" : ISODate("2017-05-31T17:39:34.024+0000")
+}

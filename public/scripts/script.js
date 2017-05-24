@@ -25,7 +25,7 @@ function renderArticles(skip, top, filterConfig) {
     serverWorker.getArticles(skip, top, filterConfig)
         .then((articles) => {
             articleRenderer.insertArticlesInDOM(articles, 'bot');
-            if (!filterConfig) {
+            if (!filterConfig && skip === 0) {
                 articleRenderer.insertArticlesInDOM(articles.slice(0, 3), 'top');
             }
         });

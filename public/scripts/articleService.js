@@ -1,5 +1,6 @@
 const articlesService = (function () {
     const articleMap = {
+        //Не уверен, что это лучший вариант валидации, но мы с Владом сошлись на этом
         picture(picture) {
             if (picture.length === 0) {
                 return 'Нет картинки';

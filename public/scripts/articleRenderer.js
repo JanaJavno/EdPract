@@ -152,8 +152,10 @@ const articleRenderer = (function () {
         if (place.toLowerCase() === 'bot') {
             const template = ARTICLE_TEMPLATE_SMALL;
             template.content.querySelector('.bottom-news-wrapper').dataset.id = article._id;
-            template.content.querySelector('.news-header-small').innerHTML = `<a><h5 data-action="openFullNews" data-id=${article._id}>${article.title}</h5></a>`;
-            template.content.querySelector('.news-preview-small').innerHTML = `<p>${article.summary}</p>`;
+            template.content.querySelector('.news-header-small')
+                .innerHTML = `<a><h5 data-action="openFullNews" data-id=${article._id}>${article.title}</h5></a>`;
+            template.content.querySelector('.news-preview-small')
+                .innerHTML = `<p>${article.summary}</p>`;
             const smallInfo = template.content.querySelector('.news-info-small').getElementsByTagName('span');
             smallInfo[0].textContent = article.tags.toString();
             smallInfo[1].textContent = formatDate(article.createdAt);

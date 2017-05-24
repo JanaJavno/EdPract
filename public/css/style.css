@@ -7,6 +7,7 @@ body {
     margin: 0;
 }
 
+
 .wrapper {
     position: relative;
     margin: 0 auto;
@@ -210,6 +211,8 @@ body {
     margin: 0;
     color: #db5658;
     text-wrap: normal;
+    height: 55px;
+    overflow: hidden;
 }
 
 .news-info-big {
@@ -599,7 +602,7 @@ body {
 
 /*Filter*/
 .add-filter {
-    width: 80px;
+    width: 90px;
     height: 40px;
     float: right;
     position: relative;

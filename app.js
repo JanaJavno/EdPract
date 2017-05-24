@@ -21,9 +21,11 @@ const store = new MongoDBStore(
         uri: 'mongodb://localhost:27017/admin',
         collection: 'sessions',
     });
+
 store.on('error', (error) => {
     console.log(error);
 });
+
 app.use(express.static('public'));
 
 app.use(bodyParser.json());
@@ -33,7 +35,7 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     rolling: true,
-    cookie: {maxAge: 1000 * 60 * 60 * 24 * 7},
+    cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 },
     store,
 }));
 
@@ -85,7 +87,9 @@ const articleSchema = mongoose.Schema({
 });
 
 const Articles = mongoose.model('articles', articleSchema);
+
 const DeletedArticles = mongoose.model('deletedArticles', articleSchema);
+
 const userSchema = mongoose.Schema({
     username: {
         type: String,
@@ -107,12 +111,12 @@ const Userbase = mongoose.model('userbase', userSchema);
 
 passport.use(new LocalStrategy(
     (username, password, done) => {
-        Userbase.findOne({username}).then((user) => {
+        Userbase.findOne({ username }).then((user) => {
             if (!user) {
-                return done(null, false, {message: 'Incorrect username.'});
+                return done(null, false, { message: 'Incorrect username.' });
             }
             if (user.password !== password) {
-                return done(null, false, {message: 'Incorrect password.'});
+                return done(null, false, { message: 'Incorrect password.' });
             }
             return done(null, user);
         });
@@ -177,7 +181,7 @@ app.get('/authenticate', (req, res) => {
 
 app.get('/article/:id', (req, res) => {
     console.log(req.params.id);
-    Articles.findOne({_id: req.params.id})
+    Articles.findOne({ _id: req.params.id })
         .then(article => res.json(article))
         .catch((err) => {
             console.log(err);
@@ -192,7 +196,7 @@ app.patch('/news', (req, res) => {
         const articleToUpdate = req.body;
         let article;
         console.log(articleToUpdate);
-        Articles.findByIdAndUpdate(articleToUpdate.id, {$set: articleToUpdate}, {new: true})
+        Articles.findByIdAndUpdate(articleToUpdate.id, { $set: articleToUpdate }, { new: true })
             .then((updatedArticle) => {
                 article = updatedArticle;
                 console.log(article);
@@ -204,7 +208,7 @@ app.patch('/news', (req, res) => {
                 });
             })
             .catch(err => res.status(404)
-                .send('Not found'));
+                .send(err));
     } else {
         res.status(404)
             .send('Not authorized');
@@ -215,10 +219,10 @@ app.delete('/news/:id', (req, res) => {
     console.log('DELETE');
     if (req.isAuthenticated()) {
         const id = req.params.id;
-        Articles.findOneAndRemove({_id: id})
+        Articles.findOneAndRemove({ _id: id })
             .then((removed) => {
                 console.log(removed);
-                let article = removed.toObject();
+                const article = removed.toObject();
                 delete article._id;
                 const insert = new DeletedArticles(article);
                 insert.save();
@@ -226,7 +230,7 @@ app.delete('/news/:id', (req, res) => {
             .then(Articles.count())
             .then(size => res.json({ id, size }))
             .catch(err => res.status(404)
-                .send('Not found'));
+                .send(err));
     } else {
         res.status(404)
             .send('Not authorized');
@@ -291,14 +295,17 @@ app.listen(3000, () => {
 
 
 function getArticles(skip, top, filterConfig) {
-    return Articles.find(filterArticles(filterConfig)).sort({createdAt: -1}).skip(skip).limit(top);
+    return Articles.find(filterArticles(filterConfig))
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(top);
 }
 
 function filterArticles(filterConfig) {
     const query = {};
     if (filterConfig) {
         if (filterConfig.author) {
-            query.author = {$in: filterConfig.author};
+            query.author = { $in: filterConfig.author };
         }
         if (filterConfig.createdAtFrom) {
             if (!query.hasOwnProperty('createdAt')) {
@@ -313,7 +320,7 @@ function filterArticles(filterConfig) {
             query.createdAt.$lte = new Date(filterConfig.createdAtTo);
         }
         if (filterConfig.tags && filterConfig.tags.length > 0) {
-            query.tags = {$all: filterConfig.tags};
+            query.tags = { $all: filterConfig.tags };
         }
     }
     return query;

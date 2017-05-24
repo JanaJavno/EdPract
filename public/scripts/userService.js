@@ -17,7 +17,7 @@ const userService = (function () {
     }
 
     function handleClickLoginButton(event) {
-        let target = event.currentTarget;
+        const target = event.currentTarget;
         if (target !== this) return;
         if (CURRENT_USER.length === 0) {
             LOGIN_FORM.style.display = (LOGIN_FORM.style.display === 'none') ? 'block' : 'none';

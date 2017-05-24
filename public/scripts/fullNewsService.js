@@ -220,7 +220,10 @@ const fullNewsService = (function () {
 
     /* Delete News*/
     function deleteNews(id) {
-        deleteNewsAndRender(id);
+        const isDelete = confirm('Удалить?');
+        if(isDelete){
+            deleteNewsAndRender(id);
+        }
     }
 
     function clearForms() {

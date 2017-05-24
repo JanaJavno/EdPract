@@ -64,16 +64,6 @@ const serverWorker = (function () {
         });
     }
 
-    function globalPost(articles) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/news');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(articles.articles));
-        xhr.open('POST', '/tags');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(articles.tags));
-    }
-
     function updateArticle(article) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -142,25 +132,6 @@ const serverWorker = (function () {
         });
     }
 
-    function sendTag(tags) {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('PUT', '/tags');
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = function () {
-                if (this.status >= 200 && this.status < 300) {
-                    resolve(JSON.parse(xhr.responseText));
-                } else {
-                    reject({
-                        status: this.status,
-                        statusText: xhr.statusText,
-                    });
-                }
-            };
-            xhr.send(JSON.stringify(tags));
-        });
-    }
-
     function login(user) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -217,8 +188,6 @@ const serverWorker = (function () {
     }
     return {
         getModel,
-        globalPost,
-        sendTag,
         sendArticle,
         deleteArticle,
         updateArticle,
