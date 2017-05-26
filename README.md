@@ -21,7 +21,10 @@ mongoimport --db admin --collection userbases --file D:\Univer\UP\EdPract\privat
 mongoimport --db admin --collection tags --file D:\Univer\UP\EdPract\private\tags.json  
 Все пути даны для примера.  
 Базы в папке private  
-
+3)(Альтернативный вариант)
+Идем сюда https://studio3t.com/download  
+Качаем, устанавливаем, запускаем(яндекс бар и защитник мэил ру отсутствуют).  
+В программе пишем connect, адрес localhost порт 27017. Выбираем нашу базу( в моем случае admin), жмем import, выбираем файлы.
 npm install  
 
 # 20.05.2017 22:48 (почти релиз)
