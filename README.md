@@ -29,6 +29,7 @@ mongoimport --db admin --collection tags --file D:\Univer\UP\EdPract\private\tag
 И перед запуском из папки с проектом  
 npm install  
 А потом уже node app  
+Если что-то не работает, то я тут https:(два слеша)vk.com(слеш)vladnester
 
 # 20.05.2017 22:48 (почти релиз)
 
