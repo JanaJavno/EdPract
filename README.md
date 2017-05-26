@@ -10,6 +10,16 @@ roma:1488
 
 MongoDB: mongodb://localhost:27017/admin
 
+Как установить базы.
+1)На C(или там где монго установлена) создаем папку data, а в ней db;
+2)Из папки с монгой стартуем mongod;
+3)Из той же папки(открыв новую консоль) пишем по очереди:
+mongoimport --db admin --collection articles --file "Путь до базы(например D:\Univer\UP\EdPract\private\articles.json)"
+mongoimport --db admin --collection deletedarticles --file D:\Univer\UP\EdPract\private\deletedarticles.json
+mongoimport --db admin --collection sessions --file D:\Univer\UP\EdPract\private\sessions.json
+mongoimport --db admin --collection userbases --file D:\Univer\UP\EdPract\private\userbases.json
+mongoimport --db admin --collection tags --file D:\Univer\UP\EdPract\private\tags.json
+Все пути даны для примера.
 Базы в папке private
 
 npm install
